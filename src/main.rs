@@ -9,6 +9,7 @@ mod error_handler;
 mod usage;
 mod raytracer;
 mod Vector3D;
+mod Point3D;
 
 fn main() -> std::process::ExitCode {
     let args: Vec<String> = std::env::args().collect();
@@ -24,8 +25,9 @@ fn main() -> std::process::ExitCode {
 
     let vec1 = Vector3D::Vector3D::new_value(2.0, 4.0, 0.0);
     let vec2 = Vector3D::Vector3D::new_value(2.0, 4.0, 0.0);
+    let p = Point3D::Point3D::new_default();
 
     // println!("{}", Vector3D::length(&vec1));
-    println!("{}", (vec1 / vec2).z);
+    println!("{}", (p + vec1).x);
     return std::process::ExitCode::SUCCESS;
 }
