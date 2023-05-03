@@ -13,10 +13,6 @@ pub struct Vector3D {
 }
 
 impl Vector3D {
-    pub fn new_default() -> Vector3D {
-        return Vector3D { x: 0.0, y: 0.0, z: 0.0};
-    }
-
     pub fn new(x:f64, y:f64, z:f64) -> Vector3D {
         return Vector3D {x, y, z};
     }
@@ -28,6 +24,12 @@ impl Vector3D {
     pub fn length(&self) -> f64 {
         let res: f64 = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
         return res;
+    }
+}
+
+impl Default for Vector3D {
+    fn default() -> Self {
+        Vector3D { x: (0.0), y: (0.0), z: (0.0) }
     }
 }
 

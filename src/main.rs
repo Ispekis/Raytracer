@@ -12,7 +12,9 @@ mod Math {
 mod RayTracer {
     pub mod ray;
     pub mod Sphere;
+    pub mod Camera;
 }
+
 mod Rectangle3D;
 
 fn main() -> std::process::ExitCode {
@@ -29,7 +31,7 @@ fn main() -> std::process::ExitCode {
 
     let vec1 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
     let vec2 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
-    let p = Math::Point3D::Point3D::new_default();
+    let p = Math::Point3D::Point3D::default();
 
     let ray = RayTracer::ray::ray::new((p), vec1);
 

@@ -15,7 +15,7 @@ pub struct ray {
 
 impl ray {
     pub fn new_default() -> ray {
-        return ray {point:Point3D::new_default(), vector:Vector3D::new_default() }
+        return ray {point:Point3D::default(), vector:Vector3D::default() }
     }
 
     pub fn new(point:Point3D, vector:Vector3D) -> ray {

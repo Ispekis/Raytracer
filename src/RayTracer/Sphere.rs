@@ -9,13 +9,13 @@ use crate::Math::Point3D::Point3D;
 use crate::RayTracer::ray::ray;
 
 pub struct Sphere {
-    pub point:Point3D,
+    pub center:Point3D,
     pub radius:f64
 }
 
 impl Sphere {
-    pub fn new(point:Point3D, radius:f64) -> Sphere {
-        return Sphere {point, radius};
+    pub fn new(center:Point3D, radius:f64) -> Sphere {
+        return Sphere {center, radius};
     }
 
     pub fn hits(&self, ray:ray) -> bool {
