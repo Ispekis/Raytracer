@@ -15,6 +15,9 @@ pub struct Rectangle3D {
 }
 
 impl Rectangle3D {
+    pub fn new(&self, origin:Point3D, bottom_side:Vector3D, left_side:Vector3D) -> Self {
+        Rectangle3D { origin, bottom_side, left_side }
+    }
     pub fn pointAt(&self, u:f64, v:f64) -> Point3D {
         return Point3D::default();
     }
