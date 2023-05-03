@@ -10,7 +10,7 @@
 //     mod position;
 // }
 
-use crate::solid::rgb::Rgb;
+use crate::Rgb::Rgb;
 // use crate::solid::plane;
 // use crate::position::Position;
 

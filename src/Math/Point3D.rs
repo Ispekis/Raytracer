@@ -5,7 +5,9 @@
 // Point3D
 //
 
-use crate::solid::Vector3D::Vector3D;
+use crate::Math::Vector3D::Vector3D;
+
+#[derive(Copy, Clone)]
 pub struct Point3D {
     pub x:f64,
     pub y:f64,
@@ -13,12 +15,18 @@ pub struct Point3D {
 }
 
 impl Point3D {
-    pub fn new_default() -> Point3D {
-        return Point3D {x:0.0, y:0.0, z:0.0}
-    }
-
     pub fn new(x:f64, y:f64, z:f64) -> Point3D {
         return Point3D {x, y, z};
+    }
+}
+
+impl Default for Point3D {
+    fn default() -> Self {
+        Point3D {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0
+        }
     }
 }
 

@@ -1,20 +1,24 @@
 use libc::POLLRDBAND;
-use solid::plane;
 
 mod error_handler;
 mod usage;
-mod FileConfig;
-mod solid {
-    pub mod plane;
-    pub mod sphere;
-    pub mod rgb;
+mod raytracer;
+mod Math {
     pub mod Point3D;
     pub mod Vector3D;
-    pub mod Isolid;
 }
 
-// mod Point3D;
+pub mod ISolid;
+pub mod Rgb;
 
+mod RayTracer {
+    pub mod Ray;
+    pub mod Sphere;
+    pub mod Camera;
+    pub mod Plane;
+}
+
+mod Rectangle3D;
 
 fn main() -> std::process::ExitCode {
     let args: Vec<String> = std::env::args().collect();
@@ -26,9 +30,15 @@ fn main() -> std::process::ExitCode {
     if error_handler::error_handler(&args) == 1 {
         return std::process::ExitCode::from(84);
     }
-    // FileConfig::write_config();
-    let t = plane::Plane::new_default();
-    let a = solid::rgb::Rgb::default();
-    // let test = Plane::Default;
+    raytracer::run_raytracer();
+
+    let vec1 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
+    let vec2 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
+    let p = Math::Point3D::Point3D::default();
+
+    let ray = RayTracer::Ray::Ray::new((p), vec1);
+
+    // println!("{}", Vector3D::length(&vec1));
+    println!("{}", ray.point.x + ray.point.x);
     return std::process::ExitCode::SUCCESS;
 }
