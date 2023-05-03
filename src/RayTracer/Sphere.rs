@@ -22,3 +22,12 @@ impl Sphere {
         return false;
     }
 }
+
+impl Default for Sphere {
+    fn default() -> Self {
+        Sphere {
+            center: Point3D::default(),
+            radius: 0.0
+        }
+    }
+}
