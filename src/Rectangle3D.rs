@@ -19,7 +19,10 @@ impl Rectangle3D {
         Rectangle3D { origin, bottom_side, left_side }
     }
     pub fn pointAt(&self, u:f64, v:f64) -> Point3D {
-        return Point3D::default();
+        let x = self.origin.x + u * self.bottom_side.x + v * self.left_side.x;
+        let y = self.origin.y + u * self.bottom_side.y + v * self.left_side.y;
+        let z =  self.origin.z + u * self.bottom_side.z + v * self.left_side.z;
+        return Point3D::new(x, y, z);
     }
 }
 
