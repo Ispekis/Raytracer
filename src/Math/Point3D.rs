@@ -5,12 +5,9 @@
 // Point3D
 //
 
-<<<<<<< HEAD:src/solid/Point3D.rs
-use crate::solid::Vector3D::Vector3D;
-=======
 use crate::Math::Vector3D::Vector3D;
 
->>>>>>> bd758ec (3 : feat : moving correcting struct to namespace):src/Math/Point3D.rs
+#[derive(Copy, Clone)]
 pub struct Point3D {
     pub x:f64,
     pub y:f64,

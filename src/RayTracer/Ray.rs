@@ -8,17 +8,17 @@
 use crate::Math::Point3D::Point3D;
 use crate::Math::Vector3D::Vector3D;
 
-pub struct ray {
+pub struct Ray {
     pub point:Point3D,
     pub vector:Vector3D,
 }
 
-impl ray {
-    pub fn new_default() -> ray {
-        return ray {point:Point3D::default(), vector:Vector3D::default() }
+impl Ray {
+    pub fn new_default() -> Ray {
+        return Ray {point:Point3D::default(), vector:Vector3D::default() }
     }
 
-    pub fn new(point:Point3D, vector:Vector3D) -> ray {
-        return ray {point, vector};
+    pub fn new(point:Point3D, vector:Vector3D) -> Ray {
+        return Ray {point, vector};
     }
 }

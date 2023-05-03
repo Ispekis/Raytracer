@@ -1,5 +1,4 @@
 use libc::POLLRDBAND;
-use solid::plane;
 
 mod error_handler;
 mod usage;
@@ -9,10 +8,14 @@ mod Math {
     pub mod Vector3D;
 }
 
+pub mod ISolid;
+pub mod Rgb;
+
 mod RayTracer {
-    pub mod ray;
+    pub mod Ray;
     pub mod Sphere;
     pub mod Camera;
+    pub mod Plane;
 }
 
 mod Rectangle3D;
@@ -33,7 +36,7 @@ fn main() -> std::process::ExitCode {
     let vec2 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
     let p = Math::Point3D::Point3D::default();
 
-    let ray = RayTracer::ray::ray::new((p), vec1);
+    let ray = RayTracer::Ray::Ray::new((p), vec1);
 
     // println!("{}", Vector3D::length(&vec1));
     println!("{}", ray.point.x + ray.point.x);
