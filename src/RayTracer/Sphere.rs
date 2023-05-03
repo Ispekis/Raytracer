@@ -25,11 +25,11 @@ impl Sphere {
         // println!("rad = {}, cx = {}, cy = {}, cz = {}", self.radius, self.center.x, self.center.y, self.center.z);
         let a = ray.vector.x.powf(2.0) + ray.vector.y.powf(2.0) + ray.vector.z.powf(2.0);
         let b = 2.0 * ((ray.point.x * ray.vector.x) + (ray.point.y * ray.vector.y) + (ray.point.z * ray.vector.z));
-        let c = (ray.point.x.powf(2.0) + ray.point.y.powf(2.0) + ray.point.z.powf(2.0)) - self.radius;
+        let c = (ray.point.x.powf(2.0) + ray.point.y.powf(2.0) + ray.point.z.powf(2.0)) - self.radius.powf(2.0);
         let dis = b.powf(2.0) - 4.0 * a * c;
         // println!("dis = {}", dis);
         if (dis >= 0.0) {
-            return  true;
+            return true;
         }
         return false;
     }

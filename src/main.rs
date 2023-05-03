@@ -20,16 +20,20 @@ mod RayTracer {
 
 mod Rectangle3D;
 
+fn write_color(color:Math::Vector3D::Vector3D) {
+    println!("{} {} {}", color.x as u32, color.y as u32, color.z as u32);
+}
+
 fn main() -> std::process::ExitCode {
     let args: Vec<String> = std::env::args().collect();
 
-    // if args.len() == 2 && &args[1] == "--help" {
-    //     usage::display_usage(&args[0]);
-    //     return std::process::ExitCode::SUCCESS;
-    // }
-    // if error_handler::error_handler(&args) == 1 {
-    //     return std::process::ExitCode::from(84);
-    // }
+    if args.len() == 2 && &args[1] == "--help" {
+        usage::display_usage(&args[0]);
+        return std::process::ExitCode::SUCCESS;
+    }
+    if error_handler::error_handler(&args) == 1 {
+        return std::process::ExitCode::from(84);
+    }
     // raytracer::run_raytracer();
 
     // let vec1 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
@@ -46,16 +50,25 @@ fn main() -> std::process::ExitCode {
     let cam = RayTracer::Camera::Camera::default();
     let s = RayTracer::Sphere::Sphere::new(Math::Point3D::Point3D::new(0.0, 0.0, -1.0), 0.5);
 
-    for y in (0..11) {
-        for x in (0..11) {
-            let u = x as f64 / 10.0;
-            let v = y as f64 / 10.0;
+    let width = 50;
+    let height = 20;
+
+    println!("P3");
+    println!("{} {}", width, height);
+    println!("255");
+
+    for y in 0..height {
+        for x in 0..width {
+            let u = x as f64 / (width as f64 - 1.0);
+            let v = y as f64 / (height as f64 - 1.0);
             let ray = cam.ray(u, v);
             // println!("u {} and v {}", u, v);
-            if (s.hits(ray)) {
-                println!("hit at u {} and v {}", u, v);
+            if s.hits(ray) {
+                write_color(Math::Vector3D::Vector3D::new(255.0, 0.0, 0.0));
+                // println!("hit at u {} and v {}", u, v);
             } else {
-                println!("no");
+                write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 255.0));
+                // println!("no");
             }
         }
     }

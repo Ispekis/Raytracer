@@ -15,11 +15,13 @@ pub struct Ray {
 }
 
 impl Ray {
-    pub fn new_default() -> Ray {
-        return Ray {point:Point3D::default(), vector:Vector3D::default() }
-    }
-
     pub fn new(point:Point3D, vector:Vector3D) -> Ray {
         return Ray {point, vector};
+    }
+}
+
+impl Default for Ray {
+    fn default() -> Self {
+        Ray {point:Point3D::default(), vector:Vector3D::default() }
     }
 }
