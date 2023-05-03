@@ -5,8 +5,8 @@
 // ray
 //
 
-use crate::Point3D::Point3D;
-use crate::Vector3D::Vector3D;
+use crate::Math::Point3D::Point3D;
+use crate::Math::Vector3D::Vector3D;
 
 pub struct ray {
     pub point:Point3D,

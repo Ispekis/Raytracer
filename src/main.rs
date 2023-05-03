@@ -3,18 +3,17 @@ use solid::plane;
 
 mod error_handler;
 mod usage;
-mod FileConfig;
-mod solid {
-    pub mod plane;
-    pub mod sphere;
-    pub mod rgb;
+mod raytracer;
+mod Math {
     pub mod Point3D;
     pub mod Vector3D;
-    pub mod Isolid;
 }
 
-// mod Point3D;
-
+mod RayTracer {
+    pub mod ray;
+    pub mod Sphere;
+}
+mod Rectangle3D;
 
 fn main() -> std::process::ExitCode {
     let args: Vec<String> = std::env::args().collect();
@@ -26,9 +25,15 @@ fn main() -> std::process::ExitCode {
     if error_handler::error_handler(&args) == 1 {
         return std::process::ExitCode::from(84);
     }
-    // FileConfig::write_config();
-    let t = plane::Plane::new_default();
-    let a = solid::rgb::Rgb::default();
-    // let test = Plane::Default;
+    raytracer::run_raytracer();
+
+    let vec1 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
+    let vec2 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
+    let p = Math::Point3D::Point3D::new_default();
+
+    let ray = RayTracer::ray::ray::new((p), vec1);
+
+    // println!("{}", Vector3D::length(&vec1));
+    println!("{}", ray.point.x + ray.point.x);
     return std::process::ExitCode::SUCCESS;
 }

@@ -5,6 +5,7 @@
 // Vector3D
 //
 
+#[derive(Copy, Clone)]
 pub struct Vector3D {
     pub x:f64,
     pub y:f64,
@@ -19,11 +20,15 @@ impl Vector3D {
     pub fn new(x:f64, y:f64, z:f64) -> Vector3D {
         return Vector3D {x, y, z};
     }
-}
 
-pub fn length(vector : &Vector3D) -> f64 {
-    let res: f64 = (vector.x.powf(2.0) + vector.y.powf(2.0) + vector.z.powf(2.0)).sqrt();
-    return res;
+    pub fn scal(&self, other: &Self) -> f64 {
+        return (self.x * other.x) + (self.y * other.y) + (self.z * other.z);
+    }
+
+    pub fn length(&self) -> f64 {
+        let res: f64 = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
+        return res;
+    }
 }
 
 impl std::ops::Add<Vector3D> for Vector3D {
