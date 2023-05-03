@@ -13,12 +13,12 @@ use crate::Rgb::Rgb;
 pub struct Sphere {
     pub center:Point3D,
     pub radius:f64,
-    pub color:Rgb
+    // pub color:Rgb
 }
 
 impl Sphere {
-    pub fn new(center:Point3D, radius:f64, color:Rgb) -> Sphere {
-        return Sphere {center, radius, color};
+    pub fn new(center:Point3D, radius:f64) -> Sphere {
+        return Sphere {center, radius};
     }
 
     pub fn hits(&self, ray:Ray) -> bool {
@@ -40,7 +40,6 @@ impl Default for Sphere {
         Sphere {
             center: Point3D::default(),
             radius: 0.0,
-            color:Rgb::default()
         }
     }
 }

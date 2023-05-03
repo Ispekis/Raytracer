@@ -61,3 +61,14 @@ impl std::ops::Div<Vector3D> for Point3D {
         return Point3D {x:self.x / rhs.x , y:self.y / rhs.y, z:self.z / rhs.z};
     }
 }
+
+impl std::ops::Sub<Point3D> for Point3D{
+    type Output = Vector3D;
+    fn sub(self, rhs: Point3D) -> Self::Output {
+        Vector3D {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z
+        }
+    }
+}

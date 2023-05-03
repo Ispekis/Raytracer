@@ -23,24 +23,42 @@ mod Rectangle3D;
 fn main() -> std::process::ExitCode {
     let args: Vec<String> = std::env::args().collect();
 
-    if args.len() == 2 && &args[1] == "--help" {
-        usage::display_usage(&args[0]);
-        return std::process::ExitCode::SUCCESS;
+    // if args.len() == 2 && &args[1] == "--help" {
+    //     usage::display_usage(&args[0]);
+    //     return std::process::ExitCode::SUCCESS;
+    // }
+    // if error_handler::error_handler(&args) == 1 {
+    //     return std::process::ExitCode::from(84);
+    // }
+    // raytracer::run_raytracer();
+
+    // let vec1 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
+    // // let vec2 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
+    // let p = Math::Point3D::Point3D::new(1.0, 2.0, 3.0);
+    // let sphere = RayTracer::Sphere::Sphere::new(p, 5.0);
+    // let ray = RayTracer::Ray::Ray::new(p, vec1);
+
+    // sphere.hits(ray);
+
+    // // println!("{}", Vector3D::length(&vec1));
+    // println!("{}", ray.point.x + ray.point.x);
+
+    let cam = RayTracer::Camera::Camera::default();
+    let s = RayTracer::Sphere::Sphere::new(Math::Point3D::Point3D::new(0.0, 0.0, -1.0), 0.5);
+
+    for y in (0..11) {
+        for x in (0..11) {
+            let u = x as f64 / 10.0;
+            let v = y as f64 / 10.0;
+            let ray = cam.ray(u, v);
+            // println!("u {} and v {}", u, v);
+            if (s.hits(ray)) {
+                println!("hit at u {} and v {}", u, v);
+            } else {
+                println!("no");
+            }
+        }
     }
-    if error_handler::error_handler(&args) == 1 {
-        return std::process::ExitCode::from(84);
-    }
-    raytracer::run_raytracer();
 
-    let vec1 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
-    // let vec2 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
-    let p = Math::Point3D::Point3D::new(1.0, 2.0, 3.0);
-    let sphere = RayTracer::Sphere::Sphere::new(p, 5.0, Rgb::Rgb::default());
-    let ray = RayTracer::Ray::Ray::new(p, vec1);
-
-    sphere.hits(ray);
-
-    // println!("{}", Vector3D::length(&vec1));
-    println!("{}", ray.point.x + ray.point.x);
     return std::process::ExitCode::SUCCESS;
 }
