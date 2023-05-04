@@ -50,8 +50,8 @@ fn main() -> std::process::ExitCode {
     let cam = RayTracer::Camera::Camera::default();
     let s = RayTracer::Sphere::Sphere::new(Math::Point3D::Point3D::new(0.0, 0.0, -1.0), 0.5);
 
-    let width = 50;
-    let height = 20;
+    let width = 100;
+    let height = 50;
 
     println!("P3");
     println!("{} {}", width, height);
@@ -62,12 +62,12 @@ fn main() -> std::process::ExitCode {
             let u = x as f64 / (width as f64 - 1.0);
             let v = y as f64 / (height as f64 - 1.0);
             let ray = cam.ray(u, v);
-            // println!("u {} and v {}", u, v);
+            // println!("ray {} {} {}", ray.direction.x, ray.direction.y, ray.direction.z);
             if s.hits(ray) {
-                write_color(Math::Vector3D::Vector3D::new(255.0, 0.0, 0.0));
                 // println!("hit at u {} and v {}", u, v);
+                // write_color(Math::Vector3D::Vector3D::new(255.0, 0.0, 0.0));
             } else {
-                write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 255.0));
+                // write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 255.0));
                 // println!("no");
             }
         }

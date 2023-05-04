@@ -23,9 +23,9 @@ impl Sphere {
 
     pub fn hits(&self, ray:Ray) -> bool {
         // println!("rad = {}, cx = {}, cy = {}, cz = {}", self.radius, self.center.x, self.center.y, self.center.z);
-        let a = ray.vector.x.powf(2.0) + ray.vector.y.powf(2.0) + ray.vector.z.powf(2.0);
-        let b = 2.0 * ((ray.point.x * ray.vector.x) + (ray.point.y * ray.vector.y) + (ray.point.z * ray.vector.z));
-        let c = (ray.point.x.powf(2.0) + ray.point.y.powf(2.0) + ray.point.z.powf(2.0)) - self.radius.powf(2.0);
+        let a = ray.direction.x.powf(2.0) + ray.direction.y.powf(2.0) + ray.direction.z.powf(2.0);
+        let b = 2.0 * ((ray.origin.x * ray.direction.x) + (ray.origin.y * ray.direction.y) + (ray.origin.z * ray.direction.z));
+        let c = (ray.origin.x.powf(2.0) + ray.origin.y.powf(2.0) + ray.origin.z.powf(2.0)) - self.radius.powf(2.0);
         let dis = b.powf(2.0) - 4.0 * a * c;
         // println!("dis = {}", dis);
         if (dis >= 0.0) {

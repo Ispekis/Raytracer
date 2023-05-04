@@ -6,6 +6,7 @@
 //
 
 use crate::Math::Point3D::Point3D;
+use crate::Math::Vector3D::Vector3D;
 use crate::Rectangle3D::Rectangle3D;
 use crate::RayTracer::Ray::Ray;
 
@@ -21,7 +22,7 @@ impl Camera {
 
     pub fn ray(&self, u:f64, v:f64) -> Ray {
         let point = self.screen.pointAt(u, v);
-        Ray { point, vector: (point - self.origin) }
+        Ray { origin:self.origin, direction: (point - self.origin) }
     }
 }
 
@@ -29,7 +30,8 @@ impl Default for Camera {
     fn default() -> Self {
         Camera {
             origin:Point3D::default(),
-            screen:Rectangle3D::default()
+            // screen:Rectangle3D::default(),
+            screen:Rectangle3D::new(Point3D::new(0.0, 0.0, 10.0), Vector3D::new(1.0, 0.0, 0.0), Vector3D::new(0.0, 1.0, 0.0))
         }
     }
 }
