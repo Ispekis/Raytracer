@@ -5,8 +5,13 @@
 // raytracer
 //
 
-pub fn run_raytracer() -> u32
+use libc::FILENAME_MAX;
+
+use crate::Parsing::FileConfig::{ParsingFile, ConfigData};
+
+pub fn run_raytracer(filename: &str) -> u32
 {
     println!("USAGE:");
+    let config = ParsingFile(filename);
     return 0;
 }

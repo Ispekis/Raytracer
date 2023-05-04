@@ -9,6 +9,11 @@ mod Math {
     pub mod formulas;
 }
 
+extern crate librustconfig;
+
+use librustconfig::config::{Config, ConfigError};
+extern crate libc;
+
 pub mod ISolid;
 pub mod Rgb;
 
@@ -19,6 +24,12 @@ mod RayTracer {
     pub mod Plane;
 }
 
+mod Parsing {
+    pub mod FileConfig;
+    pub mod Point;
+    pub mod Directionnal;
+    pub mod libconfig;
+}
 mod Rectangle3D;
 
 fn write_color(color:Math::Vector3D::Vector3D) {
