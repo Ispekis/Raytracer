@@ -1,5 +1,3 @@
-use libc::POLLRDBAND;
-
 mod error_handler;
 mod usage;
 mod raytracer;
@@ -9,13 +7,10 @@ mod Math {
     pub mod formulas;
 }
 
-extern crate librustconfig;
-
-use librustconfig::config::{Config, ConfigError};
-extern crate libc;
-
 pub mod ISolid;
 pub mod Rgb;
+
+mod tools;
 
 mod RayTracer {
     pub mod Ray;
@@ -26,9 +21,6 @@ mod RayTracer {
 
 mod Parsing {
     pub mod FileConfig;
-    pub mod Point;
-    pub mod Directionnal;
-    pub mod libconfig;
 }
 mod Rectangle3D;
 
