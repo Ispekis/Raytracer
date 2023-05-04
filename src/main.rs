@@ -21,12 +21,8 @@ mod RayTracer {
     pub mod Light;
 }
 
-mod Parsing {
+mod Config {
     pub mod FileConfig;
-}
-
-fn write_color(color:Math::Vector3D::Vector3D) {
-    println!("{} {} {}", color.x as u32, color.y as u32, color.z as u32);
 }
 
 fn main() -> std::process::ExitCode {
@@ -40,38 +36,13 @@ fn main() -> std::process::ExitCode {
         return std::process::ExitCode::from(84);
     }
 
-    let scene = Parsing::FileConfig::SceneData::new(&args[1]);
+    let scene = Config::FileConfig::SceneData::new(&args[1]);
 
-    // match scene {
-    //     Ok((v)) => return std::process::ExitCode::SUCCESS,
-    //     Err((_)) => return std::process::ExitCode::from(84)
-    // }
-
-    let cam = RayTracer::Camera::Camera::default();
-    let s = RayTracer::Sphere::Sphere::new(Math::Point3D::Point3D::new(0.0, 0.0, -1.0), 0.5);
-
-    let width = 100;
-    let height = 50;
-
-    println!("P3");
-    println!("{} {}", width, height);
-    println!("255");
-
-    for y in 0..height {
-        for x in 0..width {
-            let u = x as f64 / (width as f64 - 1.0);
-            let v = y as f64 / (height as f64 - 1.0);
-            let ray = cam.ray(u, v);
-            // println!("ray {} {} {}", ray.direction.x, ray.direction.y, ray.direction.z);
-            if s.hits(ray) {
-                // println!("hit at u {} and v {}", u, v);
-                // write_color(Math::Vector3D::Vector3D::new(255.0, 0.0, 0.0));
-            } else {
-                // write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 255.0));
-                // println!("no");
-            }
-        }
+    match scene {
+        Ok((s)) => {
+            raytracer::run_raytracer(s);
+            return std::process::ExitCode::SUCCESS;
+        },
+        Err((_)) => return std::process::ExitCode::from(84)
     }
-
-    return std::process::ExitCode::SUCCESS;
 }
