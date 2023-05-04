@@ -29,9 +29,13 @@ impl Rectangle3D {
 impl Default for Rectangle3D {
     fn default() -> Self {
         Rectangle3D {
-            origin: Point3D::new(-0.96, -0.54, 1.0),
-            bottom_side: Vector3D::new(1.92, 0.0, 0.0),
-            left_side: Vector3D::new(0.0, 1.08, 0.0)
+            // origin: Point3D::new(-0.96, -0.54, 1.0),
+            // bottom_side: Vector3D::new(1.92, 0.0, 0.0),
+            // left_side: Vector3D::new(0.0, 1.08, 0.0)
+            origin: Point3D::new(-500.0, -500.0, 2.0),
+            bottom_side: Vector3D::new(1000.0, 0.0, 0.0),
+            left_side: Vector3D::new(0.0, 1000.0, 0.0)
+
         }
     }
 }

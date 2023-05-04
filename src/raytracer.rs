@@ -16,10 +16,10 @@ fn write_color(color:Math::Vector3D::Vector3D) {
 pub fn run_raytracer(scene: FileConfig::SceneData) -> u32
 {
     let cam = RayTracer::Camera::Camera::default();
-    let s = RayTracer::Sphere::Sphere::new(Math::Point3D::Point3D::new(0.0, 0.0, -1.0), 0.5);
+    let s = RayTracer::Sphere::Sphere::new(Math::Point3D::Point3D::new(0.0, 0.0, 10.0), 9.0);
 
-    let width = 100;
-    let height = 50;
+    let width = 1000;
+    let height = 1000;
 
     println!("P3");
     println!("{} {}", width, height);
