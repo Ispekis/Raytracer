@@ -7,17 +7,28 @@
 
 use crate::Math::Point3D::Point3D;
 use crate::Math::Vector3D::Vector3D;
-use crate::Rectangle3D::Rectangle3D;
+use crate::RayTracer::Rectangle3D::Rectangle3D;
 use crate::RayTracer::Ray::Ray;
 
 pub struct Camera {
     origin:Point3D,
-    screen:Rectangle3D
+    screen:Rectangle3D,
+    width:u32,
+    height:u32,
+    rotation:Vector3D,
+    fov:f64
 }
 
 impl Camera {
-    pub fn new(&self, origin:Point3D, screen:Rectangle3D) -> Self {
-        Camera {origin, screen}
+    pub fn new_config(width:u32, height:u32, position:Point3D, rotation:Vector3D, fov:f64) -> Self{
+        Camera {
+            origin: position,
+            screen: Rectangle3D::default(),
+            width,
+            height,
+            rotation,
+            fov
+        }
     }
 
     pub fn ray(&self, u:f64, v:f64) -> Ray {
@@ -30,8 +41,11 @@ impl Default for Camera {
     fn default() -> Self {
         Camera {
             origin:Point3D::default(),
-            // screen:Rectangle3D::default(),
-            screen:Rectangle3D::new(Point3D::new(-0.96, -0.54, 1.0), Vector3D::new(1.92, 0.0, 0.0), Vector3D::new(0.0, 1.08, 0.0))
+            screen:Rectangle3D::default(),
+            width:0,
+            height:0,
+            rotation:Vector3D::default(),
+            fov:0.0
         }
     }
 }
