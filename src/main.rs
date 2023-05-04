@@ -18,6 +18,7 @@ mod RayTracer {
     pub mod Camera;
     pub mod Plane;
     pub mod Rectangle3D;
+    pub mod Light;
 }
 
 mod Parsing {
@@ -38,20 +39,8 @@ fn main() -> std::process::ExitCode {
     if error_handler::error_handler(&args) == 1 {
         return std::process::ExitCode::from(84);
     }
-    // raytracer::run_raytracer();
 
-    // let vec1 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
-    // // let vec2 = Math::Vector3D::Vector3D::new(2.0, 4.0, 0.0);
-    // let p = Math::Point3D::Point3D::new(1.0, 2.0, 3.0);
-    // let sphere = RayTracer::Sphere::Sphere::new(p, 5.0);
-    // let ray = RayTracer::Ray::Ray::new(p, vec1);
-
-    // sphere.hits(ray);
-
-    // // println!("{}", Vector3D::length(&vec1));
-    // println!("{}", ray.point.x + ray.point.x);
-
-    let scene = Parsing::FileConfig::SceneData::new("ray_conf.json");
+    let scene = Parsing::FileConfig::SceneData::new(&args[1]);
 
     // match scene {
     //     Ok((v)) => return std::process::ExitCode::SUCCESS,

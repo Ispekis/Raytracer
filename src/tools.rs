@@ -7,11 +7,9 @@
 
 use std::io::Read;
 
-pub fn read_file(filepath:&str) -> String {
-    let mut file = std::fs::File::open(&filepath)
-    .expect("File not found");
+pub fn read_file(filepath:&str) -> std::result::Result<String, Box<dyn std::error::Error>> {
+    let mut file = std::fs::File::open(&filepath)?;
     let mut data = String::new();
-    file.read_to_string(&mut data).expect("Error while reading");
-    return data;
-
+    file.read_to_string(&mut data)?;
+    Ok(data)
 }

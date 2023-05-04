@@ -13,7 +13,8 @@ use crate::Math::{
 use crate::RayTracer::{
     Camera::Camera,
     Sphere::Sphere,
-    Plane::Plane
+    Plane::Plane,
+    Light::Light
 };
 use crate::tools;
 
@@ -24,17 +25,13 @@ pub struct Primitives {
 
 pub struct SceneData {
     pub camera:Camera,
-    pub primitives:Primitives
+    pub primitives:Primitives,
+    pub lights:Light
 }
 
-fn convert_string_to_json_obj(str:String) -> Option<Value> {
-    let obj: std::result::Result<Value, serde_json::Error> = serde_json::from_str(&str);
-
-    match obj {
-        Ok(v) => return Some(v),
-        Err(_) => return None,
-    }
-    // println!("{}", obj["camera"]["resolution"]["width"]);
+fn convert_string_to_json_obj(str: String) -> std::result::Result<Value, Box<dyn std::error::Error>> {
+    let obj = serde_json::from_str(&str)?;
+    Ok(obj)
 }
 
 fn config_cam(data:&Value) -> std::result::Result<(Camera), Box<dyn std::error::Error>> {
@@ -90,7 +87,8 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
     .ok_or("Not an array")?.len();
 
     for i in 0..planes_len {
-        let axis = data["primitives"]["planes"][i]["axis"].to_string().parse::<char>()?;
+        let axis_str = data["primitives"]["planes"][i]["axis"].to_string().parse::<String>()?;
+        let axis = axis_str.chars().next().unwrap();
         let position = data["primitives"]["planes"][i]["position"].to_string().parse::<f64>()?;
         let color = Vector3D::new(
             data["primitives"]["planes"][i]["color"]["r"].to_string().parse::<f64>()?,
@@ -104,29 +102,58 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
 }
 
 fn config_primitives(data:&Value) -> std::result::Result<Primitives, Box<dyn std::error::Error>> {
-
+    
     let spheres = config_spheres(data)?;
-
+    
     let planes = config_planes(data)?;
 
     Ok(Primitives {spheres, planes})
 }
 
-impl SceneData {
-    pub fn new(filepath:&str) -> std::result::Result<SceneData, Box<dyn std::error::Error>> {
-        let obj = convert_string_to_json_obj(tools::read_file(&filepath));
+fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::Error>> {
+    let ambient = data["lights"]["ambient"].to_string().parse::<f64>()?;
+    let diffuse = data["lights"]["diffuse"].to_string().parse::<f64>()?;
+    let points_len =  data["lights"]["point"]
+    .as_array()
+    .ok_or("Not an array")?.len();
+    let directionals_len =  data["lights"]["directional"]
+    .as_array()
+    .ok_or("Not an array")?.len();
+    let mut points: Vec<Point3D> = Vec::new();
+    let mut directionals: Vec<Vector3D> = Vec::new();
 
-        if obj == None {
-            println!("Error on parsing config file");
-        }
-        let data = obj.unwrap();
-
-        let cam = config_cam(&data)?;
-        let prim = config_primitives(&data)?;
-
-        Ok(SceneData {camera: cam, primitives: prim })
+    for i in 0..points_len {
+        let point = Point3D::new(
+            data["lights"]["point"][i]["x"].to_string().parse::<f64>()?,
+            data["lights"]["point"][i]["y"].to_string().parse::<f64>()?,
+            data["lights"]["point"][i]["z"].to_string().parse::<f64>()?);
+        points.push(point);
     }
+
+    for i in 0..directionals_len {
+        let directional = Vector3D::new(
+            data["lights"]["directional"][i]["x"].to_string().parse::<f64>()?,
+            data["lights"]["directional"][i]["y"].to_string().parse::<f64>()?,
+            data["lights"]["directional"][i]["z"].to_string().parse::<f64>()?);
+        directionals.push(directional);
+    }
+    Ok(Light::new_config(ambient, diffuse, points, directionals))
 }
 
-// impl Default for SceneData {
-// }
+impl SceneData {
+    pub fn new(filepath:&str) -> std::result::Result<SceneData, Box<dyn std::error::Error>> {
+        // Convert string to json
+        let data = convert_string_to_json_obj(tools::read_file(&filepath)?)?;
+        
+        // Get camera's configs
+        let camera = config_cam(&data)?;
+        
+        // Get primitives's configs
+        let primitives = config_primitives(&data)?;
+        
+        // Get lights's configs
+        let lights = config_lights(&data)?;
+
+        Ok(SceneData {camera, primitives, lights })
+    }
+}
