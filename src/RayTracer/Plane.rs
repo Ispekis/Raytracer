@@ -5,27 +5,24 @@
 // planes
 //
 
-// mod rgb;
-// mod solid {
-//     mod position;
-// }
+use crate::Math::Vector3D::Vector3D;
 
-use crate::Rgb::Rgb;
-// use crate::solid::plane;
-// use crate::position::Position;
-
-
+#[derive(Copy, Clone)]
 pub struct Plane {
-    pub color:Rgb,
-    pub axis:String,
+    pub axis:char,
+    pub position:f64,
+    pub color:Vector3D
 }
 
 impl Plane {
-    pub fn new_default() -> Plane {
-        return Plane {color:Rgb::default(), axis:String::new()}
+    pub fn new_config(axis:char, position:f64, color:Vector3D) -> Self {
+        Plane {axis, position, color}
     }
-    pub fn new(r:u32, g:u32, b:u32, axis:String) -> Plane {
-        return Plane {color:Rgb::new(r, g, b), axis}
+}
+
+impl Default for Plane {
+    fn default() -> Self {
+        Plane { axis: 'X', position: 0.0, color: Vector3D::default() }
     }
 }
 

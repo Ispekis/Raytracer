@@ -17,12 +17,12 @@ mod RayTracer {
     pub mod Sphere;
     pub mod Camera;
     pub mod Plane;
+    pub mod Rectangle3D;
 }
 
 mod Parsing {
     pub mod FileConfig;
 }
-mod Rectangle3D;
 
 fn write_color(color:Math::Vector3D::Vector3D) {
     println!("{} {} {}", color.x as u32, color.y as u32, color.z as u32);
@@ -51,6 +51,13 @@ fn main() -> std::process::ExitCode {
     // // println!("{}", Vector3D::length(&vec1));
     // println!("{}", ray.point.x + ray.point.x);
 
+    let scene = Parsing::FileConfig::SceneData::new("ray_conf.json");
+
+    // match scene {
+    //     Ok((v)) => return std::process::ExitCode::SUCCESS,
+    //     Err((_)) => return std::process::ExitCode::from(84)
+    // }
+
     let cam = RayTracer::Camera::Camera::default();
     let s = RayTracer::Sphere::Sphere::new(Math::Point3D::Point3D::new(0.0, 0.0, -1.0), 0.5);
 
@@ -69,9 +76,9 @@ fn main() -> std::process::ExitCode {
             // println!("ray {} {} {}", ray.direction.x, ray.direction.y, ray.direction.z);
             if s.hits(ray) {
                 // println!("hit at u {} and v {}", u, v);
-                write_color(Math::Vector3D::Vector3D::new(255.0, 0.0, 0.0));
+                // write_color(Math::Vector3D::Vector3D::new(255.0, 0.0, 0.0));
             } else {
-                write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 255.0));
+                // write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 255.0));
                 // println!("no");
             }
         }

@@ -43,7 +43,7 @@
         ],
         "planes": [
             {
-                "axis": " Z ",
+                "axis": "Z",
                 "position": -20,
                 "color": {
                     "r": 64,
