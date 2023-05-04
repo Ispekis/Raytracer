@@ -19,7 +19,7 @@ use crate::tools;
 
 pub struct Primitives {
     pub spheres:Vec<Sphere>,
-    // pub planes:Vec<Plane>
+    pub planes:Vec<Plane>
 }
 
 pub struct SceneData {
@@ -82,17 +82,34 @@ fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::
     Ok((spheres))
 }
 
-// fn config_planes(data:&Value) -> std::result::Result<Primitives, Box<dyn std::error::Error>> {
+fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::error::Error>> {
+    let mut planes: Vec<Plane> = Vec::new();
 
-// }
+    let planes_len =  data["primitives"]["planes"]
+    .as_array()
+    .ok_or("Not an array")?.len();
+
+    for i in 0..planes_len {
+        let axis = data["primitives"]["planes"][i]["axis"].to_string().parse::<char>()?;
+        let position = data["primitives"]["planes"][i]["position"].to_string().parse::<f64>()?;
+        let color = Vector3D::new(
+            data["primitives"]["planes"][i]["color"]["r"].to_string().parse::<f64>()?,
+            data["primitives"]["planes"][i]["color"]["g"].to_string().parse::<f64>()?,
+            data["primitives"]["planes"][i]["color"]["b"].to_string().parse::<f64>()?);
+
+        planes.push(Plane::new_config(axis, position, color));
+    }
+
+    Ok(planes)
+}
 
 fn config_primitives(data:&Value) -> std::result::Result<Primitives, Box<dyn std::error::Error>> {
 
     let spheres = config_spheres(data)?;
 
-    // let panes = 
+    let planes = config_planes(data)?;
 
-    Ok(Primitives {spheres})
+    Ok(Primitives {spheres, planes})
 }
 
 impl SceneData {
