@@ -31,7 +31,7 @@ impl Default for Camera {
         Camera {
             origin:Point3D::default(),
             // screen:Rectangle3D::default(),
-            screen:Rectangle3D::new(Point3D::new(0.0, 0.0, 10.0), Vector3D::new(1.0, 0.0, 0.0), Vector3D::new(0.0, 1.0, 0.0))
+            screen:Rectangle3D::new(Point3D::new(-0.96, -0.54, 1.0), Vector3D::new(1.92, 0.0, 0.0), Vector3D::new(0.0, 1.08, 0.0))
         }
     }
 }

@@ -6,6 +6,7 @@ mod raytracer;
 mod Math {
     pub mod Point3D;
     pub mod Vector3D;
+    pub mod formulas;
 }
 
 pub mod ISolid;
@@ -65,9 +66,9 @@ fn main() -> std::process::ExitCode {
             // println!("ray {} {} {}", ray.direction.x, ray.direction.y, ray.direction.z);
             if s.hits(ray) {
                 // println!("hit at u {} and v {}", u, v);
-                // write_color(Math::Vector3D::Vector3D::new(255.0, 0.0, 0.0));
+                write_color(Math::Vector3D::Vector3D::new(255.0, 0.0, 0.0));
             } else {
-                // write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 255.0));
+                write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 255.0));
                 // println!("no");
             }
         }
