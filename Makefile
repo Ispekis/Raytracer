@@ -9,9 +9,11 @@ PROGRAM_PATH = src/Raytracer
 
 all: raytracer
 
+PRIMITIVE = *Primitive.so
 all:
 	cargo build --workspace
 	cp target/debug/$(NAME) .
+	cp target/debug/$(PRIMITIVE) ./src/Plugin
 
 clean:
 	$(MAKE) clean -C $(PROGRAM_PATH)
@@ -19,8 +21,9 @@ clean:
 fclean:
 	$(MAKE) fclean -C $(PROGRAM_PATH)
 
-tests_run:
-	echo tests
+fclean: clean
+	rm -f $(NAME)
+	rm -f ./Plugin/$(PRIMITIVE)
 
 re: fclean all
 
