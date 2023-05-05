@@ -37,6 +37,17 @@ impl Sphere {
         }
         return false;
     }
+    pub fn translate(&mut self, Translate:Vector3D) {
+        self.center.x += &Translate.x;
+        self.center.y += &Translate.y;
+        self.center.z += &Translate.z;
+    }
+    pub fn rotateX(&mut self, degres:f64) {
+    }
+    pub fn rotateY(&mut self, degres:f64) {
+    }
+    pub fn rotateZ(&mut self, degres:f64) {
+    }
 }
 
 impl Default for Sphere {
