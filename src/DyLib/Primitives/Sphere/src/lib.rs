@@ -13,6 +13,6 @@ mod formulas;
 
 use crate::sphere::Sphere;
 
-pub fn createSphere() -> sphere::Sphere {
+pub fn entryPoint() -> sphere::Sphere {
     return sphere::Sphere::default();
 }

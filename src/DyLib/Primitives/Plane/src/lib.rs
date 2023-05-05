@@ -14,6 +14,6 @@ mod Ray;
 // use  crate::Vector3D::Vector3D;
 use crate::plane::Plane;
 
-pub fn createPlane() -> plane::Plane {
+pub fn entryPoint() -> plane::Plane {
     return plane::Plane::default();
 }
