@@ -7,12 +7,13 @@
 
 use crate::Math::{Point3D::Point3D, formulas, Vector3D::Vector3D};
 use crate::RayTracer::Ray::Ray;
+use crate::Primitives::Primitives;
 
 #[derive(Copy, Clone)]
 pub struct Sphere {
     pub center:Point3D,
     pub radius:f64,
-    pub color:Vector3D
+    pub color:Vector3D,
 }
 
 impl Sphere {
@@ -23,8 +24,10 @@ impl Sphere {
     pub fn new_config(center:Point3D, radius:f64, color:Vector3D) -> Self {
         Sphere {center, radius, color}
     }
+}
 
-    pub fn hits(&self, ray:Ray) -> bool {
+impl Primitives for Sphere {
+    fn hits(&self, ray:Ray) -> bool{
         let dif = ray.origin - self.center;
         // println!("rad = {}, cx = {}, cy = {}, cz = {}", self.radius, self.center.x, self.center.y, self.center.z);
         let a = ray.direction.x.powf(2.0) + ray.direction.y.powf(2.0) + ray.direction.z.powf(2.0);
@@ -37,17 +40,14 @@ impl Sphere {
         }
         return false;
     }
-    pub fn translate(&mut self, Translate:Vector3D) {
+    fn translate(&mut self, Translate:Vector3D) {
         self.center.x += &Translate.x;
         self.center.y += &Translate.y;
         self.center.z += &Translate.z;
     }
-    pub fn rotateX(&mut self, degres:f64) {
-    }
-    pub fn rotateY(&mut self, degres:f64) {
-    }
-    pub fn rotateZ(&mut self, degres:f64) {
-    }
+    fn rotateX(&mut self, angle:f64) {}
+    fn rotateY(&mut self, angle:f64) {}
+    fn rotateZ(&mut self, angle:f64) {}
 }
 
 impl Default for Sphere {
