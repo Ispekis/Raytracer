@@ -9,8 +9,9 @@ PROGRAM_PATH = src/Raytracer
 
 all: raytracer
 
-raytracer:
-	$(MAKE) -C $(PROGRAM_PATH)
+all:
+	cargo build --workspace
+	cp target/debug/$(NAME) .
 
 clean:
 	$(MAKE) clean -C $(PROGRAM_PATH)
