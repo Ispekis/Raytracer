@@ -27,6 +27,7 @@ mod Config {
     pub mod FileConfig;
 }
 
+
 fn main() -> std::process::ExitCode {
     let args: Vec<String> = std::env::args().collect();
 

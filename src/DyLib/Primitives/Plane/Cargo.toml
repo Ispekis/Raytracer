@@ -6,4 +6,4 @@ edition = "2021"
 [lib]
 name = "Plane_Primitive"
 crate-type = ["dylib"]
-path = "src/Plane.rs"
+path = "src/lib.rs"

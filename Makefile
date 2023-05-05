@@ -23,7 +23,7 @@ fclean:
 
 fclean: clean
 	rm -f $(NAME)
-	rm -f ./Plugin/$(PRIMITIVE)
+	rm -f ./src/Plugin/$(PRIMITIVE)
 
 re: fclean all
 
