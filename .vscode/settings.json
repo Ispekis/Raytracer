@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "*.h++": "cpp"
-    },
-    "rust-analyzer.linkedProjects": [
-        "./Cargo.toml"
-    ],
-    "rust-analyzer.showUnlinkedFileNotification": false
-}

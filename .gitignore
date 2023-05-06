@@ -1,3 +1,4 @@
 raytracer
 target/
 *.ppm
+.vscode
