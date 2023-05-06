@@ -1,22 +1,26 @@
 ##
 ## EPITECH PROJECT, 2023
-## B-FUN-400-PAR-4-1-wolfram-joseph.yu
+## B-OOP-400-PAR-4-1-raytracer-vincent.shao
 ## File description:
 ## Makefile
 ##
 
-NAME = raytracer
+PROGRAM_PATH = src/Raytracer
 
-all:
-	cargo build
-	cp target/debug/$(NAME) .
+all: raytracer
+
+raytracer:
+	$(MAKE) -C $(PROGRAM_PATH)
 
 clean:
-	cargo clean
+	$(MAKE) clean -C $(PROGRAM_PATH)
 
-fclean: clean
-	rm -f $(NAME)
+fclean:
+	$(MAKE) fclean -C $(PROGRAM_PATH)
+
+tests_run:
+	echo tests
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all raytracer clean fclean tests_run re

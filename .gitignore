@@ -2,3 +2,4 @@ raytracer
 target/
 *.ppm
 .vscode
+*.lock
