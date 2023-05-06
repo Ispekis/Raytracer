@@ -29,12 +29,10 @@ impl Sphere {
 impl Primitives for Sphere {
     fn hits(&self, ray:Ray) -> bool{
         let dif = ray.origin - self.center;
-        // println!("rad = {}, cx = {}, cy = {}, cz = {}", self.radius, self.center.x, self.center.y, self.center.z);
-        let a = ray.direction.x.powf(2.0) + ray.direction.y.powf(2.0) + ray.direction.z.powf(2.0);
+        let a = ray.direction.scal(&ray.direction);
         let b = 2.0 * dif.scal(&ray.direction);
         let c = dif.scal(&dif) - self.radius.powf(2.0);
         let dis = formulas::compute_discriminant(a, b, c);
-        // println!("dis = {}", dis);
         if dis >= 0.0 {
             return true;
         }
