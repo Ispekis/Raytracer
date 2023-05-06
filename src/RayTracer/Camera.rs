@@ -13,17 +13,17 @@ use crate::RayTracer::Ray::Ray;
 pub struct Camera {
     origin:Point3D,
     screen:Rectangle3D,
-    width:u32,
-    height:u32,
-    rotation:Vector3D,
-    fov:f64
+    pub width:u32,
+    pub height:u32,
+    pub rotation:Vector3D,
+    pub fov:f64
 }
 
 impl Camera {
     pub fn new_config(width:u32, height:u32, position:Point3D, rotation:Vector3D, fov:f64) -> Self{
         Camera {
             origin: position,
-            screen: Rectangle3D::default(),
+            screen: Rectangle3D::new(Point3D::new(-500.0, -500.0, 2.0), Vector3D::new(width as f64, 0.0, 0.0), Vector3D::new(0.0, height as f64, 0.0)),
             width,
             height,
             rotation,

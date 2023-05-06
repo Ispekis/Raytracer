@@ -88,7 +88,7 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
 
     for i in 0..planes_len {
         let axis_str = data["primitives"]["planes"][i]["axis"].to_string().parse::<String>()?;
-        let axis = axis_str.chars().next().unwrap();
+        let axis = axis_str[1..2].chars().next().unwrap();
         let position = data["primitives"]["planes"][i]["position"].to_string().parse::<f64>()?;
         let color = Vector3D::new(
             data["primitives"]["planes"][i]["color"]["r"].to_string().parse::<f64>()?,
@@ -102,9 +102,9 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
 }
 
 fn config_primitives(data:&Value) -> std::result::Result<Primitives, Box<dyn std::error::Error>> {
-    
+
     let spheres = config_spheres(data)?;
-    
+
     let planes = config_planes(data)?;
 
     Ok(Primitives {spheres, planes})
@@ -144,13 +144,13 @@ impl SceneData {
     pub fn new(filepath:&str) -> std::result::Result<SceneData, Box<dyn std::error::Error>> {
         // Convert string to json
         let data = convert_string_to_json_obj(tools::read_file(&filepath)?)?;
-        
+
         // Get camera's configs
         let camera = config_cam(&data)?;
-        
+
         // Get primitives's configs
         let primitives = config_primitives(&data)?;
-        
+
         // Get lights's configs
         let lights = config_lights(&data)?;
 

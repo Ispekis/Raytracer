@@ -6,42 +6,63 @@
 //
 
 use crate::Math::{Vector3D::Vector3D, Point3D::Point3D};
+use crate::Primitives::Primitives;
+use crate::RayTracer::Ray::Ray;
+use crate::Math::formulas;
 
 #[derive(Copy, Clone)]
 pub struct Plane {
     pub axis:char,
-    pub position:f64,
-    // pub position:Point3D,
+    pub center:Point3D,
+    pub direction:Vector3D,
     pub color:Vector3D
 }
 
 impl Plane {
     pub fn new_config(axis:char, position:f64, color:Vector3D) -> Self {
-        Plane {axis, position, color}
-    }
-    pub fn translate(&mut self, Translate:Vector3D) {
-        if self.axis == 'X' {
-            self.position += Translate.x;
+        let mut pos = Point3D::default();
+        let mut direction = Vector3D::default();
+        if axis == 'X' {
+            pos.x = position;
+            direction.x = 1.0;
         }
-        if self.axis == 'Y' {
-            self.position += Translate.y;
+        if axis == 'Y' {
+            pos.y = position;
+            direction.y = 1.0;
         }
-        if self.axis == 'Z' {
-            self.position += Translate.z;
+        if axis == 'Z' {
+            pos.z = position;
+            direction.y = 1.0;
         }
+        Plane {axis, center:pos, direction, color}
     }
-    pub fn rotateX(&mut self, degres:f64) {
+}
+
+impl Primitives for Plane {
+    fn hits(&self, ray:Ray) -> bool{
+        let dot = ray.direction.scal(&self.direction);
+
+        if dot > 0.0 {
+            let t = ((self.center - ray.origin).scal(&self.direction)) / dot;
+            if t > 0.0 {
+                return true;
+            }
+        }
+        return false;
     }
-    pub fn rotateY(&mut self, degres:f64) {
+    fn translate(&mut self, Translate:Vector3D) {
+        self.center.x += Translate.x;
+        self.center.y += Translate.y;
+        self.center.z += Translate.z;
     }
-    pub fn rotateZ(&mut self, degres:f64) {
-    }
-    
+    fn rotateX(&mut self, angle:f64) {}
+    fn rotateY(&mut self, angle:f64) {}
+    fn rotateZ(&mut self, angle:f64) {}
 }
 
 impl Default for Plane {
     fn default() -> Self {
-        Plane { axis: 'X', position: 0.0, color: Vector3D::default() }
+        Plane { axis: 'X', center: Point3D::default(), direction: Vector3D::default(), color: Vector3D::default() }
     }
 }
 
