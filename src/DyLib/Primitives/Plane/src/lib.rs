@@ -5,21 +5,25 @@
 // lib
 //
 
+#[path = "../../../../Raytracer/src/Math"]
 mod Math {
     pub mod Point3D;
     pub mod Vector3D;
     pub mod formulas;
 }
 
+#[path = "../../../../Raytracer/src/Interfaces"]
 mod Interfaces {
     pub mod Primitives;
 }
 
+#[path = "../../../../Raytracer/src/RayTracer"]
 mod RayTracer {
-    pub mod Plane;
     pub mod Ray;
 }
 
-pub fn entryPoint() -> RayTracer::Plane::Plane {
-    return RayTracer::Plane::Plane::default();
+mod Plane;
+
+pub fn entryPoint() -> Plane::Plane {
+    return Plane::Plane::default();
 }
