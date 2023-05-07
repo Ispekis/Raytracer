@@ -5,14 +5,21 @@
 // lib
 //
 
-mod sphere;
-mod Point3D;
-mod Vector3D;
-mod Ray;
-mod formulas;
+mod Math {
+    pub mod Point3D;
+    pub mod Vector3D;
+    pub mod formulas;
+}
 
-use crate::sphere::Sphere;
+mod Interfaces {
+    pub mod Primitives;
+}
 
-pub fn entryPoint() -> sphere::Sphere {
-    return sphere::Sphere::default();
+mod RayTracer {
+    pub mod Sphere;
+    pub mod Ray;
+}
+
+pub fn entryPoint() -> RayTracer::Sphere::Sphere {
+    return RayTracer::Sphere::Sphere::default();
 }
