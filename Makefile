@@ -13,7 +13,7 @@ PRIMITIVE = *Primitive.so
 all:
 	cargo build --workspace
 	cp target/debug/$(NAME) .
-	cp target/debug/$(PRIMITIVE) ./src/Plugin
+	cp target/debug/$(PRIMITIVE) ./Plugin
 
 clean:
 	$(MAKE) clean -C $(PROGRAM_PATH)
@@ -23,7 +23,7 @@ fclean:
 
 fclean: clean
 	rm -f $(NAME)
-	rm -f ./src/Plugin/$(PRIMITIVE)
+	rm -f /Plugin/$(PRIMITIVE)
 
 re: fclean all
 

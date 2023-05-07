@@ -28,4 +28,3 @@ impl Default for Plane {
         Plane { axis: 'X', position: 0.0, color: Vector3D::default() }
     }
 }
-
