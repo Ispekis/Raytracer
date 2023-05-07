@@ -7,9 +7,3 @@ edition = "2021"
 
 [dependencies]
 serde_json = "1.0.96"
-
-[workspace]
-members = [
-    "src/DyLib/Primitives/Plane",
-    "src/DyLib/Primitives/Sphere",
-]

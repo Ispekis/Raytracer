@@ -10,21 +10,29 @@ PROGRAM_PATH = src/Raytracer
 all: raytracer
 
 PRIMITIVE = *Primitive.so
-all:
-	cargo build --workspace
-	cp target/debug/$(NAME) .
-	cp target/debug/$(PRIMITIVE) ./Plugin
+
+SPHERE = src/DyLib/Primitives/Sphere
+PLANE = src/DyLib/Primitives/Plane
+
+all: plugins raytracer
+
+raytracer:
+	$(MAKE) -C $(PROGRAM_PATH)
+
+plugins:
+	$(MAKE) -C $(PLANE)
+	$(MAKE) -C $(SPHERE)
 
 clean:
 	$(MAKE) clean -C $(PROGRAM_PATH)
+	$(MAKE) clean -C $(SPHERE)
+	$(MAKE) clean -C $(PLANE)
 
 fclean:
 	$(MAKE) fclean -C $(PROGRAM_PATH)
-
-fclean: clean
-	rm -f $(NAME)
-	rm -f /Plugin/$(PRIMITIVE)
+	$(MAKE) fclean -C $(SPHERE)
+	$(MAKE) fclean -C $(PLANE)
 
 re: fclean all
 
-.PHONY: all raytracer clean fclean tests_run re
+.PHONY: all raytracer plugins clean fclean tests_run re
