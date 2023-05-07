@@ -5,15 +5,21 @@
 // lib
 //
 
-mod plane;
-mod Point3D;
-mod Vector3D;
-mod Ray;
+mod Math {
+    pub mod Point3D;
+    pub mod Vector3D;
+    pub mod formulas;
+}
 
-// use crate::Point3D::Point3D;
-// use  crate::Vector3D::Vector3D;
-use crate::plane::Plane;
+mod Interfaces {
+    pub mod Primitives;
+}
 
-pub fn entryPoint() -> plane::Plane {
-    return plane::Plane::default();
+mod RayTracer {
+    pub mod Plane;
+    pub mod Ray;
+}
+
+pub fn entryPoint() -> RayTracer::Plane::Plane {
+    return RayTracer::Plane::Plane::default();
 }

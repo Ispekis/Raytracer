@@ -6,7 +6,7 @@
 //
 
 use crate::Math::{Vector3D::Vector3D, Point3D::Point3D};
-use crate::Primitives::Primitives;
+use crate::Interfaces::Primitives::Primitives;
 use crate::RayTracer::Ray::Ray;
 use crate::Math::formulas;
 

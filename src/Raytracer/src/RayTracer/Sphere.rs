@@ -7,7 +7,7 @@
 
 use crate::Math::{Point3D::Point3D, formulas, Vector3D::Vector3D};
 use crate::RayTracer::Ray::Ray;
-use crate::Primitives::Primitives;
+use crate::Interfaces::Primitives::Primitives;
 
 #[derive(Copy, Clone)]
 pub struct Sphere {

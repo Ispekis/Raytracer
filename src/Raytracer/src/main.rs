@@ -21,7 +21,10 @@ mod RayTracer {
     pub mod Light;
 }
 
-mod Primitives;
+mod Interfaces {
+    pub mod Primitives;
+}
+
 
 mod Config {
     pub mod FileConfig;

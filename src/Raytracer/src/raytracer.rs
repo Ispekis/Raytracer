@@ -6,7 +6,7 @@
 //
 
 use crate::Config::FileConfig;
-use crate::Primitives::Primitives;
+use crate::Interfaces::Primitives::Primitives;
 use crate::RayTracer;
 use crate::Math;
 
