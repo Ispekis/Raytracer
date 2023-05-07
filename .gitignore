@@ -3,3 +3,4 @@ target/
 *.ppm
 .vscode
 *.lock
+*.so
