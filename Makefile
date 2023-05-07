@@ -1,22 +1,38 @@
 ##
 ## EPITECH PROJECT, 2023
-## B-FUN-400-PAR-4-1-wolfram-joseph.yu
+## B-OOP-400-PAR-4-1-raytracer-vincent.shao
 ## File description:
 ## Makefile
 ##
 
-NAME = raytracer
+PROGRAM_PATH = src/Raytracer
 
-all:
-	cargo build
-	cp target/debug/$(NAME) .
+all: raytracer
+
+PRIMITIVE = *Primitive.so
+
+SPHERE = src/DyLib/Primitives/Sphere
+PLANE = src/DyLib/Primitives/Plane
+
+all: plugins raytracer
+
+raytracer:
+	$(MAKE) -C $(PROGRAM_PATH)
+
+plugins:
+	$(MAKE) -C $(PLANE)
+	$(MAKE) -C $(SPHERE)
 
 clean:
-	cargo clean
+	$(MAKE) clean -C $(PROGRAM_PATH)
+	$(MAKE) clean -C $(SPHERE)
+	$(MAKE) clean -C $(PLANE)
 
-fclean: clean
-	rm -f $(NAME)
+fclean:
+	$(MAKE) fclean -C $(PROGRAM_PATH)
+	$(MAKE) fclean -C $(SPHERE)
+	$(MAKE) fclean -C $(PLANE)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all raytracer plugins clean fclean tests_run re
