@@ -34,6 +34,7 @@ mod config {
     pub mod fileconfig;
 }
 
+mod Factory;
 
 fn main() -> std::process::ExitCode {
     let args: Vec<String> = std::env::args().collect();
