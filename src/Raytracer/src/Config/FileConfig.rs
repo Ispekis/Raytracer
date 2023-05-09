@@ -141,7 +141,7 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
 }
 
 impl SceneData {
-    pub fn new(filepath:&str) -> std::result::Result<SceneData, Box<dyn std::error::Error>> {
+    pub fn new(filepath: &str) -> std::result::Result<SceneData, Box<dyn std::error::Error>> {
         // Convert string to json
         let data = convert_string_to_json_obj(tools::read_file(&filepath)?)?;
 
@@ -154,6 +154,6 @@ impl SceneData {
         // Get lights's configs
         let lights = config_lights(&data)?;
 
-        Ok(SceneData {camera, primitives, lights })
+        Ok(SceneData { camera, primitives, lights })
     }
 }

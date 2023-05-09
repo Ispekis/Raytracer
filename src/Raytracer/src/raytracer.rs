@@ -14,7 +14,7 @@ fn write_color(color:Math::Vector3D::Vector3D) {
     println!("{} {} {}", color.x as u32, color.y as u32, color.z as u32);
 }
 
-fn draw_primitives(u:f64, v:f64, scene:&FileConfig::SceneData) {
+fn draw_primitives(u:f64, v:f64, scene:&mut FileConfig::SceneData) {
     let ray = scene.camera.ray(u, v);
 
     for i in 0..scene.primitives.spheres.len() {
@@ -32,7 +32,7 @@ fn draw_primitives(u:f64, v:f64, scene:&FileConfig::SceneData) {
     write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 0.0));
 }
 
-pub fn run_raytracer(scene: FileConfig::SceneData) -> u32
+pub fn run_raytracer(scene:&mut FileConfig::SceneData) -> u32
 {
     let width = scene.camera.width;
     let height = scene.camera.height;
@@ -45,7 +45,7 @@ pub fn run_raytracer(scene: FileConfig::SceneData) -> u32
         for x in 0..width {
             let u = x as f64 / (width as f64 - 1.0);
             let v = y as f64 / (height as f64 - 1.0);
-            draw_primitives(u, v, &scene);
+            draw_primitives(u, v, scene);
         }
     }
     return 0;
