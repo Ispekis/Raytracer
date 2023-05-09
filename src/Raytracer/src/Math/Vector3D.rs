@@ -21,6 +21,10 @@ impl Vector3D {
         return (self.x * other.x) + (self.y * other.y) + (self.z * other.z);
     }
 
+    pub fn scalother(other2: Vector3D, other1: Vector3D) -> f64 {
+        return (other1.x * other2.x) + (other1.y * other2.y) + (other1.z * other2.z);
+    }
+
     pub fn length(&self) -> f64 {
         let res: f64 = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
         return res;
@@ -85,6 +89,14 @@ impl std::ops::Mul<f64> for Vector3D {
 
     fn mul(self, rhs: f64) -> Self::Output {
         return Vector3D {x: self.x * rhs, y: self.y * rhs, z: self.z * rhs};
+    }
+}
+
+impl std::ops::Mul<u32> for Vector3D {
+    type Output = Vector3D;
+
+    fn mul(self, rhs: u32) -> Self::Output {
+        return Vector3D {x: self.x * (rhs as f64), y: self.y * (rhs as f64), z: self.z * (rhs as f64)};
     }
 }
 

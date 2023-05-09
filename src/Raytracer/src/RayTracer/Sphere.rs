@@ -28,12 +28,30 @@ impl Sphere {
 
 impl Primitives for Sphere {
     fn hits(&self, ray:Ray) -> bool{
-        let dif = ray.origin - self.center;
+        let dist:Vector3D = ray.origin - self.center;
+
         let a = ray.direction.scal(&ray.direction);
-        let b = 2.0 * dif.scal(&ray.direction);
-        let c = dif.scal(&dif) - self.radius.powf(2.0);
-        let dis = formulas::compute_discriminant(a, b, c);
-        if dis >= 0.0 {
+        let b = 2.0 * ray.direction.scal(&dist);
+        let c = dist.scal(&dist) - self.radius * self.radius;
+        let dis = b.powf(2.0) - 4.0 * a * c;
+        // t1 = (-b - np.sqrt(discriminant)) / (2*a)
+// t2 = (-b + np.sqrt(discriminant)) / (2*a)
+        // let B:Vector3D = dist * ray.direction;
+        // let a = (B.x * B.x) + (B.y * B.y)  + (B.z * B.z) ;
+        // let b = (dist.x * dist.x) + (dist.y * dist.y)  + (dist.z * dist.z);
+        // let dis = a - b + self.radius * self.radius;
+    
+        // let dif = ray.origin - self.center;
+        // let a = ray.direction.scal(&ray.direction);
+        // let b = 2.0 * dif.scal(&ray.direction);
+        // let c = dif.scal(&dif) - self.radius.powf(2.0);
+        // let dis = formulas::compute_discriminant(a, b, c);
+        if dis > 0.0 {
+            // let t1:f64 = (-b - f64::sqrt(dis)) / (2.0*a);
+            // let t2:f64 = (-b + f64::sqrt(dis)) / (2.0*a);
+            // if (t1 < 0.0 && t2 < 0.0) {
+            //     return false;
+            // }
             return true;
         }
         return false;

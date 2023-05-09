@@ -21,9 +21,10 @@ pub struct Camera {
 
 impl Camera {
     pub fn new_config(width:u32, height:u32, position:Point3D, rotation:Vector3D, fov:f64) -> Self{
+        // println!("{} {}", -(((width) as f64) / 2.0 - position.x), -((height as f64) / 2.0 - position.y));
         Camera {
             origin: position,
-            screen: Rectangle3D::new(Point3D::new(-(((width) as f64) / 2.0 - position.x), -((height as f64) / 2.0 - position.y), 2.0), Vector3D::new(width as f64 as f64, 0.0, 0.0), Vector3D::new(0.0, height as f64, 0.0)),
+            screen: Rectangle3D::new(Point3D::new(-(((width) as f64) / 2.0 - position.x), -((height as f64) / 2.0 - position.y), 1300.0), Vector3D::new(width as f64 as f64, 0.0, 0.0), Vector3D::new(0.0, height as f64, 0.0)),
             width,
             height,
             rotation,
