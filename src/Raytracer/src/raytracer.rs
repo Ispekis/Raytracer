@@ -37,16 +37,16 @@ pub fn run_raytracer(scene: FileConfig::SceneData) -> u32
     let width = scene.camera.width;
     let height = scene.camera.height;
 
-    // println!("P3");
-    // println!("{} {}", width, height);
-    // println!("255");
+    println!("P3");
+    println!("{} {}", width, height);
+    println!("255");
 
-    // for y in 0..height {
-    //     for x in 0..width {
-    //         let u = x as f64 / (width as f64 - 1.0);
-    //         let v = y as f64 / (height as f64 - 1.0);
-    //         draw_primitives(u, v, &scene);
-    //     }
-    // }
+    for y in 0..height {
+        for x in 0..width {
+            let u = x as f64 / (width as f64 - 1.0);
+            let v = y as f64 / (height as f64 - 1.0);
+            draw_primitives(u, v, &scene);
+        }
+    }
     return 0;
 }
