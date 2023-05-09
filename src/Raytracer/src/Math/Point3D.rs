@@ -72,3 +72,9 @@ impl std::ops::Sub<Point3D> for Point3D{
         }
     }
 }
+
+impl std::fmt::Display for Point3D {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Point3D(x={}, y={}, z={})", self.x, self.y, self.z)
+    }
+}
