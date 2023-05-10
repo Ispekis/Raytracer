@@ -58,6 +58,22 @@ impl std::ops::Mul<Vector3D> for Point3D {
     }
 }
 
+impl std::ops::Mul<f64> for Point3D {
+    type Output = Point3D;
+
+    fn mul(self, rhs:f64) -> Self::Output {
+        return Point3D {x:self.x * rhs, y:self.y * rhs, z:self.z * rhs}
+    }
+}
+
+// impl std::ops::Mul<Vector3D> for Point3D {
+//     type Output = Point3D;
+
+//     fn mul(self, rhs: Vector3D) -> Self::Output {
+//         return Point3D {x:self.x * rhs.x , y:self.y * rhs.y, z:self.z * rhs.z};
+//     }
+// }
+
 impl std::ops::Div<Vector3D> for Point3D {
     type Output = Point3D;
 

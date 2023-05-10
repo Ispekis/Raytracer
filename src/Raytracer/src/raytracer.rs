@@ -37,6 +37,7 @@ fn write_color(color:Math::Vector3D::Vector3D, light:&mut Light, coeff:f64) {
 fn draw_primitives(u:f64, v:f64, scene:&mut FileConfig::SceneData) {
     let ray = scene.camera.ray(u, v);
 
+    // let t:Vec<f64>; 
     for i in 0..scene.primitives.spheres.len() {
         let hit_point = scene.primitives.spheres[i].hits(ray);
         if (hit_point != None) {

@@ -24,7 +24,7 @@ impl Camera {
         let dis = (width / 2) as f64 / (fov / 2.0).to_radians().tan();
         let bottom_side = Vector3D::new(width as f64, 0.0, 0.0);
         let left_side = Vector3D::new(0.0, height as f64, 0.0);
-        let screen_origin = Point3D::new(-(((width) as f64) / 2.0 - position.x), -((height as f64) / 2.0 - position.y), 0.0);
+        let screen_origin = Point3D::new(-(((width) as f64) / 2.0 - position.x), -((height as f64) / 2.0 - position.y), position.z);
         Camera {
             origin: Point3D::new(position.x, position.y, position.z + (-1.0 * dis)),
             screen: Rectangle3D::new(screen_origin, bottom_side, left_side),
