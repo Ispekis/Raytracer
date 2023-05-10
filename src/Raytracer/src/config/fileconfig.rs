@@ -234,6 +234,8 @@ fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn st
 
     let cones = config_cones(data)?;
 
+    let cylinders = config_cylinders(data)?;
+
     Ok(Primitivest {spheres, planes, cones})
 }
 
