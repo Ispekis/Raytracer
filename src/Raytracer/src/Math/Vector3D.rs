@@ -32,6 +32,15 @@ impl Vector3D {
         let new_z = (self.x * other.y - other.x - self.y);
         return Vector3D::new(new_x, new_y, new_z);
     }
+
+    pub fn abs(&self) -> Vector3D {
+        return  Vector3D {x: self.x.abs(), y: self.y.abs(), z: self.z.abs()};
+    }
+
+    pub fn normalize(&self) -> Vector3D {
+        let n = (self.x.powf(2.0) + self.y.powf(2.0) + self.y.powf(2.0)).sqrt();
+        return Vector3D::new(self.x / n, self.y / n, self.z / n);
+    }
 }
 
 impl Default for Vector3D {
@@ -101,6 +110,14 @@ impl std::ops::Div<Vector3D> for Vector3D {
 
     fn div(self, rhs: Vector3D) -> Self::Output {
         return Vector3D {x: self.x / rhs.x, y: self.y / rhs.y, z: self.z / rhs.z};
+    }
+}
+
+impl std::ops::Div<f64> for Vector3D {
+    type Output = Vector3D;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        return Vector3D {x: self.x / rhs, y: self.y / rhs, z: self.z / rhs};
     }
 }
 

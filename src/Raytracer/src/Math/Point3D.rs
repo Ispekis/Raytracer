@@ -7,7 +7,7 @@
 
 use crate::Math::Vector3D::Vector3D;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct Point3D {
     pub x:f64,
     pub y:f64,
@@ -17,6 +17,10 @@ pub struct Point3D {
 impl Point3D {
     pub fn new(x:f64, y:f64, z:f64) -> Point3D {
         return Point3D {x, y, z};
+    }
+
+    pub fn abs(&self) -> Point3D {
+        return  Point3D {x: self.x.abs(), y: self.y.abs(), z: self.z.abs()};
     }
 }
 

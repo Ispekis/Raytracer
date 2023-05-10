@@ -5,31 +5,56 @@
 // raytracer
 //
 
+use crate::Config;
 use crate::Config::FileConfig;
 use crate::Interfaces::Primitives::Primitives;
-use crate::RayTracer;
-use crate::Math;
+use crate::RayTracer::{
+    Light::Light
+};
+use crate::Math::{self, formulas, Vector3D};
 
-fn write_color(color:Math::Vector3D::Vector3D) {
+fn write_flat_color(color:Math::Vector3D::Vector3D) {
     println!("{} {} {}", color.x as u32, color.y as u32, color.z as u32);
+}
+
+fn write_color(color:Math::Vector3D::Vector3D, light:&mut Light, coeff:f64) {
+    let mut color_light = Math::Vector3D::Vector3D::new(255.0 * light.diffuse, 255.0 * light.diffuse, 255.0 * light.diffuse);
+    let mut r = color.x + (color_light.x * coeff);
+    if (r > 255.0) {
+        r = 255.0;
+    }
+    let mut g = color.y + (color_light.y *  coeff);
+    if (g > 255.0) {
+        g = 255.0;
+    }
+    let mut b = color.z + (color_light.z * coeff);
+    if (b > 255.0) {
+        b = 255.0;
+    }
+    write_flat_color(Math::Vector3D::Vector3D::new(r, g, b));
 }
 
 fn draw_primitives(u:f64, v:f64, scene:&mut FileConfig::SceneData) {
     let ray = scene.camera.ray(u, v);
 
     for i in 0..scene.primitives.spheres.len() {
-        if scene.primitives.spheres[i].hits(ray) {
-            write_color(scene.primitives.spheres[i].color);
+        let hit_point = scene.primitives.spheres[i].hits(ray);
+        if (hit_point != None) {
+            let normal = (hit_point.unwrap() - scene.primitives.spheres[i].center).normalize();
+            let light_direction = ((hit_point.unwrap() - scene.lights.point[0])).normalize();
+            let d = normal.scal(&(light_direction * -1.0));
+            write_color(scene.primitives.spheres[i].color, &mut scene.lights, d);
             return;
         }
     }
     for i in 0..scene.primitives.planes.len() {
-        if scene.primitives.planes[i].hits(ray) {
-            write_color(scene.primitives.planes[i].color);
+        let hit_point = scene.primitives.planes[i].hits(ray);
+        if hit_point != None{
+            write_color(scene.primitives.planes[i].color, &mut scene.lights, 100.0);
             return;
         }
     }
-    write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 0.0));
+    write_flat_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 0.0));
 }
 
 pub fn run_raytracer(scene:&mut FileConfig::SceneData) -> u32

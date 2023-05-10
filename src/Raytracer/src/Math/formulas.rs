@@ -27,16 +27,37 @@ pub fn resolve_quadratic_eq(delta:f64, a:f64, b:f64) -> Option<Vec<f64>>{
     return Some(res);
 }
 
-pub fn get_inter_from_eq(eqs:Vec<f64>, point:Point3D, direction:Vector3D) -> Vec<Point3D>{
+pub fn get_inter_point_from_eq(eqs:Vec<f64>, point:Point3D, direction:Vector3D) -> Vec<Point3D>{
     let mut res: Vec<Point3D> = Vec::new();
     if eqs.len() == 1 {
         res.push(Point3D::new(point.x + eqs[0] * direction.x, point.y + eqs[0] * direction.y, point.z + eqs[0] * direction.z));
         return res;
     }
     if eqs.len() == 2 {
-        res.push(Point3D::new(point.x + eqs[1] * direction.x, point.y + eqs[1] * direction.y, point.z + eqs[1] * direction.z));
+        res.push(Point3D::new(point.x + eqs[0] * direction.x, point.y + eqs[0] * direction.y, point.z + eqs[0] * direction.z));
         res.push(Point3D::new(point.x + eqs[1] * direction.x, point.y + eqs[1] * direction.y, point.z + eqs[1] * direction.z));
         return res;
     }
     return res;
 }
+
+pub fn get_closest_point(hit_points:Vec<Point3D>, origin:Point3D) -> Point3D {
+    if (hit_points.len() == 1) {
+        return  hit_points[0];
+    } else {
+        let p1 = (hit_points[0] - origin).abs();
+        let p2 = (hit_points[1] - origin).abs();
+        let p1_tot = (p1.x + p1.z + p1.z);
+        let p2_tot = (p2.x + p2.z + p2.z);
+        if (p1_tot > p2_tot) {
+            return hit_points[1];
+        } else {
+            return hit_points[0];
+        }
+    }
+}
+
+// fn suface_normal(hit_point:Point3D) -> Vector3D {
+//     let norme = (direction.x * direction.x + direction.y * direction.y + direction.z * direction.z).sqrt();
+//     return Vector3D::new(direction.x / norme, direction.y / norme, direction.z / norme)
+// }

@@ -11,10 +11,10 @@ use crate::Math::{
 };
 
 pub struct Light {
-    ambient:f64,
-    diffuse:f64,
-    point:Vec<Point3D>,
-    directional:Vec<Vector3D>
+    pub ambient:f64,
+    pub diffuse:f64,
+    pub point:Vec<Point3D>,
+    pub directional:Vec<Vector3D>
 }
 
 impl Light {
