@@ -21,8 +21,8 @@ pub fn resolve_quadratic_eq(delta:f64, a:f64, b:f64) -> Option<Vec<f64>>{
         return Some(res);
     }
 
-    res.push((-b + delta) / (2.0 * a));
-    res.push((-b - delta) / (2.0 * a));
+    res.push((-b + delta.sqrt()) / (2.0 * a));
+    res.push((-b - delta.sqrt()) / (2.0 * a));
 
     return Some(res);
 }
