@@ -45,8 +45,9 @@ fn main() -> std::process::ExitCode {
     let scene = Config::FileConfig::SceneData::new(&args[1]);
 
     match scene {
-        Ok((s)) => {
-            raytracer::run_raytracer(s);
+        Ok(mut s) => {
+            let mut mutable_scene = &mut s;
+            raytracer::run_raytracer(mutable_scene);
             return std::process::ExitCode::SUCCESS;
         },
         Err((_)) => return std::process::ExitCode::from(84)
