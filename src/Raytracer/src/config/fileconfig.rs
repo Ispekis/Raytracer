@@ -153,11 +153,11 @@ fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn s
 
     for i in 0..cylinders_len {
         let position = Point3D::new(
-            data["primitives"]["spheres"][i]["x"].to_string().parse::<f64>()?,
-            data["primitives"]["spheres"][i]["y"].to_string().parse::<f64>()?,
-            data["primitives"]["spheres"][i]["z"].to_string().parse::<f64>()?);
+            data["primitives"]["cylinders"][i]["x"].to_string().parse::<f64>()?,
+            data["primitives"]["cylinders"][i]["y"].to_string().parse::<f64>()?,
+            data["primitives"]["cylinders"][i]["z"].to_string().parse::<f64>()?);
 
-        let radius = data["primitives"]["spheres"][i]["r"].to_string().parse::<f64>()?;
+        let radius = data["primitives"]["cylinders"][i]["r"].to_string().parse::<f64>()?;
         let color = Vector3D::new(
             data["primitives"]["cylinders"][i]["color"]["r"].to_string().parse::<f64>()?,
             data["primitives"]["cylinders"][i]["color"]["g"].to_string().parse::<f64>()?,
