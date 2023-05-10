@@ -19,12 +19,14 @@ use crate::ray_tracer::{
         Light,
         PointLight
     }
+    Cylinder::Cylinder,
 };
 use crate::tools;
 
 pub struct Primitivest {
     pub spheres:Vec<Sphere>,
-    pub planes:Vec<Plane>
+    pub planes:Vec<Plane>,
+    pub cylinders:Vec<Cylinder>
 }
 
 pub struct SceneData {
@@ -142,11 +144,37 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
     Ok(planes)
 }
 
-fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn std::error::Error>> {
+fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn std::error::Error>> {
+    let mut cylinders: Vec<Cylinder> = Vec::new();
 
+    let cylinders_len =  data["primitives"]["cylinders"]
+    .as_array()
+    .ok_or("Not an array")?.len();
+
+    for i in 0..cylinders_len {
+        let position = Point3D::new(
+            data["primitives"]["spheres"][i]["x"].to_string().parse::<f64>()?,
+            data["primitives"]["spheres"][i]["y"].to_string().parse::<f64>()?,
+            data["primitives"]["spheres"][i]["z"].to_string().parse::<f64>()?);
+
+        let radius = data["primitives"]["spheres"][i]["r"].to_string().parse::<f64>()?;
+        let color = Vector3D::new(
+            data["primitives"]["cylinders"][i]["color"]["r"].to_string().parse::<f64>()?,
+            data["primitives"]["cylinders"][i]["color"]["g"].to_string().parse::<f64>()?,
+            data["primitives"]["cylinders"][i]["color"]["b"].to_string().parse::<f64>()?);
+
+        cylinders.push(Cylinder::new_config(position, radius, color));
+    }
+
+    Ok(cylinders)
+}
+
+fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn std::error::Error>> {
     let spheres = config_spheres(data)?;
 
     let planes = config_planes(data)?;
+
+    let cylinders = config_cylinders(data)?;
 
     Ok(Primitivest {spheres, planes})
 }
