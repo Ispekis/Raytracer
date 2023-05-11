@@ -6,6 +6,7 @@
 //
 
 use serde_json::{Result, Value};
+use crate::Interfaces::Primitives::Primitives;
 use crate::Math::{
     Point3D::Point3D,
     Vector3D::Vector3D
@@ -18,14 +19,14 @@ use crate::RayTracer::{
 };
 use crate::tools;
 
-pub struct Primitives {
+pub struct Primitives_t {
     pub spheres:Vec<Sphere>,
     pub planes:Vec<Plane>
 }
 
 pub struct SceneData {
     pub camera:Camera,
-    pub primitives:Primitives,
+    pub primitives:Primitives_t,
     pub lights:Light
 }
 
@@ -73,7 +74,25 @@ fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::
             data["primitives"]["spheres"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["spheres"][i]["color"]["b"].to_string().parse::<f64>()?);
 
-        spheres.push(Sphere::new_config(position, radius, color));
+        let mut new = Sphere::new_config(position, radius, color);
+
+        if !data["primitives"]["spheres"][i]["translation"].is_null() {
+            let translation = Vector3D::new(
+                data["primitives"]["spheres"][i]["translation"]["x"].to_string().parse::<f64>()?,
+                data["primitives"]["spheres"][i]["translation"]["y"].to_string().parse::<f64>()?,
+                data["primitives"]["spheres"][i]["translation"]["z"].to_string().parse::<f64>()?);
+            new.translate(translation);
+        }
+        if !data["primitives"]["spheres"][i]["rotation"].is_null() {
+            let rotation = Vector3D::new(
+                data["primitives"]["spheres"][i]["rotation"]["x"].to_string().parse::<f64>()?,
+                data["primitives"]["spheres"][i]["rotation"]["y"].to_string().parse::<f64>()?,
+                data["primitives"]["spheres"][i]["rotation"]["z"].to_string().parse::<f64>()?);
+                new.rotateX(rotation.x);
+                new.rotateY(rotation.y);
+                new.rotateZ(rotation.z);
+        }
+        spheres.push(new);
     }
 
     Ok((spheres))
@@ -95,19 +114,38 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
             data["primitives"]["planes"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["planes"][i]["color"]["b"].to_string().parse::<f64>()?);
 
-        planes.push(Plane::new_config(axis, position, color));
+        let mut new = Plane::new_config(axis, position, color);
+
+        if !data["primitives"]["planes"][i]["translation"].is_null() {
+            let translation = Vector3D::new(
+                data["primitives"]["planes"][i]["translation"]["x"].to_string().parse::<f64>()?,
+                data["primitives"]["planes"][i]["translation"]["y"].to_string().parse::<f64>()?,
+                data["primitives"]["planes"][i]["translation"]["z"].to_string().parse::<f64>()?);
+            new.translate(translation);
+        }
+        if !data["primitives"]["planes"][i]["rotation"].is_null() {
+            let rotation = Vector3D::new(
+                data["primitives"]["planes"][i]["rotation"]["x"].to_string().parse::<f64>()?,
+                data["primitives"]["planes"][i]["rotation"]["y"].to_string().parse::<f64>()?,
+                data["primitives"]["planes"][i]["rotation"]["z"].to_string().parse::<f64>()?);
+                new.rotateX(rotation.x);
+                new.rotateY(rotation.y);
+                new.rotateZ(rotation.z);
+        }
+
+        planes.push(new);
     }
 
     Ok(planes)
 }
 
-fn config_primitives(data:&Value) -> std::result::Result<Primitives, Box<dyn std::error::Error>> {
+fn config_primitives(data:&Value) -> std::result::Result<Primitives_t, Box<dyn std::error::Error>> {
 
     let spheres = config_spheres(data)?;
 
     let planes = config_planes(data)?;
 
-    Ok(Primitives {spheres, planes})
+    Ok(Primitives_t {spheres, planes})
 }
 
 fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::Error>> {
