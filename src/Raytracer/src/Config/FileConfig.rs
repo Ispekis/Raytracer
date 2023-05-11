@@ -15,7 +15,10 @@ use crate::RayTracer::{
     Camera::Camera,
     Sphere::Sphere,
     Plane::Plane,
-    Light::Light
+    Light::{
+        Light,
+        Light_Point
+    }
 };
 use crate::tools;
 
@@ -157,7 +160,7 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
     let directionals_len =  data["lights"]["directional"]
     .as_array()
     .ok_or("Not an array")?.len();
-    let mut points: Vec<Point3D> = Vec::new();
+    let mut points: Vec<Light_Point> = Vec::new();
     let mut directionals: Vec<Vector3D> = Vec::new();
 
     for i in 0..points_len {
@@ -165,7 +168,12 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
             data["lights"]["point"][i]["x"].to_string().parse::<f64>()?,
             data["lights"]["point"][i]["y"].to_string().parse::<f64>()?,
             data["lights"]["point"][i]["z"].to_string().parse::<f64>()?);
-        points.push(point);
+
+        let color = Vector3D::new(
+            data["lights"]["point"][i]["color"]["x"].to_string().parse::<f64>()?,
+            data["lights"]["point"][i]["color"]["y"].to_string().parse::<f64>()?,
+            data["lights"]["point"][i]["color"]["z"].to_string().parse::<f64>()?);
+        points.push(Light_Point { origin: point, color });
     }
 
     for i in 0..directionals_len {

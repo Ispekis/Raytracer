@@ -50,6 +50,9 @@ fn main() -> std::process::ExitCode {
             raytracer::run_raytracer(mutable_scene);
             return std::process::ExitCode::SUCCESS;
         },
-        Err((_)) => return std::process::ExitCode::from(84)
+        Err((_)) => {
+            eprintln!("Error in reading the scene config");
+            return std::process::ExitCode::from(84)
+        }
     }
 }
