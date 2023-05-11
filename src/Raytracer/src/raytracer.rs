@@ -50,7 +50,7 @@ fn draw_primitives(u:f64, v:f64, scene:&mut FileConfig::SceneData) {
     for i in 0..scene.primitives.planes.len() {
         let hit_point = scene.primitives.planes[i].hits(ray);
         if hit_point != None{
-            write_color(scene.primitives.planes[i].color, &mut scene.lights, 100.0);
+            write_flat_color(scene.primitives.planes[i].color);
             return;
         }
     }

@@ -42,10 +42,11 @@ impl Primitives for Plane {
     fn hits(&self, ray:Ray) -> Option<Point3D>{
         let dot = ray.direction.scal(&self.direction);
 
-        if dot > 0.0 {
+        if dot > 1e-6 {
             let t = ((self.center - ray.origin).scal(&self.direction)) / dot;
-            if t > 0.0 {
-                return None;
+            if t >= 0.0 {
+                let inter_point = ray.origin + (ray.direction * t);
+                return Some(inter_point);
             }
         }
         return None;
