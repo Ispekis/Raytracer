@@ -56,7 +56,7 @@ fn draw_primitives(u:f64, v:f64, scene:&mut FileConfig::SceneData) {
         let hit_point = scene.primitives.spheres[i].hits(ray);
         if (hit_point != None) {
             let normal = (hit_point.unwrap() - scene.primitives.spheres[i].center).normalize();
-            let light_direction = ((hit_point.unwrap() - scene.lights.point[0])).normalize();
+            let light_direction = ((hit_point.unwrap() - scene.lights.point[0].origin)).normalize();
             let mut d = normal.scal(&(light_direction * -1.0));
             if (d < 0.0) {
                 d = 0.0;
