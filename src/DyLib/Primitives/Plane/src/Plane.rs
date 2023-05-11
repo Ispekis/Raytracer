@@ -39,16 +39,16 @@ impl Plane {
 }
 
 impl Primitives for Plane {
-    fn hits(&self, ray:Ray) -> bool{
+    fn hits(&self, ray:Ray) -> Option<Point3D>{
         let dot = ray.direction.scal(&self.direction);
 
         if dot > 0.0 {
             let t = ((self.center - ray.origin).scal(&self.direction)) / dot;
             if t > 0.0 {
-                return true;
+                return None;
             }
         }
-        return false;
+        return None;
     }
     fn translate(&mut self, Translate:Vector3D) {
         self.center.x += Translate.x;
@@ -58,6 +58,7 @@ impl Primitives for Plane {
     fn rotateX(&mut self, angle:f64) {}
     fn rotateY(&mut self, angle:f64) {}
     fn rotateZ(&mut self, angle:f64) {}
+    fn suface_normal(&self, hit_point:Point3D) -> Vector3D { Vector3D::default() }
 }
 
 impl Default for Plane {

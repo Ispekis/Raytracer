@@ -45,10 +45,14 @@ fn main() -> std::process::ExitCode {
     let scene = Config::FileConfig::SceneData::new(&args[1]);
 
     match scene {
-        Ok((s)) => {
-            raytracer::run_raytracer(s);
+        Ok(mut s) => {
+            let mut mutable_scene = &mut s;
+            raytracer::run_raytracer(mutable_scene);
             return std::process::ExitCode::SUCCESS;
         },
-        Err((_)) => return std::process::ExitCode::from(84)
+        Err((_)) => {
+            eprintln!("Error in reading the scene config");
+            return std::process::ExitCode::from(84)
+        }
     }
 }

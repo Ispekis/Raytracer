@@ -10,15 +10,20 @@ use crate::Math::{
     Vector3D::Vector3D
 };
 
+pub struct Light_Point {
+    pub origin:Point3D,
+    pub color:Vector3D
+}
+
 pub struct Light {
-    ambient:f64,
-    diffuse:f64,
-    point:Vec<Point3D>,
-    directional:Vec<Vector3D>
+    pub ambient:f64,
+    pub diffuse:f64,
+    pub point:Vec<Light_Point>,
+    pub directional:Vec<Vector3D>
 }
 
 impl Light {
-    pub fn new_config(ambient:f64, diffuse:f64, point:Vec<Point3D>, directional:Vec<Vector3D>) -> Self {
+    pub fn new_config(ambient:f64, diffuse:f64, point:Vec<Light_Point>, directional:Vec<Vector3D>) -> Self {
         Light { ambient, diffuse, point, directional }
     }
 }

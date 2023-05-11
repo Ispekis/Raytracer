@@ -27,16 +27,19 @@ impl Sphere {
 }
 
 impl Primitives for Sphere {
-    fn hits(&self, ray:Ray) -> bool{
+    fn hits(&self, ray:Ray) -> Option<Point3D> {
         let dif = ray.origin - self.center;
         let a = ray.direction.scal(&ray.direction);
         let b = 2.0 * dif.scal(&ray.direction);
         let c = dif.scal(&dif) - self.radius.powf(2.0);
         let dis = formulas::compute_discriminant(a, b, c);
-        if dis >= 0.0 {
-            return true;
+        let res = formulas::resolve_quadratic_eq(dis, a, b);
+        if (res == None) {
+            return None;
+        } else {
+            let inter_points = formulas::get_inter_point_from_eq(res.unwrap(), ray.origin, ray.direction);
+            return Some(formulas::get_closest_point(inter_points, ray.origin));
         }
-        return false;
     }
     fn translate(&mut self, Translate:Vector3D) {
         self.center.x += &Translate.x;
@@ -46,6 +49,11 @@ impl Primitives for Sphere {
     fn rotateX(&mut self, angle:f64) {}
     fn rotateY(&mut self, angle:f64) {}
     fn rotateZ(&mut self, angle:f64) {}
+    fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
+        let direction = (hit_point - self.center);
+        let norme = (direction.x * direction.x + direction.y * direction.y + direction.z * direction.z).sqrt();
+        return Vector3D::new(direction.x / norme, direction.y / norme, direction.z / norme)
+    }
 }
 
 impl Default for Sphere {

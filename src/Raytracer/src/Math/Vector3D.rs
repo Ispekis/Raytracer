@@ -25,6 +25,22 @@ impl Vector3D {
         let res: f64 = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
         return res;
     }
+
+    pub fn cross(&self, other:Self) -> Self {
+        let new_x = (self.y * other.z - other.y - self.z);
+        let new_y = -(self.x * other.z - other.x * self.z);
+        let new_z = (self.x * other.y - other.x - self.y);
+        return Vector3D::new(new_x, new_y, new_z);
+    }
+
+    pub fn abs(&self) -> Vector3D {
+        return  Vector3D {x: self.x.abs(), y: self.y.abs(), z: self.z.abs()};
+    }
+
+    pub fn normalize(&self) -> Vector3D {
+        let n = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
+        return Vector3D::new(self.x / n, self.y / n, self.z / n);
+    }
 }
 
 impl Default for Vector3D {
@@ -73,6 +89,14 @@ impl std::ops::Mul<Vector3D> for Vector3D {
     }
 }
 
+impl std::ops::Mul<f64> for Vector3D {
+    type Output = Vector3D;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        return Vector3D {x: self.x * rhs, y: self.y * rhs, z: self.z * rhs};
+    }
+}
+
 impl std::ops::MulAssign<Vector3D> for Vector3D {
     fn mul_assign(&mut self, rhs: Vector3D) {
         self.x *= rhs.x;
@@ -89,10 +113,24 @@ impl std::ops::Div<Vector3D> for Vector3D {
     }
 }
 
+impl std::ops::Div<f64> for Vector3D {
+    type Output = Vector3D;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        return Vector3D {x: self.x / rhs, y: self.y / rhs, z: self.z / rhs};
+    }
+}
+
 impl std::ops::DivAssign<Vector3D> for Vector3D {
     fn div_assign(&mut self, rhs: Vector3D) {
         self.x /= rhs.x;
         self.y /= rhs.y;
         self.z /= rhs.z;
+    }
+}
+
+impl std::fmt::Display for Vector3D {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Vector3D(x={}, y={}, z={})", self.x, self.y, self.z)
     }
 }
