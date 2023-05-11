@@ -19,6 +19,7 @@ mod RayTracer {
     pub mod Plane;
     pub mod Rectangle3D;
     pub mod Light;
+    pub mod material;
 }
 
 mod Interfaces {
@@ -46,8 +47,8 @@ fn main() -> std::process::ExitCode {
 
     match scene {
         Ok(mut s) => {
-            let mut mutable_scene = &mut s;
-            raytracer::run_raytracer(mutable_scene);
+            // let mut mutable_scene = &mut s;
+            raytracer::run_raytracer(s);
             return std::process::ExitCode::SUCCESS;
         },
         Err((_)) => {

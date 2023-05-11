@@ -17,7 +17,7 @@ use crate::RayTracer::{
     Plane::Plane,
     Light::{
         Light,
-        Light_Point
+        PointLight
     }
 };
 use crate::tools;
@@ -154,13 +154,14 @@ fn config_primitives(data:&Value) -> std::result::Result<Primitives_t, Box<dyn s
 fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::Error>> {
     let ambient = data["lights"]["ambient"].to_string().parse::<f64>()?;
     let diffuse = data["lights"]["diffuse"].to_string().parse::<f64>()?;
+    let specular = data["lights"]["specular"].to_string().parse::<f64>()?;
     let points_len =  data["lights"]["point"]
     .as_array()
     .ok_or("Not an array")?.len();
     let directionals_len =  data["lights"]["directional"]
     .as_array()
     .ok_or("Not an array")?.len();
-    let mut points: Vec<Light_Point> = Vec::new();
+    let mut points: Vec<PointLight> = Vec::new();
     let mut directionals: Vec<Vector3D> = Vec::new();
 
     for i in 0..points_len {
@@ -176,7 +177,13 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
                 data["lights"]["point"][i]["color"]["y"].to_string().parse::<f64>()?,
                 data["lights"]["point"][i]["color"]["z"].to_string().parse::<f64>()?);
         }
-        points.push(Light_Point { origin: point, color });
+        let mut intensity;
+        if data["lights"]["point"][i]["intensity"].is_null() {
+            intensity = 1.0
+        } else {
+            intensity = data["lights"]["point"][i]["intensity"].to_string().parse::<f64>()?;
+        }
+        points.push(PointLight { origin: point, color, intensity });
     }
 
     for i in 0..directionals_len {
@@ -186,7 +193,7 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
             data["lights"]["directional"][i]["z"].to_string().parse::<f64>()?);
         directionals.push(directional);
     }
-    Ok(Light::new_config(ambient, diffuse, points, directionals))
+    Ok(Light::new_config(ambient, diffuse, specular, points, directionals))
 }
 
 impl SceneData {
