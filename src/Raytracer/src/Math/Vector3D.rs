@@ -38,7 +38,7 @@ impl Vector3D {
     }
 
     pub fn normalize(&self) -> Vector3D {
-        let n = (self.x.powf(2.0) + self.y.powf(2.0) + self.y.powf(2.0)).sqrt();
+        let n = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
         return Vector3D::new(self.x / n, self.y / n, self.z / n);
     }
 }
