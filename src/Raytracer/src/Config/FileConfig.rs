@@ -169,10 +169,13 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
             data["lights"]["point"][i]["y"].to_string().parse::<f64>()?,
             data["lights"]["point"][i]["z"].to_string().parse::<f64>()?);
 
-        let color = Vector3D::new(
-            data["lights"]["point"][i]["color"]["x"].to_string().parse::<f64>()?,
-            data["lights"]["point"][i]["color"]["y"].to_string().parse::<f64>()?,
-            data["lights"]["point"][i]["color"]["z"].to_string().parse::<f64>()?);
+        let mut color = Vector3D::new(255.0, 255.0, 255.0);
+        if !data["lights"]["point"][i]["color"].is_null() {
+            color = Vector3D::new(
+                data["lights"]["point"][i]["color"]["x"].to_string().parse::<f64>()?,
+                data["lights"]["point"][i]["color"]["y"].to_string().parse::<f64>()?,
+                data["lights"]["point"][i]["color"]["z"].to_string().parse::<f64>()?);
+        }
         points.push(Light_Point { origin: point, color });
     }
 
