@@ -48,7 +48,17 @@ impl PhongModel {
             // }
             specular = Vector3D::default();
         }
-        ambient + diffuse + specular
+        let mut ret_color = ambient + diffuse + specular;
+        if ret_color.x >= 255.0 {
+            ret_color.x = 255.0;
+        }
+        if ret_color.y >= 255.0 {
+            ret_color.y = 255.0;
+        }
+        if ret_color.z >= 255.0 {
+            ret_color.z = 255.0;
+        }
+        ret_color
     }
 }
 

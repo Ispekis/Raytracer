@@ -156,3 +156,21 @@ impl std::fmt::Display for Vector3D {
         write!(f, "Vector3D(x={}, y={}, z={})", self.x, self.y, self.z)
     }
 }
+
+impl PartialOrd for Vector3D {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        if self.x > other.x && self.y > other.y && self.z > other.z {
+            Some(std::cmp::Ordering::Greater)
+        } else if self.x >= other.x && self.y >= other.y && self.z >= other.z {
+            Some(std::cmp::Ordering::Greater)
+        } else {
+            None
+        }
+    }
+}
+
+impl PartialEq for Vector3D {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == self.y && self.z == other.z
+    }
+}
