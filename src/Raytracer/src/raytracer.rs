@@ -19,32 +19,9 @@ fn write_flat_color(color:Math::Vector3D::Vector3D) {
 
 fn write_color(color:Math::Vector3D::Vector3D, light:&mut Light, coeff:f64) {
     let color_light = light.point[0].color * light.diffuse;
-    let mut r = color.x + (color_light.x * coeff);
-    if (r > 255.0) {
-        r = 255.0;
-    }
-    let mut g = color.y * light.ambient + (color_light.y *  coeff);
-    if (g > 255.0) {
-        g = 255.0;
-    }
+    let mut r = color.x * light.ambient + (color_light.x * coeff);
+    let mut g = color.y * light.ambient + (color_light.y * coeff);
     let mut b = color.z * light.ambient + (color_light.z * coeff);
-    if (b > 255.0) {
-        b = 255.0;
-    }
-    if (r < 0.0) {
-        r = 0.0;
-    }
-
-    if (g < 0.0) {
-        g = 0.0;
-    }
-
-    if (b < 0.0) {
-        b = 0.0;
-    }
-    // if (r < 30.0 && g < 30.0 && b < 30.0) {
-    // }
-    // println!("ee {} {} {}", r, g, b);
 
     write_flat_color(Math::Vector3D::Vector3D::new(r, g, b));
 }
