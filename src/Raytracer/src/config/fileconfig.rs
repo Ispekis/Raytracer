@@ -236,7 +236,7 @@ fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn st
 
     let cylinders = config_cylinders(data)?;
 
-    Ok(Primitivest {spheres, planes, cones})
+    Ok(Primitivest {spheres, planes, cones, cylinders})
 }
 
 fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::Error>> {
