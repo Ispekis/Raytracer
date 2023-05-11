@@ -50,9 +50,7 @@ impl Primitives for Sphere {
     fn rotateY(&mut self, angle:f64) {}
     fn rotateZ(&mut self, angle:f64) {}
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
-        let direction = (hit_point - self.center);
-        let norme = (direction.x * direction.x + direction.y * direction.y + direction.z * direction.z).sqrt();
-        return Vector3D::new(direction.x / norme, direction.y / norme, direction.z / norme)
+        (hit_point - self.center).normalize()
     }
 }
 

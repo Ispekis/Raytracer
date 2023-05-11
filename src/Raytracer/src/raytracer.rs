@@ -32,7 +32,7 @@ fn draw_primitives(u:f64, v:f64, scene:&mut FileConfig::SceneData) {
     for i in 0..scene.primitives.spheres.len() {
         let hit_point = scene.primitives.spheres[i].hits(ray);
         if (hit_point != None) {
-            let normal = (hit_point.unwrap() - scene.primitives.spheres[i].center).normalize();
+            let normal = scene.primitives.spheres[i].suface_normal(hit_point.unwrap());
             let light_direction = ((hit_point.unwrap() - scene.lights.point[0].origin)).normalize();
             let mut d = normal.scal(&(light_direction * -1.0));
             if (d < 0.0) {
@@ -45,7 +45,13 @@ fn draw_primitives(u:f64, v:f64, scene:&mut FileConfig::SceneData) {
     for i in 0..scene.primitives.planes.len() {
         let hit_point = scene.primitives.planes[i].hits(ray);
         if hit_point != None{
-            write_flat_color(scene.primitives.planes[i].color);
+            let normal = scene.primitives.planes[i].suface_normal(hit_point.unwrap());
+            let light_direction = ((hit_point.unwrap() - scene.lights.point[0].origin)).normalize();
+            let mut d = normal.scal(&(light_direction * -1.0));
+            if (d < 0.0) {
+                d = 0.0;
+            }
+            write_color(scene.primitives.planes[i].color, &mut scene.lights, d);
             return;
         }
     }
