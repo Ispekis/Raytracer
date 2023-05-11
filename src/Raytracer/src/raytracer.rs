@@ -126,13 +126,18 @@ fn draw_primitives(u:f64, v:f64, scene:&mut FileConfig::SceneData) {
             return;
         }
     }
-    // for i in 0..scene.primitives.cylinders.len() {
-    //     if scene.primitives.cylinders[i].hits(ray) {
-    //         write_color(scene.primitives.cylinders[i].color);
-    //         return;
-    //     }
-    // }
-    write_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 0.0));
+    for i in 0..scene.primitives.cylinders.len() {
+        let hit_point = scene.primitives.cylinders[i].hits(ray);
+        if hit_point != None {
+            // let normal = (hit_point.unwrap() - scene.primitives.cylinders[i].center).normalize();
+            // let light_direction = ((hit_point.unwrap() - scene.lights.point[0])).normalize();
+            // let d = normal.scal(&(light_direction * -1.0));
+            // write_color(scene.primitives.cylinders[i].color, &mut scene.lights, d);
+            write_flat_color(scene.primitives.cylinders[i].color);
+            return;
+        }
+    }
+    write_flat_color(Math::Vector3D::Vector3D::new(0.0, 0.0, 0.0));
 }
 
 pub fn run_raytracer(scene:fileconfig::SceneData) -> u32

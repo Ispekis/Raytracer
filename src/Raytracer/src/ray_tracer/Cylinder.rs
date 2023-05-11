@@ -29,67 +29,53 @@ impl Cylinder {
 
 impl Primitives for Cylinder {
     fn hits(&self, ray:Ray) -> Option<Point3D> {
-        let dif = ray.origin - self.center;
-        let a = ray.direction.scal(&ray.direction);
-        let b = 2.0 * dif.scal(&ray.direction);
-        let c = dif.scal(&dif) - self.radius.powf(2.0);
-        let dis = formulas::compute_discriminant(a, b, c);
-        let res = formulas::resolve_quadratic_eq(dis, a, b);
-        if (res == None) {
+        let a: f64 = ray.direction.x.powi(2) + ray.direction.y.powi(2);
+        let b: f64 = 2.0 * (ray.direction.x * (ray.origin.x - self.center.x) + ray.direction.y * (ray.origin.y - self.center.y));
+        let c: f64 = (ray.origin.x - self.center.x).powi(2) + (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2);
+
+        let disc = b.powi(2) - 4.0 * a * c;
+        if disc < 0.0 {
             return None;
-        } else {
-            let inter_points = formulas::get_inter_point_from_eq(res.unwrap(), ray.origin, ray.direction);
-            return Some(formulas::get_closest_point(inter_points, ray.origin));
         }
-        // let oc = ray.origin - self.center;
-        // let a: f64 = ray.direction.scal(&ray.direction) - (ray.direction.scal(&oc).powf(2.0));
-        // let b: f64 = 2.0 * (ray.direction.scal(&oc) - oc.scal(&ray.direction) * (oc.scal(&oc) - self.radius.powf(2.0).sqrt()));
-        // let c: f64 = oc.scal(&oc) - self.radius.powf(2.0) - (oc.scal(&ray.direction)).powf(2.0);
 
-        // let dis = b.powf(2.0) - 4.0 * a * c;
-        // if dis < 0.0 {
-        //     return false;
-        // }
-        // let t1 = (-b - dis.sqrt()) / (2.0 * a);
-        // let t2 = (-b + dis.sqrt()) / (2.0 * a);
+        let t1 = (-b - disc.sqrt()) / (2.0 * a);
+        let t2 = (-b + disc.sqrt()) / (2.0 * a);
+        let mut t = t1.max(t2);
 
-        // if t1 >= 0.0 && t2 >= 0.0 {
-        //     let t = t1.min(t2);
-        // } else {
-        //     let t = t1.max(t2);
-        // }
-        // return true;
+        if t < 0.0 {
+            return None;
+        }
 
-        // let a = ray.direction.x.powi(2) + ray.direction.y.powi(2);
-        // let b = 2.0 * (ray.direction.x * (ray.origin.x - self.center.x) + ray.direction.y * (ray.origin.y - self.center.y));
-        // let c = (ray.origin.x - self.center.x).powi(2) + (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2);
-        // let discriminant = b.powi(2) - 4.0 * a * c;
-
-        // if discriminant < 0.0 {
-        //     return None;
+        let x = ray.origin.x + t * ray.direction.x;
+        let y = ray.origin.y + t * ray.direction.y;
+        let z = ray.origin.z + t * ray.direction.z;
+        if y >= self.center.y && y <= self.center.y + self.height {
+            return Some(Point3D::default());
+        } else {
+            return None;
+        }
+        // if z.abs() <= 1.0 {
+        //     return Some(Point3D::default());
         // }
 
-        // let t0 = (-b - discriminant.sqrt()) / (2.0 * a);
-        // let t1 = (-b + discriminant.sqrt()) / (2.0 * a);
-
-        // let mut t_min = f64::INFINITY;
-        // let mut t_max = f64::NEG_INFINITY;
-
-        // if t0 >= 0.0 && t0 <= self.height {
-        //     t_min = t_min.min(t0);
-        //     t_max = t_max.max(t0);
+        // if y < self.center.y || y > self.center.y + self.height {
+        //     t = (-b + disc.sqrt()) / (2.0 * a);
+        //     if t < 0.0 {
+        //         return None;
+        //     }
+        //     let y = ray.origin.y + t * ray.direction.y;
+        //     if y < self.center.y || y > self.center.y + self.height {
+        //         return None;
+        //     }
         // }
 
-        // if t1 >= 0.0 && t1 <= self.height {
-        //     t_min = t_min.min(t1);
-        //     t_max = t_max.max(t1);
-        // }
+        // let mut hit_point = Point3D::new(0.0, 0.0, 0.0);
 
-        // if t_min == f64::INFINITY || t_max == f64::NEG_INFINITY {
-        //     return None;
-        // }
+        // hit_point.x = ray.origin.x + t * ray.direction.x;
+        // hit_point.y = ray.origin.y + t * ray.direction.y;
+        // hit_point.z = ray.origin.z + t * ray.direction.z;
 
-        // Some(t_min)
+        // Some(hit_point)
     }
     fn translate(&mut self, Translate:Vector3D) {
         self.center.x += &Translate.x;
@@ -106,9 +92,9 @@ impl Primitives for Cylinder {
     }
 }
 
-impl Default for Sphere {
+impl Default for Cylinder {
     fn default() -> Self {
-        Sphere {
+        Cylinder {
             center: Point3D::default(),
             radius: 0.0,
             height: 0.0,
