@@ -18,7 +18,7 @@ fn write_flat_color(color:Math::Vector3D::Vector3D) {
 }
 
 fn write_color(color:Math::Vector3D::Vector3D, light:&mut Light, coeff:f64) {
-    let mut color_light = Math::Vector3D::Vector3D::new(255.0 * light.diffuse, 255.0 * light.diffuse, 255.0 * light.diffuse);
+    let color_light = light.point[0].color * light.diffuse;
     let mut r = color.x + (color_light.x * coeff);
     if (r > 255.0) {
         r = 255.0;
@@ -41,7 +41,7 @@ fn draw_primitives(u:f64, v:f64, scene:&mut FileConfig::SceneData) {
         let hit_point = scene.primitives.spheres[i].hits(ray);
         if (hit_point != None) {
             let normal = (hit_point.unwrap() - scene.primitives.spheres[i].center).normalize();
-            let light_direction = ((hit_point.unwrap() - scene.lights.point[0])).normalize();
+            let light_direction = ((hit_point.unwrap() - scene.lights.point[0].origin)).normalize();
             let d = normal.scal(&(light_direction * -1.0));
             write_color(scene.primitives.spheres[i].color, &mut scene.lights, d);
             return;
