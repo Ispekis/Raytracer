@@ -175,7 +175,8 @@ fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn st
 
     let planes = config_planes(data)?;
 
-    let cylinders = config_cylinders(data)?;
+    let cylinders = Vec::new();
+    // let cylinders = config_cylinders(data)?;
 
     Ok(Primitivest {spheres, planes, cylinders})
 }
