@@ -16,4 +16,5 @@ pub trait Primitives {
     fn rotateZ(&mut self, angle:f64);
     fn hits(&self, ray:Ray) -> Option<Point3D>;
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D;
+    fn get_color(&self) -> Vector3D;
 }

@@ -41,6 +41,12 @@ impl Vector3D {
         let n = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
         return Vector3D::new(self.x / n, self.y / n, self.z / n);
     }
+
+    pub fn reflect(&self, other:Vector3D) -> Vector3D {
+        let normal = other / other.normalize();
+        let reflected_vector = *self - normal * 2.0 * (*self).scal(&normal);
+        reflected_vector
+    }
 }
 
 impl Default for Vector3D {
@@ -70,6 +76,22 @@ impl std::ops::Sub<Vector3D> for Vector3D {
 
     fn sub(self, rhs: Vector3D) -> Self::Output {
         return Vector3D {x: self.x - rhs.x, y: self.y - rhs.y, z: self.z - rhs.z};
+    }
+}
+
+impl std::ops::Sub<f64> for Vector3D {
+    type Output = Vector3D;
+
+    fn sub(self, rhs: f64) -> Self::Output {
+        return Vector3D {x: self.x - rhs, y: self.y - rhs, z: self.z - rhs};
+    }
+}
+
+impl std::ops::Sub<Vector3D> for f64 {
+    type Output = Vector3D;
+
+    fn sub(self, rhs: Vector3D) -> Self::Output {
+        return Vector3D {x: self - rhs.x, y: self - rhs.y, z: self - rhs.z};
     }
 }
 
@@ -132,5 +154,23 @@ impl std::ops::DivAssign<Vector3D> for Vector3D {
 impl std::fmt::Display for Vector3D {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "Vector3D(x={}, y={}, z={})", self.x, self.y, self.z)
+    }
+}
+
+impl PartialOrd for Vector3D {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        if self.x > other.x && self.y > other.y && self.z > other.z {
+            Some(std::cmp::Ordering::Greater)
+        } else if self.x >= other.x && self.y >= other.y && self.z >= other.z {
+            Some(std::cmp::Ordering::Greater)
+        } else {
+            None
+        }
+    }
+}
+
+impl PartialEq for Vector3D {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == self.y && self.z == other.z
     }
 }
