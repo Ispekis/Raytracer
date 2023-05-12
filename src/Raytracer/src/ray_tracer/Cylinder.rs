@@ -27,60 +27,6 @@ impl Cylinder {
         Cylinder {center, radius, height, color, axis}
     }
 
-    fn computeA(&self, ray:Ray) -> Option<f64> {
-        if (self.axis == 'X') {
-            return Some(ray.direction.z.powi(2) + ray.direction.y.powi(2));
-        } else if (self.axis == 'Y') {
-            return Some(ray.direction.x.powi(2) + ray.direction.z.powi(2));
-        } else if (self.axis == 'Z') {
-            return Some(ray.direction.x.powi(2) + ray.direction.y.powi(2));
-        } else {
-            return None;
-        }
-    }
-
-    fn computeB(&self, ray:Ray) -> Option<f64> {
-        if (self.axis == 'X') {
-            return Some(2.0 * (ray.direction.z * (ray.origin.z - self.center.z)
-            + ray.direction.y *(ray.origin.y - self.center.y)));
-        } else if (self.axis == 'Y') {
-            return Some(2.0 * (ray.direction.x * (ray.origin.x - self.center.x)
-            + ray.direction.z *(ray.origin.z - self.center.z)));
-        } else if (self.axis == 'Z') {
-            return Some(2.0 * (ray.direction.x * (ray.origin.x - self.center.x)
-            + ray.direction.y *(ray.origin.y - self.center.y)));
-        } else {
-            return None;
-        }
-    }
-
-    fn computeC(&self, ray:Ray) -> Option<f64> {
-        if (self.axis == 'X') {
-            return Some((ray.origin.z - self.center.z).powi(2) +
-            (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2));
-        } else if (self.axis == 'Y') {
-            return Some((ray.origin.x - self.center.x).powi(2) +
-            (ray.origin.z - self.center.z).powi(2) - self.radius.powi(2));
-        } else if (self.axis == 'Z') {
-            return Some((ray.origin.x - self.center.x).powi(2) +
-            (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2));
-        } else {
-            return None;
-        }
-    }
-
-    fn computeR(&self, ray:Ray) -> Option<Vec<f64>> {
-        if (self.axis == 'X') {
-            return Some(vec![ray.origin.x, ray.direction.x, self.center.x]);
-        } else if (self.axis == 'Y') {
-            return Some(vec![ray.origin.y, ray.direction.y, self.center.y]);
-        } else if (self.axis == 'Z') {
-            return Some(vec![ray.origin.z, ray.direction.z, self.center.z]);
-        } else {
-            return None;
-        }
-    }
-
     fn getOrigin(&self, ray:Ray) -> Option<Vec<f64>> {
         if (self.axis == 'X') {
             return Some(vec![ray.origin.y, ray.origin.z, ray.origin.x]);
@@ -156,6 +102,17 @@ impl Primitives for Cylinder {
         let r = origin[2] + t * direction[2];
 
         if ( r >= center[2] && r <= center[2] + self.height) {
+            return Some(Point3D::default());
+        }
+
+        let t3: f64 = origin[2] - self.radius.powi(2) / -direction[2];
+        let t4: f64 = origin[2] + self.radius.powi(2) / -direction[2];
+
+        let poi1 = vec![origin[0] + direction[0] * t3, origin[1] + direction[1] * t3];
+        let poi2 = vec![origin[0] + direction[0] * t4, origin[1] + direction[1] * t4];
+        if (t3 > 0.0 && (poi1[0].powi(2) + poi1[1].powi(2)).sqrt() < self.radius) {
+            return Some(Point3D::default());
+        } else if (t4 > 0.0 && (poi2[0].powi(2) + poi2[1].powi(2)).sqrt() < self.radius) {
             return Some(Point3D::default());
         }
         return None;
