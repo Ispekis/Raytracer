@@ -19,9 +19,9 @@ all: plugins raytracer
 raytracer:
 	$(MAKE) -C $(PROGRAM_PATH)
 
-plugins:
-	$(MAKE) -C $(PLANE)
-	$(MAKE) -C $(SPHERE)
+# plugins:
+# 	$(MAKE) -C $(PLANE)
+# 	$(MAKE) -C $(SPHERE)
 
 clean:
 	$(MAKE) clean -C $(PROGRAM_PATH)

@@ -26,10 +26,10 @@ impl World {
         let mut objects: Vec<Box<dyn Primitives>> = Vec::new();
 
         for i in 0..scene.primitives.spheres.len() {
-            objects.push(Box::new(scene.primitives.spheres[i]))
+            objects.push(Box::new(scene.primitives.spheres[i].clone()))
         }
         for i in 0..scene.primitives.planes.len() {
-            objects.push(Box::new(scene.primitives.planes[i]))
+            objects.push(Box::new(scene.primitives.planes[i].clone()))
         }
         for i in 0..scene.primitives.cylinders.len() {
             objects.push(Box::new(scene.primitives.cylinders[i]))
@@ -43,8 +43,8 @@ impl World {
         for i in 0..self.objects.len() {
             let hit_res = self.objects[i].hits(ray);
             if let Some(hit_point) = hit_res {
-                let color = self.light_model.lightning(self.objects[i].get_color(), self.scene.lights.point[0],
-                hit_point, self.objects[i].suface_normal(hit_point),
+                let color = self.light_model.lightning(self.objects[i].get_pattern().color_at(hit_point), self.scene.lights.point[0],
+                hit_point, ray.direction, self.objects[i].suface_normal(hit_point),
                 self.is_shadowed(hit_point, i));
 
                 write_flat_color(color);

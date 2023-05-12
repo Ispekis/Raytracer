@@ -20,6 +20,10 @@ use crate::ray_tracer::{
         PointLight
     },
     cylinder::Cylinder,
+    material::{
+        Solid,
+        Mask
+    }
 };
 use crate::tools;
 
@@ -79,7 +83,14 @@ fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::
             data["primitives"]["spheres"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["spheres"][i]["color"]["b"].to_string().parse::<f64>()?);
 
-        let mut new = Sphere::new_config(position, radius, color);
+            // pattern
+        let mut pattern: Box<dyn Mask> = Box::new(Solid::new(color));
+        if !data["primitives"]["spheres"][i]["pattern"].is_null() {
+            let pattern_str = data["primitives"]["spheres"][i]["pattern"].to_string().parse::<String>()?;
+            pattern = material::get_material_pattern(pattern_str.as_str());
+        }
+        pattern.set_color(color);
+        let mut new = Sphere::new_config(position, radius, color, pattern);
 
         if !data["primitives"]["spheres"][i]["translation"].is_null() {
             let translation = Vector3D::new(
@@ -119,7 +130,13 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
             data["primitives"]["planes"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["planes"][i]["color"]["b"].to_string().parse::<f64>()?);
 
-        let mut new = Plane::new_config(axis, position, color);
+        let mut pattern: Box<dyn Mask> = Box::new(Solid::new(color));
+        if !data["primitives"]["planes"][i]["pattern"].is_null() {
+            let pattern_str = data["primitives"]["planes"][i]["pattern"].to_string().parse::<String>()?;
+            pattern = material::get_material_pattern(pattern_str.as_str());
+        }
+        pattern.set_color(color);
+        let mut new = Plane::new_config(axis, position, color, pattern);
 
         if !data["primitives"]["planes"][i]["translation"].is_null() {
             let translation = Vector3D::new(

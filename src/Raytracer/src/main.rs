@@ -7,7 +7,6 @@ mod math {
     pub mod formulas;
 }
 
-pub mod isolid;
 pub mod rgb;
 
 mod tools;
