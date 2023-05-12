@@ -236,8 +236,6 @@ fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn st
 
     let planes = config_planes(data)?;
 
-    let cylinders = config_cylinders(data)?;
-
     let cones = config_cones(data)?;
 
     let cylinders = config_cylinders(data)?;
