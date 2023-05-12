@@ -157,13 +157,14 @@ fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn s
             data["primitives"]["cylinders"][i]["y"].to_string().parse::<f64>()?,
             data["primitives"]["cylinders"][i]["z"].to_string().parse::<f64>()?);
         let radius = data["primitives"]["cylinders"][i]["r"].to_string().parse::<f64>()?;
+        let axis_str = data["primitives"]["cylinders"][i]["axis"].to_string().parse::<String>()?;
+        let axis = axis_str[1..2].chars().next().unwrap();
         let height = data["primitives"]["cylinders"][i]["h"].to_string().parse::<f64>()?;
         let color = Vector3D::new(
             data["primitives"]["cylinders"][i]["color"]["r"].to_string().parse::<f64>()?,
             data["primitives"]["cylinders"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["cylinders"][i]["color"]["b"].to_string().parse::<f64>()?);
-
-        cylinders.push(Cylinder::new_config(position, radius, height, color));
+        cylinders.push(Cylinder::new_config(position, radius, height, color, axis));
     }
 
     Ok(cylinders)

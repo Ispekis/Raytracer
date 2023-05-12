@@ -15,45 +15,86 @@ pub struct Cylinder {
     pub radius:f64,
     pub height:f64,
     pub color:Vector3D,
+    pub axis:char,
 }
 
 impl Cylinder {
-    pub fn new(center:Point3D, radius:f64, height:f64) -> Cylinder {
-        return Cylinder {center, radius, height, color:Vector3D::default()};
+    pub fn new(center:Point3D, radius:f64, height:f64, axis:char) -> Cylinder {
+        return Cylinder {center, radius, height, color:Vector3D::default(), axis};
     }
 
-    pub fn new_config(center:Point3D, radius:f64, height: f64, color:Vector3D) -> Self {
-        Cylinder {center, radius, height, color}
+    pub fn new_config(center:Point3D, radius:f64, height: f64, color:Vector3D, axis:char) -> Self {
+        Cylinder {center, radius, height, color, axis}
     }
 }
 
 impl Primitives for Cylinder {
     fn hits(&self, ray:Ray) -> Option<Point3D> {
-        let a: f64 = ray.direction.x.powi(2) + ray.direction.y.powi(2);
-        let b: f64 = 2.0 * (ray.direction.x * (ray.origin.x - self.center.x) + ray.direction.y * (ray.origin.y - self.center.y));
-        let c: f64 = (ray.origin.x - self.center.x).powi(2) + (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2);
 
-        let disc = b.powi(2) - 4.0 * a * c;
-        if disc < 0.0 {
+        let tmpRay = ray.direction;
+        let mut tmp = self;
+        // if (tmp.axis == 'X') {
+            // let tmp = tmp.center.y;
+            // &tmp.center.x = &tmp.center.y;
+// 
+        // }
+        let definex = 'x';
+
+
+        let a = (ray.direction.y).powi(2) + (ray.direction.z).powi(2);
+        let b = 2.0 * (ray.direction.y * (ray.origin.y - self.center.y) + ray.direction.z *(ray.origin.z - self.center.z));
+        let c = (ray.origin.y - self.center.y).powi(2) + (ray.origin.z - self.center.z).powi(2) - self.radius.powi(2);
+        // let v = formulas::suface_normal_vector(ray.direction);
+        // let a: f64 = v.x.powi(2) + v.y.powi(2);
+        // let b = 2.0 * (ray.origin.x * v.x + v.y * ray.origin.y);
+        // // let b: f64 = 2.0 * (v.x * (ray.origin.x - self.center.x) + v.y * (ray.origin.y - self.center.y));
+        // let c: f64 = (ray.origin.x).powi(2) + (ray.origin.y).powi(2) - self.radius.powi(2);
+
+        let delta = b*b - 4.0*a*c;
+        // let disc = b.powi(2) - 4.0 * a * c;
+
+        if (delta.abs() < 0.001) {
             return None;
         }
-
-        let t1 = (-b - disc.sqrt()) / (2.0 * a);
-        let t2 = (-b + disc.sqrt()) / (2.0 * a);
-        let mut t = t1.max(t2);
-
-        if t < 0.0 {
+        if (delta < 0.0) {
             return None;
         }
+        let t1 = (-b - delta.sqrt()) / (2.0 * a);
+        let t2 = (-b + delta.sqrt()) / (2.0 * a);
+        let mut t = 0.0;
 
-        let x = ray.origin.x + t * ray.direction.x;
-        let y = ray.origin.y + t * ray.direction.y;
-        let z = ray.origin.z + t * ray.direction.z;
-        if y >= self.center.y && y <= self.center.y + self.height {
-            return Some(Point3D::default());
+        if (t1 > t2) {
+            t = t2;
         } else {
-            return None;
+            t = t1;
         }
+
+        let r = ray.origin.x + t * ray.direction.x;
+
+        if ( r >= self.center.x && r <= self.center.x + self.height) {
+            return Some(Point3D::default());
+        }
+        return None;
+        // if disc < 0.0 {
+        //     return None;
+        // }
+
+        // let t1 = (-b - disc.sqrt()) / (2.0 * a);
+        // let t2 = (-b + disc.sqrt()) / (2.0 * a);
+        // let mut t = t1.max(t2);
+
+        // if t < 0.0 {
+        //     return None;
+        // }
+
+        // let x = ray.origin.x + t * ray.direction.x;
+        // let y = ray.origin.y + t * ray.direction.y;
+        // let z = ray.origin.z + t * ray.direction.z;
+        // if y >= self.center.y && y <= self.center.y + self.height {
+        //     return Some(Point3D::default());
+        // } else {
+        //     return None;
+        // }
         // if z.abs() <= 1.0 {
         //     return Some(Point3D::default());
         // }
@@ -98,7 +139,8 @@ impl Default for Cylinder {
             center: Point3D::default(),
             radius: 0.0,
             height: 0.0,
-            color: Vector3D::default()
+            color: Vector3D::default(),
+            axis: 'Z',
         }
     }
 }

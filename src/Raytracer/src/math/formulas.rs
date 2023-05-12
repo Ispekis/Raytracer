@@ -57,23 +57,12 @@ pub fn get_closest_point(hit_points:Vec<Point3D>, origin:Point3D) -> Point3D {
     }
 }
 
-pub fn get_closest_point_index(hit_points:Vec<Point3D>, origin:Point3D) -> usize {
-    if hit_points.len() == 1 {
-        return 0;
-    } else {
-        let p1 = (hit_points[0] - origin).abs();
-        let p2 = (hit_points[1] - origin).abs();
-        let p1_tot = p1.x + p1.z + p1.z;
-        let p2_tot = p2.x + p2.z + p2.z;
-        if p1_tot > p2_tot {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
+pub fn suface_normal(hit_point:Point3D) -> Vector3D {
+    let norme = (hit_point.x * hit_point.x + hit_point.y * hit_point.y + hit_point.z * hit_point.z).sqrt();
+    return Vector3D::new(hit_point.x / norme, hit_point.y / norme, hit_point.z / norme)
 }
 
-// fn suface_normal(hit_point:Point3D) -> Vector3D {
-//     let norme = (direction.x * direction.x + direction.y * direction.y + direction.z * direction.z).sqrt();
-//     return Vector3D::new(direction.x / norme, direction.y / norme, direction.z / norme)
-// }
+pub fn suface_normal_vector(hit_point:Vector3D) -> Vector3D {
+    let norme = (hit_point.x * hit_point.x + hit_point.y * hit_point.y + hit_point.z * hit_point.z).sqrt();
+    return Vector3D::new(hit_point.x / norme, hit_point.y / norme, hit_point.z / norme)
+}
