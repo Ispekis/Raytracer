@@ -5,13 +5,13 @@
 // FileConfig
 //
 
-use serde_json::{Result, Value};
-use crate::Interfaces::Primitives::Primitives;
-use crate::Math::{
+use serde_json::{Value};
+use crate::interfaces::Primitives::Primitives;
+use crate::math::{
     Point3D::Point3D,
     Vector3D::Vector3D
 };
-use crate::RayTracer::{
+use crate::ray_tracer::{
     Camera::Camera,
     Sphere::Sphere,
     Plane::Plane,
@@ -22,14 +22,14 @@ use crate::RayTracer::{
 };
 use crate::tools;
 
-pub struct Primitives_t {
+pub struct Primitivest {
     pub spheres:Vec<Sphere>,
     pub planes:Vec<Plane>
 }
 
 pub struct SceneData {
     pub camera:Camera,
-    pub primitives:Primitives_t,
+    pub primitives:Primitivest,
     pub lights:Light
 }
 
@@ -38,7 +38,7 @@ fn convert_string_to_json_obj(str: String) -> std::result::Result<Value, Box<dyn
     Ok(obj)
 }
 
-fn config_cam(data:&Value) -> std::result::Result<(Camera), Box<dyn std::error::Error>> {
+fn config_cam(data:&Value) -> std::result::Result<Camera, Box<dyn std::error::Error>> {
     let width = data["camera"]["resolution"]["width"].to_string().parse::<u32>()?;
 
     let height = data["camera"]["resolution"]["height"].to_string().parse::<u32>()?;
@@ -91,14 +91,14 @@ fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::
                 data["primitives"]["spheres"][i]["rotation"]["x"].to_string().parse::<f64>()?,
                 data["primitives"]["spheres"][i]["rotation"]["y"].to_string().parse::<f64>()?,
                 data["primitives"]["spheres"][i]["rotation"]["z"].to_string().parse::<f64>()?);
-                new.rotateX(rotation.x);
-                new.rotateY(rotation.y);
-                new.rotateZ(rotation.z);
+                new.rotatex(rotation.x);
+                new.rotatey(rotation.y);
+                new.rotatez(rotation.z);
         }
         spheres.push(new);
     }
 
-    Ok((spheres))
+    Ok(spheres)
 }
 
 fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::error::Error>> {
@@ -131,9 +131,9 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
                 data["primitives"]["planes"][i]["rotation"]["x"].to_string().parse::<f64>()?,
                 data["primitives"]["planes"][i]["rotation"]["y"].to_string().parse::<f64>()?,
                 data["primitives"]["planes"][i]["rotation"]["z"].to_string().parse::<f64>()?);
-                new.rotateX(rotation.x);
-                new.rotateY(rotation.y);
-                new.rotateZ(rotation.z);
+                new.rotatex(rotation.x);
+                new.rotatey(rotation.y);
+                new.rotatez(rotation.z);
         }
 
         planes.push(new);
@@ -142,13 +142,13 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
     Ok(planes)
 }
 
-fn config_primitives(data:&Value) -> std::result::Result<Primitives_t, Box<dyn std::error::Error>> {
+fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn std::error::Error>> {
 
     let spheres = config_spheres(data)?;
 
     let planes = config_planes(data)?;
 
-    Ok(Primitives_t {spheres, planes})
+    Ok(Primitivest {spheres, planes})
 }
 
 fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::Error>> {

@@ -5,10 +5,10 @@
 // Camera
 //
 
-use crate::Math::Point3D::Point3D;
-use crate::Math::Vector3D::Vector3D;
-use crate::RayTracer::Rectangle3D::Rectangle3D;
-use crate::RayTracer::Ray::Ray;
+use crate::math::Point3D::Point3D;
+use crate::math::Vector3D::Vector3D;
+use crate::ray_tracer::Rectangle3D::Rectangle3D;
+use crate::ray_tracer::Ray::Ray;
 
 pub struct Camera {
     origin:Point3D,
@@ -36,7 +36,7 @@ impl Camera {
     }
 
     pub fn ray(&self, u:f64, v:f64) -> Ray {
-        let point = self.screen.pointAt(u, v);
+        let point = self.screen.pointat(u, v);
         Ray { origin:self.origin, direction: (point - self.origin) }
     }
 }

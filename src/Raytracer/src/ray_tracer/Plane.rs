@@ -62,10 +62,10 @@ impl Primitives for Plane {
         // let inter_point = ray.origin + (ray.direction * t);
         // Some(inter_point)
     }
-    fn translate(&mut self, Translate:Vector3D) {
-        self.center.x += Translate.x;
-        self.center.y += Translate.y;
-        self.center.z += Translate.z;
+    fn translate(&mut self, translate:Vector3D) {
+        self.center.x += translate.x;
+        self.center.y += translate.y;
+        self.center.z += translate.z;
     }
     fn rotateX(&mut self, angle:f64) {}
     fn rotateY(&mut self, angle:f64) {}

@@ -5,7 +5,7 @@
 // Light
 //
 
-use crate::Math::{
+use crate::math::{
     Point3D::Point3D,
     Vector3D::Vector3D
 };
