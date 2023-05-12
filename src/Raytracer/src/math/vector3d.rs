@@ -27,9 +27,9 @@ impl Vector3D {
     }
 
     pub fn cross(&self, other:Self) -> Self {
-        let new_x = (self.y * other.z - other.y - self.z);
-        let new_y = -(self.x * other.z - other.x * self.z);
-        let new_z = (self.x * other.y - other.x - self.y);
+        let new_x = self.y * other.z - other.y - self.z;
+        let new_y = -self.x * other.z - other.x * self.z;
+        let new_z = self.x * other.y - other.x - self.y;
         return Vector3D::new(new_x, new_y, new_z);
     }
 

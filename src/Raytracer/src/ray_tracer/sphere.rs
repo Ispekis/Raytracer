@@ -5,9 +5,9 @@
 // sphere
 //
 
-use crate::Math::{Point3D::Point3D, formulas, Vector3D::Vector3D};
-use crate::RayTracer::Ray::Ray;
-use crate::Interfaces::Primitives::Primitives;
+use crate::math::{point3d::Point3D, formulas, vector3d::Vector3D};
+use crate::ray_tracer::ray::Ray;
+use crate::interfaces::primitives::Primitives;
 
 #[derive(Copy, Clone)]
 pub struct Sphere {
@@ -40,14 +40,14 @@ impl Primitives for Sphere {
         }
         None
     }
-    fn translate(&mut self, Translate:Vector3D) {
-        self.center.x += &Translate.x;
-        self.center.y += &Translate.y;
-        self.center.z += &Translate.z;
+    fn translate(&mut self, translate:Vector3D) {
+        self.center.x += &translate.x;
+        self.center.y += &translate.y;
+        self.center.z += &translate.z;
     }
-    fn rotateX(&mut self, angle:f64) {}
-    fn rotateY(&mut self, angle:f64) {}
-    fn rotateZ(&mut self, angle:f64) {}
+    fn rotatex(&mut self, _:f64) {}
+    fn rotatey(&mut self, _:f64) {}
+    fn rotatez(&mut self, _:f64) {}
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
         (hit_point - self.center).normalize()
     }

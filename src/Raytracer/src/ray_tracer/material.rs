@@ -5,34 +5,33 @@
 // material
 //
 
-use crate::Math::{
-    Vector3D::Vector3D,
-    Point3D::Point3D
+use crate::math::{
+    vector3d::Vector3D,
+    point3d::Point3D
 };
-use crate::RayTracer::Light::PointLight;
+use crate::ray_tracer::light::PointLight;
 
 pub struct PhongModel {
     ambient:f64,
     diffuse:f64,
-    specular:f64
 }
 
 impl PhongModel {
-    pub fn new(ambient:f64, diffuse:f64, specular:f64) -> Self{
-        Self {ambient, diffuse, specular }
+    pub fn new(ambient:f64, diffuse:f64) -> Self{
+        Self {ambient, diffuse}
     }
 
-    pub fn lightning(&self, color:Vector3D, light:PointLight, position:Point3D, direction:Vector3D, normal_v:Vector3D, is_shadow:bool) -> Vector3D {
+    pub fn lightning(&self, color:Vector3D, light:PointLight, position:Point3D, normal_v:Vector3D, is_shadow:bool) -> Vector3D {
         let eff_color = color * light.intensity;
-        let mut ambient:Vector3D;
-        let mut diffuse:Vector3D;
-        let mut specular:Vector3D;
+        let ambient:Vector3D;
+        let diffuse:Vector3D;
+        let specular:Vector3D;
 
         let lightv = (light.origin - position).normalize();
 
         ambient = eff_color * self.ambient;
         let light_dot_normal = lightv.scal(&normal_v);
-        if (light_dot_normal < 0.0) {
+        if light_dot_normal < 0.0 {
             diffuse = Vector3D::new(0.0, 0.0, 0.0); // Black
             specular = Vector3D::new(0.0, 0.0, 0.0); // Black
         } else {
@@ -71,8 +70,7 @@ impl Default for PhongModel {
     fn default() -> Self {
         Self {
             ambient: 1.0,
-            diffuse: 1.0,
-            specular: 1.0
+            diffuse: 1.0
         }
     }
 }
