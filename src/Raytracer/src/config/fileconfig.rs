@@ -177,7 +177,7 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
                 data["lights"]["point"][i]["color"]["y"].to_string().parse::<f64>()?,
                 data["lights"]["point"][i]["color"]["z"].to_string().parse::<f64>()?);
         }
-        let mut intensity;
+        let intensity;
         if data["lights"]["point"][i]["intensity"].is_null() {
             intensity = 1.0
         } else {

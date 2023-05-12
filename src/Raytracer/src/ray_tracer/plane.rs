@@ -5,12 +5,9 @@
 // planes
 //
 
-use std::f64::EPSILON;
-
-use crate::Math::{Vector3D::Vector3D, Point3D::Point3D};
-use crate::Interfaces::Primitives::Primitives;
-use crate::RayTracer::Ray::Ray;
-use crate::Math::formulas;
+use crate::math::{vector3d::Vector3D, point3d::Point3D};
+use crate::interfaces::primitives::Primitives;
+use crate::ray_tracer::ray::Ray;
 
 #[derive(Copy, Clone)]
 pub struct Plane {
@@ -67,10 +64,10 @@ impl Primitives for Plane {
         self.center.y += translate.y;
         self.center.z += translate.z;
     }
-    fn rotateX(&mut self, angle:f64) {}
-    fn rotateY(&mut self, angle:f64) {}
-    fn rotateZ(&mut self, angle:f64) {}
-    fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
+    fn rotatex(&mut self, _:f64) {}
+    fn rotatey(&mut self, _:f64) {}
+    fn rotatez(&mut self, _:f64) {}
+    fn suface_normal(&self, _:Point3D) -> Vector3D {
         Vector3D::new(0.0, 1.0, 0.1)
     }
     fn get_color(&self) -> Vector3D {

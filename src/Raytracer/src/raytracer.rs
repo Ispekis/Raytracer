@@ -5,24 +5,24 @@
 // raytracer
 //
 
-use crate::Config::FileConfig;
-use crate::Interfaces::Primitives::Primitives;
-use crate::Math::{Point3D::Point3D, Vector3D::Vector3D, formulas};
-use crate::RayTracer::{
-    Light::Light,
-    Ray::Ray,
+use crate::config::fileconfig;
+use crate::interfaces::primitives::Primitives;
+use crate::math::{point3d::Point3D, vector3d::Vector3D};
+use crate::ray_tracer::{
+    light::Light,
+    ray::Ray,
     material::PhongModel
 };
 
 struct World {
-    scene:FileConfig::SceneData,
+    scene:fileconfig::SceneData,
     objects:Vec<Box<dyn Primitives>>,
     light_model:PhongModel
 }
 
 impl World {
-    pub fn new(scene:FileConfig::SceneData) -> Self {
-        let light_model = PhongModel::new(scene.lights.ambient, scene.lights.diffuse, scene.lights.specular);
+    pub fn new(scene:fileconfig::SceneData) -> Self {
+        let light_model = PhongModel::new(scene.lights.ambient, scene.lights.diffuse);
         let mut objects: Vec<Box<dyn Primitives>> = Vec::new();
 
         for i in 0..scene.primitives.spheres.len() {
@@ -41,7 +41,7 @@ impl World {
             let hit_res = self.objects[i].hits(ray);
             if let Some(hit_point) = hit_res {
                 let color = self.light_model.lightning(self.objects[i].get_color(), self.scene.lights.point[0],
-                hit_point, ray.direction, self.objects[i].suface_normal(hit_point),
+                hit_point, self.objects[i].suface_normal(hit_point),
                 self.is_shadowed(hit_point, i));
 
                 write_flat_color(color);
@@ -87,9 +87,9 @@ fn write_flat_color(color:Vector3D) {
 
 fn write_color(color:Vector3D, light:&mut Light, coeff:f64, is_shadow:bool) {
     let color_light = light.point[0].color * light.diffuse;
-    let mut r: f64;
-    let mut g: f64;
-    let mut b: f64;
+    let r: f64;
+    let g: f64;
+    let b: f64;
     if is_shadow {
         r = color.x * light.ambient;
         g = color.y * light.ambient;
@@ -103,7 +103,7 @@ fn write_color(color:Vector3D, light:&mut Light, coeff:f64, is_shadow:bool) {
     write_flat_color(Vector3D::new(r, g, b));
 }
 
-pub fn run_raytracer(scene:FileConfig::SceneData) -> u32
+pub fn run_raytracer(scene:fileconfig::SceneData) -> u32
 {
     let width = scene.camera.width;
     let height = scene.camera.height;
