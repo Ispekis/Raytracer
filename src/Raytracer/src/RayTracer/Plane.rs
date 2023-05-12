@@ -5,6 +5,8 @@
 // planes
 //
 
+use std::f64::EPSILON;
+
 use crate::Math::{Vector3D::Vector3D, Point3D::Point3D};
 use crate::Interfaces::Primitives::Primitives;
 use crate::RayTracer::Ray::Ray;
@@ -40,6 +42,9 @@ impl Plane {
 
 impl Primitives for Plane {
     fn hits(&self, ray:Ray) -> Option<Point3D>{
+        // if (ray.origin.y.abs() <= std::f64::EPSILON) {
+        //     return None;
+        // }
         let dot = ray.direction.scal(&self.direction);
 
         if dot > 1e-6 {
@@ -50,6 +55,12 @@ impl Primitives for Plane {
             }
         }
         return None;
+        // if (ray.direction.y.abs() <= EPSILON) {
+        //     return None;
+        // }
+        // let t = -ray.origin.y / ray.direction.y;
+        // let inter_point = ray.origin + (ray.direction * t);
+        // Some(inter_point)
     }
     fn translate(&mut self, Translate:Vector3D) {
         self.center.x += Translate.x;
@@ -62,16 +73,8 @@ impl Primitives for Plane {
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
         Vector3D::new(0.0, 1.0, 0.1)
     }
-    fn hits_get_t(&self, ray:Ray) -> Option<f64> {
-        let dot = ray.direction.scal(&self.direction);
-
-        if dot > 1e-6 {
-            let t = ((self.center - ray.origin).scal(&self.direction)) / dot;
-            if t >= 0.0 {
-                return Some(t);
-            }
-        }
-        return None;
+    fn get_color(&self) -> Vector3D {
+        self.color
     }
 }
 

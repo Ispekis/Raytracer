@@ -41,21 +41,6 @@ impl Primitives for Sphere {
             return Some(formulas::get_closest_point(inter_points, ray.origin));
         }
     }
-    fn hits_get_t(&self, ray:Ray) -> Option<f64> {
-        let dif = ray.origin - self.center;
-        let a = ray.direction.scal(&ray.direction);
-        let b = 2.0 * ray.direction.scal(&dif);
-        let c = dif.scal(&dif) - self.radius.powf(2.0);
-        let dis = formulas::compute_discriminant(a, b, c);
-        let res = formulas::resolve_quadratic_eq(dis, a, b);
-        if let Some(v) = res {
-            let tmp = v.clone();
-            let inter_points: Vec<Point3D> = formulas::get_inter_point_from_eq(v, ray.origin, ray.direction);
-            let closest_hit_point_index = formulas::get_closest_point_index(inter_points, ray.origin);
-            return Some(tmp[closest_hit_point_index]);
-        }
-        None
-    }
     fn translate(&mut self, Translate:Vector3D) {
         self.center.x += &Translate.x;
         self.center.y += &Translate.y;
@@ -66,6 +51,9 @@ impl Primitives for Sphere {
     fn rotateZ(&mut self, angle:f64) {}
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
         (hit_point - self.center).normalize()
+    }
+    fn get_color(&self) -> Vector3D {
+        self.color
     }
 }
 

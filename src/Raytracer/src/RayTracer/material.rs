@@ -22,7 +22,7 @@ impl PhongModel {
         Self {ambient, diffuse, specular }
     }
 
-    pub fn lightning(&self, color:Vector3D, light:PointLight, position:Point3D, direction:Vector3D, normal_v:Vector3D) -> Vector3D {
+    pub fn lightning(&self, color:Vector3D, light:PointLight, position:Point3D, direction:Vector3D, normal_v:Vector3D, is_shadow:bool) -> Vector3D {
         let eff_color = color * light.intensity;
         let mut ambient:Vector3D;
         let mut diffuse:Vector3D;
@@ -48,7 +48,12 @@ impl PhongModel {
             // }
             specular = Vector3D::default();
         }
-        let mut ret_color = ambient + diffuse + specular;
+        let mut ret_color: Vector3D;
+        if is_shadow {
+            ret_color = ambient;
+        } else {
+            ret_color = ambient + diffuse + specular;
+        }
         if ret_color.x >= 255.0 {
             ret_color.x = 255.0;
         }
