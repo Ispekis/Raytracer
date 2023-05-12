@@ -33,26 +33,27 @@ impl Primitives for Cylinder {
 
         let tmpRay = ray.direction;
         let mut tmp = self;
-        // if (tmp.axis == 'X') {
-            // let tmp = tmp.center.y;
-            // &tmp.center.x = &tmp.center.y;
-// 
-        // }
         let definex = 'x';
-
-
-        let a = (ray.direction.y).powi(2) + (ray.direction.z).powi(2);
-        let b = 2.0 * (ray.direction.y * (ray.origin.y - self.center.y) + ray.direction.z *(ray.origin.z - self.center.z));
-        let c = (ray.origin.y - self.center.y).powi(2) + (ray.origin.z - self.center.z).powi(2) - self.radius.powi(2);
-        // let v = formulas::suface_normal_vector(ray.direction);
-        // let a: f64 = v.x.powi(2) + v.y.powi(2);
-        // let b = 2.0 * (ray.origin.x * v.x + v.y * ray.origin.y);
-        // // let b: f64 = 2.0 * (v.x * (ray.origin.x - self.center.x) + v.y * (ray.origin.y - self.center.y));
-        // let c: f64 = (ray.origin.x).powi(2) + (ray.origin.y).powi(2) - self.radius.powi(2);
-
+        // let mut ;
+        let mut a = 0.0;
+        let mut b = 0.0;
+        let mut c = 0.0;
+        if (self.axis == 'X') {
+            a = (ray.direction.z).powi(2) + (ray.direction.y).powi(2);
+            b = 2.0 * (ray.direction.z * (ray.origin.z - self.center.z) + ray.direction.y *(ray.origin.y - self.center.y));
+            c = (ray.origin.z - self.center.z).powi(2) + (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2);
+        }
+        else if (self.axis == 'Y') {
+            a = (ray.direction.x).powi(2) + (ray.direction.z).powi(2);
+            b = 2.0 * (ray.direction.x * (ray.origin.x - self.center.x) + ray.direction.z *(ray.origin.z - self.center.z));
+            c = (ray.origin.x - self.center.x).powi(2) + (ray.origin.z - self.center.z).powi(2) - self.radius.powi(2);
+        }
+        else {
+            a = (ray.direction.x).powi(2) + (ray.direction.y).powi(2);
+            b = 2.0 * (ray.direction.x * (ray.origin.x - self.center.x) + ray.direction.y *(ray.origin.y - self.center.y));
+            c = (ray.origin.x - self.center.x).powi(2) + (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2);
+        }
         let delta = b*b - 4.0*a*c;
-        // let disc = b.powi(2) - 4.0 * a * c;
-
         if (delta.abs() < 0.001) {
             return None;
         }
@@ -69,9 +70,28 @@ impl Primitives for Cylinder {
             t = t1;
         }
 
-        let r = ray.origin.x + t * ray.direction.x;
+        let mut a1 = 0.0;
+        let mut a2 = 0.0;
+        let mut a3 = 0.0;
+        if (self.axis == 'X') {
+            a1 = ray.origin.x;
+            a2 = ray.direction.x;
+            a3 = self.center.x;
+            
+        }
+        else if (self.axis == 'Y') {
+            a1 = ray.origin.y;
+            a2 = ray.direction.y;
+            a3 = self.center.y;
+        }
+        else {
+            a1 = ray.origin.z;
+            a2 = ray.direction.z;
+            a3 = self.center.z;
+        }
+        let r = a1 + t * a2;
 
-        if ( r >= self.center.x && r <= self.center.x + self.height) {
+        if ( r >= a3 && r <= a3 + self.height) {
             return Some(Point3D::default());
         }
         return None;
@@ -88,9 +108,9 @@ impl Primitives for Cylinder {
         // }
 
         // let x = ray.origin.x + t * ray.direction.x;
-        // let y = ray.origin.y + t * ray.direction.y;
-        // let z = ray.origin.z + t * ray.direction.z;
-        // if y >= self.center.y && y <= self.center.y + self.height {
+        // let y = ray.origin.x + t * ray.direction.x;
+        // let z = ray.origin.y + t * ray.direction.y;
+        // if y >= self.center.x && y <= self.center.x + self.height {
         //     return Some(Point3D::default());
         // } else {
         //     return None;
@@ -99,13 +119,13 @@ impl Primitives for Cylinder {
         //     return Some(Point3D::default());
         // }
 
-        // if y < self.center.y || y > self.center.y + self.height {
+        // if y < self.center.x || y > self.center.x + self.height {
         //     t = (-b + disc.sqrt()) / (2.0 * a);
         //     if t < 0.0 {
         //         return None;
         //     }
-        //     let y = ray.origin.y + t * ray.direction.y;
-        //     if y < self.center.y || y > self.center.y + self.height {
+        //     let y = ray.origin.x + t * ray.direction.x;
+        //     if y < self.center.x || y > self.center.x + self.height {
         //         return None;
         //     }
         // }
@@ -113,23 +133,23 @@ impl Primitives for Cylinder {
         // let mut hit_point = Point3D::new(0.0, 0.0, 0.0);
 
         // hit_point.x = ray.origin.x + t * ray.direction.x;
+        // hit_point.x = ray.origin.x + t * ray.direction.x;
         // hit_point.y = ray.origin.y + t * ray.direction.y;
-        // hit_point.z = ray.origin.z + t * ray.direction.z;
 
         // Some(hit_point)
     }
     fn translate(&mut self, Translate:Vector3D) {
         self.center.x += &Translate.x;
+        self.center.x += &Translate.x;
         self.center.y += &Translate.y;
-        self.center.z += &Translate.z;
     }
     fn rotateX(&mut self, angle:f64) {}
     fn rotateY(&mut self, angle:f64) {}
     fn rotateZ(&mut self, angle:f64) {}
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
         let direction = (hit_point - self.center);
-        let norme = (direction.x * direction.x + direction.y * direction.y + direction.z * direction.z).sqrt();
-        return Vector3D::new(direction.x / norme, direction.y / norme, direction.z / norme)
+        let norme = (direction.x * direction.x + direction.x * direction.x + direction.y * direction.y).sqrt();
+        return Vector3D::new(direction.x / norme, direction.x / norme, direction.y / norme)
     }
 }
 
