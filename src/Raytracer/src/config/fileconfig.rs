@@ -21,6 +21,10 @@ use crate::ray_tracer::{
         PointLight
     },
     cylinder::Cylinder,
+    material::{
+        Solid,
+        Mask
+    }
     material
 };
 use crate::tools;
@@ -135,7 +139,7 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
             data["primitives"]["planes"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["planes"][i]["color"]["b"].to_string().parse::<f64>()?);
 
-        let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
+        let mut pattern: Box<dyn Mask> = Box::new(Solid::new(color));
         if !data["primitives"]["planes"][i]["pattern"].is_null() {
             let pattern_str = data["primitives"]["planes"][i]["pattern"].to_string().parse::<String>()?;
             pattern = material::get_material_pattern(pattern_str.as_str());
