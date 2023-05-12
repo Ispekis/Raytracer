@@ -5,9 +5,9 @@
 // Primitives
 //
 
-use crate::math::Point3D::Point3D;
-use crate::math::Vector3D::Vector3D;
-use crate::ray_tracer::Ray::Ray;
+use crate::math::point3d::Point3D;
+use crate::math::vector3d::Vector3D;
+use crate::ray_tracer::ray::Ray;
 
 pub trait Primitives {
     fn translate(&mut self, vec:Vector3D);

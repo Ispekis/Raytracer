@@ -5,7 +5,7 @@
 // Point3D
 //
 
-use crate::math::Vector3D::Vector3D;
+use crate::math::vector3d::Vector3D;
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct Point3D {

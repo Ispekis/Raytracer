@@ -6,8 +6,8 @@
 //
 
 use crate::math::{
-    Point3D::Point3D,
-    Vector3D::Vector3D
+    point3d::Point3D,
+    vector3d::Vector3D
 };
 
 #[derive(Copy, Clone)]

@@ -2,8 +2,8 @@ mod error_handler;
 mod usage;
 mod raytracer;
 mod math {
-    pub mod Point3D;
-    pub mod Vector3D;
+    pub mod point3d;
+    pub mod vector3d;
     pub mod formulas;
 }
 
@@ -13,22 +13,21 @@ pub mod rgb;
 mod tools;
 
 mod ray_tracer {
-    pub mod Ray;
-    pub mod Sphere;
-    pub mod Camera;
-    pub mod Plane;
-    pub mod Rectangle3D;
-    pub mod Light;
-    pub mod material;
+    pub mod ray;
+    pub mod sphere;
+    pub mod camera;
+    pub mod plane;
+    pub mod rectangle3d;
+    pub mod light;
 }
 
 mod interfaces {
-    pub mod Primitives;
+    pub mod primitives;
 }
 
 
 mod config {
-    pub mod FileConfig;
+    pub mod fileconfig;
 }
 
 
@@ -43,7 +42,7 @@ fn main() -> std::process::ExitCode {
         return std::process::ExitCode::from(84);
     }
 
-    let scene = config::FileConfig::SceneData::new(&args[1]);
+    let scene = config::fileconfig::SceneData::new(&args[1]);
 
     match scene {
         Ok(mut s) => {

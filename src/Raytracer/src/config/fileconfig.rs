@@ -6,16 +6,16 @@
 //
 
 use serde_json::{Value};
-use crate::interfaces::Primitives::Primitives;
+use crate::interfaces::primitives::Primitives;
 use crate::math::{
-    Point3D::Point3D,
-    Vector3D::Vector3D
+    point3d::Point3D,
+    vector3d::Vector3D
 };
 use crate::ray_tracer::{
-    Camera::Camera,
-    Sphere::Sphere,
-    Plane::Plane,
-    Light::{
+    camera::Camera,
+    sphere::Sphere,
+    plane::Plane,
+    light::{
         Light,
         PointLight
     }

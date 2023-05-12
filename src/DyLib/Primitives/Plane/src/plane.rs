@@ -5,9 +5,9 @@
 // planes
 //
 
-use crate::math::{Vector3D::Vector3D, Point3D::Point3D};
-use crate::interfaces::Primitives::Primitives;
-use crate::ray_tracer::Ray::Ray;
+use crate::math::{vector3d::Vector3D, point3d::Point3D};
+use crate::interfaces::primitives::Primitives;
+use crate::ray_tracer::ray::Ray;
 
 #[derive(Copy, Clone)]
 pub struct Plane {

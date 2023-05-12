@@ -5,9 +5,9 @@
 // sphere
 //
 
-use crate::math::{Point3D::Point3D, formulas, Vector3D::Vector3D};
-use crate::ray_tracer::Ray::Ray;
-use crate::interfaces::Primitives::Primitives;
+use crate::math::{vector3d::Vector3D, formulas, point3d::Point3D};
+use crate::ray_tracer::ray::Ray;
+use crate::interfaces::primitives::Primitives;
 
 #[derive(Copy, Clone)]
 pub struct Sphere {

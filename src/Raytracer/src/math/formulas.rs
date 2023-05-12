@@ -5,7 +5,7 @@
 // formulas
 //
 
-use crate::math::{Point3D::Point3D, Vector3D::Vector3D};
+use crate::math::{point3d::Point3D, vector3d::Vector3D};
 
 pub fn compute_discriminant(a:f64, b:f64, c:f64) -> f64 {
     return b.powf(2.0) - 4.0 * a * c;
