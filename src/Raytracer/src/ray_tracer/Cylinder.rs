@@ -26,117 +26,139 @@ impl Cylinder {
     pub fn new_config(center:Point3D, radius:f64, height: f64, color:Vector3D, axis:char) -> Self {
         Cylinder {center, radius, height, color, axis}
     }
+
+    fn computeA(&self, ray:Ray) -> Option<f64> {
+        if (self.axis == 'X') {
+            return Some(ray.direction.z.powi(2) + ray.direction.y.powi(2));
+        } else if (self.axis == 'Y') {
+            return Some(ray.direction.x.powi(2) + ray.direction.z.powi(2));
+        } else if (self.axis == 'Z') {
+            return Some(ray.direction.x.powi(2) + ray.direction.y.powi(2));
+        } else {
+            return None;
+        }
+    }
+
+    fn computeB(&self, ray:Ray) -> Option<f64> {
+        if (self.axis == 'X') {
+            return Some(2.0 * (ray.direction.z * (ray.origin.z - self.center.z)
+            + ray.direction.y *(ray.origin.y - self.center.y)));
+        } else if (self.axis == 'Y') {
+            return Some(2.0 * (ray.direction.x * (ray.origin.x - self.center.x)
+            + ray.direction.z *(ray.origin.z - self.center.z)));
+        } else if (self.axis == 'Z') {
+            return Some(2.0 * (ray.direction.x * (ray.origin.x - self.center.x)
+            + ray.direction.y *(ray.origin.y - self.center.y)));
+        } else {
+            return None;
+        }
+    }
+
+    fn computeC(&self, ray:Ray) -> Option<f64> {
+        if (self.axis == 'X') {
+            return Some((ray.origin.z - self.center.z).powi(2) +
+            (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2));
+        } else if (self.axis == 'Y') {
+            return Some((ray.origin.x - self.center.x).powi(2) +
+            (ray.origin.z - self.center.z).powi(2) - self.radius.powi(2));
+        } else if (self.axis == 'Z') {
+            return Some((ray.origin.x - self.center.x).powi(2) +
+            (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2));
+        } else {
+            return None;
+        }
+    }
+
+    fn computeR(&self, ray:Ray) -> Option<Vec<f64>> {
+        if (self.axis == 'X') {
+            return Some(vec![ray.origin.x, ray.direction.x, self.center.x]);
+        } else if (self.axis == 'Y') {
+            return Some(vec![ray.origin.y, ray.direction.y, self.center.y]);
+        } else if (self.axis == 'Z') {
+            return Some(vec![ray.origin.z, ray.direction.z, self.center.z]);
+        } else {
+            return None;
+        }
+    }
+
+    fn getOrigin(&self, ray:Ray) -> Option<Vec<f64>> {
+        if (self.axis == 'X') {
+            return Some(vec![ray.origin.y, ray.origin.z, ray.origin.x]);
+        } else if (self.axis == 'Y') {
+            return Some(vec![ray.origin.x, ray.origin.z, ray.origin.y]);
+        } else if (self.axis == 'Z') {
+            return Some(vec![ray.origin.x, ray.origin.y, ray.origin.z]);
+        } else {
+            return None;
+        }
+    }
+
+    fn getCenter(&self, ray:Ray) -> Option<Vec<f64>> {
+        if (self.axis == 'X') {
+            return Some(vec![self.center.y, self.center.z, self.center.x]);
+        } else if (self.axis == 'Y') {
+            return Some(vec![self.center.x, self.center.z, self.center.y]);
+        } else if (self.axis == 'Z') {
+            return Some(vec![self.center.x, self.center.y, self.center.z]);
+        } else {
+            return None;
+        }
+    }
+
+    fn getDirection(&self, ray:Ray) -> Option<Vec<f64>> {
+        if (self.axis == 'X') {
+            return Some(vec![ray.direction.y, ray.direction.z, ray.direction.x]);
+        } else if (self.axis == 'Y') {
+            return Some(vec![ray.direction.x, ray.direction.z, ray.direction.y]);
+        } else if (self.axis == 'Z') {
+            return Some(vec![ray.direction.x, ray.direction.y, ray.direction.z]);
+        } else {
+            return None;
+        }
+    }
 }
 
 impl Primitives for Cylinder {
     fn hits(&self, ray:Ray) -> Option<Point3D> {
+        let mut origin: Vec<f64> = Vec::new();
+        let mut center: Vec<f64> = Vec::new();
+        let mut direction: Vec<f64> = Vec::new();
 
-        let tmpRay = ray.direction;
-        let mut tmp = self;
-        let definex = 'x';
-        // let mut ;
-        let mut a = 0.0;
-        let mut b = 0.0;
-        let mut c = 0.0;
-        if (self.axis == 'X') {
-            a = (ray.direction.z).powi(2) + (ray.direction.y).powi(2);
-            b = 2.0 * (ray.direction.z * (ray.origin.z - self.center.z) + ray.direction.y *(ray.origin.y - self.center.y));
-            c = (ray.origin.z - self.center.z).powi(2) + (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2);
+        match self.getOrigin(ray) {
+            Some(result) => origin = result,
+            None => return None
         }
-        else if (self.axis == 'Y') {
-            a = (ray.direction.x).powi(2) + (ray.direction.z).powi(2);
-            b = 2.0 * (ray.direction.x * (ray.origin.x - self.center.x) + ray.direction.z *(ray.origin.z - self.center.z));
-            c = (ray.origin.x - self.center.x).powi(2) + (ray.origin.z - self.center.z).powi(2) - self.radius.powi(2);
+        match self.getCenter(ray) {
+            Some(result) => center = result,
+            None => return None
         }
-        else {
-            a = (ray.direction.x).powi(2) + (ray.direction.y).powi(2);
-            b = 2.0 * (ray.direction.x * (ray.origin.x - self.center.x) + ray.direction.y *(ray.origin.y - self.center.y));
-            c = (ray.origin.x - self.center.x).powi(2) + (ray.origin.y - self.center.y).powi(2) - self.radius.powi(2);
+        match self.getDirection(ray) {
+            Some(result) => direction = result,
+            None => return None
         }
-        let delta = b*b - 4.0*a*c;
-        if (delta.abs() < 0.001) {
+
+        let a: f64 = direction[0].powi(2) + direction[1].powi(2);
+
+        let b: f64 = 2.0 * (direction[0] * (origin[0] - center[0])
+        + direction[1] * (origin[1] - center[1]));
+
+        let c: f64 = (origin[0] - center[0]).powi(2) +
+        (origin[1] - center[1]).powi(2) - self.radius.powi(2);
+
+        let delta: f64 = b.powi(2) - 4.0 * a * c;
+        if (delta.abs() < 0.001 || delta < 0.0) {
             return None;
         }
-        if (delta < 0.0) {
-            return None;
-        }
-        let t1 = (-b - delta.sqrt()) / (2.0 * a);
-        let t2 = (-b + delta.sqrt()) / (2.0 * a);
-        let mut t = 0.0;
+        let t1: f64 = (-b - delta.sqrt()) / (2.0 * a);
+        let t2: f64 = (-b + delta.sqrt()) / (2.0 * a);
+        let t: f64 = t1.min(t2);
 
-        if (t1 > t2) {
-            t = t2;
-        } else {
-            t = t1;
-        }
+        let r = origin[2] + t * direction[2];
 
-        let mut a1 = 0.0;
-        let mut a2 = 0.0;
-        let mut a3 = 0.0;
-        if (self.axis == 'X') {
-            a1 = ray.origin.x;
-            a2 = ray.direction.x;
-            a3 = self.center.x;
-            
-        }
-        else if (self.axis == 'Y') {
-            a1 = ray.origin.y;
-            a2 = ray.direction.y;
-            a3 = self.center.y;
-        }
-        else {
-            a1 = ray.origin.z;
-            a2 = ray.direction.z;
-            a3 = self.center.z;
-        }
-        let r = a1 + t * a2;
-
-        if ( r >= a3 && r <= a3 + self.height) {
+        if ( r >= center[2] && r <= center[2] + self.height) {
             return Some(Point3D::default());
         }
         return None;
-        // if disc < 0.0 {
-        //     return None;
-        // }
-
-        // let t1 = (-b - disc.sqrt()) / (2.0 * a);
-        // let t2 = (-b + disc.sqrt()) / (2.0 * a);
-        // let mut t = t1.max(t2);
-
-        // if t < 0.0 {
-        //     return None;
-        // }
-
-        // let x = ray.origin.x + t * ray.direction.x;
-        // let y = ray.origin.x + t * ray.direction.x;
-        // let z = ray.origin.y + t * ray.direction.y;
-        // if y >= self.center.x && y <= self.center.x + self.height {
-        //     return Some(Point3D::default());
-        // } else {
-        //     return None;
-        // }
-        // if z.abs() <= 1.0 {
-        //     return Some(Point3D::default());
-        // }
-
-        // if y < self.center.x || y > self.center.x + self.height {
-        //     t = (-b + disc.sqrt()) / (2.0 * a);
-        //     if t < 0.0 {
-        //         return None;
-        //     }
-        //     let y = ray.origin.x + t * ray.direction.x;
-        //     if y < self.center.x || y > self.center.x + self.height {
-        //         return None;
-        //     }
-        // }
-
-        // let mut hit_point = Point3D::new(0.0, 0.0, 0.0);
-
-        // hit_point.x = ray.origin.x + t * ray.direction.x;
-        // hit_point.x = ray.origin.x + t * ray.direction.x;
-        // hit_point.y = ray.origin.y + t * ray.direction.y;
-
-        // Some(hit_point)
     }
     fn translate(&mut self, Translate:Vector3D) {
         self.center.x += &Translate.x;
