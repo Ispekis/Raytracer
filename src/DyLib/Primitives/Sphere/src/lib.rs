@@ -5,20 +5,20 @@
 // lib
 //
 
-#[path = "../../../../Raytracer/src/Math"]
-mod Math {
+#[path = "../../../../Raytracer/src/math"]
+mod math {
     pub mod Point3D;
     pub mod Vector3D;
     pub mod formulas;
 }
 
-#[path = "../../../../Raytracer/src/Interfaces"]
-mod Interfaces {
+#[path = "../../../../Raytracer/src/interfaces"]
+mod interfaces {
     pub mod Primitives;
 }
 
-#[path = "../../../../Raytracer/src/RayTracer"]
-mod RayTracer {
+#[path = "../../../../Raytracer/src/ray_tracer"]
+mod ray_tracer {
     pub mod Ray;
 }
 

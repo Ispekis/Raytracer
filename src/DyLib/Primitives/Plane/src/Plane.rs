@@ -5,10 +5,9 @@
 // planes
 //
 
-use crate::Math::{Vector3D::Vector3D, Point3D::Point3D};
-use crate::Interfaces::Primitives::Primitives;
-use crate::RayTracer::Ray::Ray;
-use crate::Math::formulas;
+use crate::math::{Vector3D::Vector3D, Point3D::Point3D};
+use crate::interfaces::Primitives::Primitives;
+use crate::ray_tracer::Ray::Ray;
 
 #[derive(Copy, Clone)]
 pub struct Plane {
@@ -50,10 +49,10 @@ impl Primitives for Plane {
         }
         return None;
     }
-    fn translate(&mut self, Translate:Vector3D) {
-        self.center.x += Translate.x;
-        self.center.y += Translate.y;
-        self.center.z += Translate.z;
+    fn translate(&mut self, translate:Vector3D) {
+        self.center.x += translate.x;
+        self.center.y += translate.y;
+        self.center.z += translate.z;
     }
     fn rotateX(&mut self, angle:f64) {}
     fn rotateY(&mut self, angle:f64) {}
