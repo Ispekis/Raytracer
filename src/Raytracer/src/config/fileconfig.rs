@@ -18,8 +18,8 @@ use crate::ray_tracer::{
     light::{
         Light,
         PointLight
-    }
-    Cylinder::Cylinder,
+    },
+    cylinder::Cylinder,
 };
 use crate::tools;
 
