@@ -256,5 +256,5 @@ impl Mask for Chessboard {
         Box::new(*self)
     }
 
-    fn set_color(&mut self, color:Vector3D) {}
+    fn set_color(&mut self, _color:Vector3D) {}
 }
