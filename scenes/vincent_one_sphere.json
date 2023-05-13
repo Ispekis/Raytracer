@@ -6,7 +6,7 @@
         },
         "position": {
             "x": 0,
-            "y": 100,
+            "y": 0,
             "z": 0
         },
         "rotation": {
@@ -22,7 +22,7 @@
                 "x": 0,
                 "y": 0,
                 "z": 0,
-                "r": 300,
+                "r": 100,
                 "color": {
                     "r": 64,
                     "g": 255,
@@ -30,18 +30,20 @@
                 }
             }
         ],
-        "planes": []
+        "planes": [],
+        "cylinders": [],
+        "cones": []
     },
     "lights":
     {
         "ambient": 0.4,
-        "diffuse": 0.6,
-        "specular": 0.5,
+        "diffuse": 1.0,
+        "specular": 1.0,
         "point": [
             {
                 "x": 50,
                 "y": 0,
-                "z": -500,
+                "z": -150,
                 "color":{
                     "x": 255,
                     "y": 255,

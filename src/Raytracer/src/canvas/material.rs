@@ -41,16 +41,14 @@ impl PhongModel {
         } else {
             diffuse = eff_color * self.diffuse * light_dot_normal;
 
-            self.specular; // avoid warnings
-            // let reflectv = lightv.reflect(normal_v) * -1.0;
-            // let reflect_dot_eye = reflectv.scal(&direction);
-            // if (reflect_dot_eye <= 0.0) {
-            //     specular = Vector3D::new(0.0, 0.0, 0.0);
-            // } else {
-            //     let factor = reflect_dot_eye.powf(200.0);
-            //     specular = color * self.specular * factor * light.intensity
-            // }
-            specular = Color::default();
+            let reflectv = lightv.reflect(normal_v) * -1.0;
+            let reflect_dot_eye = reflectv.scal(&normal_v);
+            if reflect_dot_eye <= 0.0 {
+                specular = Color::black();
+            } else {
+                let factor = reflect_dot_eye.powf(200.0);
+                specular = color * self.specular * factor * light.intensity
+            }
         }
         let mut ret_color: Color;
         if is_shadow {
