@@ -46,7 +46,6 @@ impl World {
                 let color = self.light_model.lightning(self.objects[i].get_color(), self.scene.lights.point[0],
                 hit_point, self.objects[i].suface_normal(hit_point),
                 self.is_shadowed(hit_point, i));
-
                 write_flat_color(color);
                 return;
             }
