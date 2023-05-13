@@ -5,7 +5,7 @@
 // formulas
 //
 
-use crate::Math::{Point3D::Point3D, Vector3D::Vector3D};
+use crate::math::{point3d::Point3D, vector3d::Vector3D};
 
 pub fn compute_discriminant(a:f64, b:f64, c:f64) -> f64 {
     return b.powf(2.0) - 4.0 * a * c;
@@ -13,10 +13,10 @@ pub fn compute_discriminant(a:f64, b:f64, c:f64) -> f64 {
 
 pub fn resolve_quadratic_eq(delta:f64, a:f64, b:f64) -> Option<Vec<f64>>{
     let mut res: Vec<f64> = Vec::new();
-    if (delta < 0.0) {
+    if delta < 0.0 {
         return None;
     }
-    if (delta == 0.0) {
+    if delta == 0.0 {
         res.push(-b / 2.0 * a );
         return Some(res);
     }
@@ -42,14 +42,14 @@ pub fn get_inter_point_from_eq(eqs:Vec<f64>, point:Point3D, direction:Vector3D) 
 }
 
 pub fn get_closest_point(hit_points:Vec<Point3D>, origin:Point3D) -> Point3D {
-    if (hit_points.len() == 1) {
+    if hit_points.len() == 1 {
         return  hit_points[0];
     } else {
         let p1 = (hit_points[0] - origin).abs();
         let p2 = (hit_points[1] - origin).abs();
-        let p1_tot = (p1.x + p1.z + p1.z);
-        let p2_tot = (p2.x + p2.z + p2.z);
-        if (p1_tot > p2_tot) {
+        let p1_tot = p1.x + p1.z + p1.z;
+        let p2_tot = p2.x + p2.z + p2.z;
+        if p1_tot > p2_tot {
             return hit_points[1];
         } else {
             return hit_points[0];
@@ -57,7 +57,7 @@ pub fn get_closest_point(hit_points:Vec<Point3D>, origin:Point3D) -> Point3D {
     }
 }
 
-// fn suface_normal(hit_point:Point3D) -> Vector3D {
-//     let norme = (direction.x * direction.x + direction.y * direction.y + direction.z * direction.z).sqrt();
-//     return Vector3D::new(direction.x / norme, direction.y / norme, direction.z / norme)
-// }
+pub fn _suface_normal_vector(hit_point:Vector3D) -> Vector3D {
+    let norme = (hit_point.x * hit_point.x + hit_point.y * hit_point.y + hit_point.z * hit_point.z).sqrt();
+    return Vector3D::new(hit_point.x / norme, hit_point.y / norme, hit_point.z / norme)
+}

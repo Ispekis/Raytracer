@@ -1,0 +1,56 @@
+{
+    "camera": {
+        "resolution": {
+            "width": 1920,
+            "height": 1080
+        },
+        "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "fieldOfView": 72.0
+    },
+    "primitives": {
+        "spheres": [],
+        "planes": [
+            {
+                "axis": "Z",
+                "position": 0,
+                "color": {
+                    "r": 64,
+                    "g": 64,
+                    "b": 255
+                },
+                "pattern": "solid"
+            }
+        ]
+    },
+    "lights":
+    {
+        "ambient": 0.4,
+        "diffuse": 0.6,
+        "specular": 0.5,
+        "point": [
+            {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "color":{
+                    "x": 255,
+                    "y": 255,
+                    "z": 255
+                },
+                "intensity": 1.0
+            }
+
+        ],
+        "directional": [
+        ]
+    }
+}

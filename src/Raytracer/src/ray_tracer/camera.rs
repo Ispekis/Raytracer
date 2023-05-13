@@ -5,10 +5,10 @@
 // Camera
 //
 
-use crate::Math::Point3D::Point3D;
-use crate::Math::Vector3D::Vector3D;
-use crate::RayTracer::Rectangle3D::Rectangle3D;
-use crate::RayTracer::Ray::Ray;
+use crate::math::point3d::Point3D;
+use crate::math::vector3d::Vector3D;
+use crate::ray_tracer::rectangle3d::Rectangle3D;
+use crate::ray_tracer::ray::Ray;
 
 pub struct Camera {
     origin:Point3D,
@@ -24,9 +24,12 @@ impl Camera {
         let dis = (width / 2) as f64 / (fov / 2.0).to_radians().tan();
         let bottom_side = Vector3D::new(width as f64, 0.0, 0.0);
         let left_side = Vector3D::new(0.0, height as f64, 0.0);
-        let screen_origin = Point3D::new(-(((width) as f64) / 2.0 - position.x), -((height as f64) / 2.0 - position.y), position.z);
+        let screen_origin = Point3D::new(
+            -(((width) as f64) / 2.0 - position.x),
+            -((height as f64) / 2.0 - position.y),
+            position.z);
         Camera {
-            origin: Point3D::new(position.x, position.y, position.z + (-1.0 * dis)),
+            origin: Point3D::new(position.x, position.y, position.z - dis),
             screen: Rectangle3D::new(screen_origin, bottom_side, left_side),
             width,
             height,
@@ -36,7 +39,7 @@ impl Camera {
     }
 
     pub fn ray(&self, u:f64, v:f64) -> Ray {
-        let point = self.screen.pointAt(u, v);
+        let point = self.screen.point_at(u, v);
         Ray { origin:self.origin, direction: (point - self.origin) }
     }
 }

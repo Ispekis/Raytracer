@@ -1,33 +1,34 @@
 mod error_handler;
 mod usage;
 mod raytracer;
-mod Math {
-    pub mod Point3D;
-    pub mod Vector3D;
+mod math {
+    pub mod point3d;
+    pub mod vector3d;
     pub mod formulas;
 }
 
-pub mod ISolid;
-pub mod Rgb;
+pub mod rgb;
 
 mod tools;
 
-mod RayTracer {
-    pub mod Ray;
-    pub mod Sphere;
-    pub mod Camera;
-    pub mod Plane;
-    pub mod Rectangle3D;
-    pub mod Light;
+mod ray_tracer {
+    pub mod ray;
+    pub mod sphere;
+    pub mod camera;
+    pub mod plane;
+    pub mod cylinder;
+    pub mod rectangle3d;
+    pub mod light;
+    pub mod material;
 }
 
-mod Interfaces {
-    pub mod Primitives;
+mod interfaces {
+    pub mod primitives;
 }
 
 
-mod Config {
-    pub mod FileConfig;
+mod config {
+    pub mod fileconfig;
 }
 
 
@@ -42,15 +43,15 @@ fn main() -> std::process::ExitCode {
         return std::process::ExitCode::from(84);
     }
 
-    let scene = Config::FileConfig::SceneData::new(&args[1]);
+    let scene = config::fileconfig::SceneData::new(&args[1]);
 
     match scene {
-        Ok(mut s) => {
-            let mut mutable_scene = &mut s;
-            raytracer::run_raytracer(mutable_scene);
+        Ok(s) => {
+            // let mutable_scene = &mut s;
+            raytracer::run_raytracer(s);
             return std::process::ExitCode::SUCCESS;
         },
-        Err((_)) => {
+        Err(_) => {
             eprintln!("Error in reading the scene config");
             return std::process::ExitCode::from(84)
         }

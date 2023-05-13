@@ -5,9 +5,9 @@
 // sphere
 //
 
-use crate::Math::{Point3D::Point3D, formulas, Vector3D::Vector3D};
-use crate::RayTracer::Ray::Ray;
-use crate::Interfaces::Primitives::Primitives;
+use crate::math::{vector3d::Vector3D, formulas, point3d::Point3D};
+use crate::ray_tracer::ray::Ray;
+use crate::interfaces::primitives::Primitives;
 
 #[derive(Copy, Clone)]
 pub struct Sphere {
@@ -34,25 +34,26 @@ impl Primitives for Sphere {
         let c = dif.scal(&dif) - self.radius.powf(2.0);
         let dis = formulas::compute_discriminant(a, b, c);
         let res = formulas::resolve_quadratic_eq(dis, a, b);
-        if (res == None) {
+        if res == None {
             return None;
         } else {
             let inter_points = formulas::get_inter_point_from_eq(res.unwrap(), ray.origin, ray.direction);
             return Some(formulas::get_closest_point(inter_points, ray.origin));
         }
     }
-    fn translate(&mut self, Translate:Vector3D) {
-        self.center.x += &Translate.x;
-        self.center.y += &Translate.y;
-        self.center.z += &Translate.z;
+    fn translate(&mut self, translate:Vector3D) {
+        self.center.x += &translate.x;
+        self.center.y += &translate.y;
+        self.center.z += &translate.z;
     }
-    fn rotateX(&mut self, angle:f64) {}
-    fn rotateY(&mut self, angle:f64) {}
-    fn rotateZ(&mut self, angle:f64) {}
+    fn rotatex(&mut self, _:f64) {}
+    fn rotatey(&mut self, _:f64) {}
+    fn rotatez(&mut self, _:f64) {}
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
-        let direction = (hit_point - self.center);
-        let norme = (direction.x * direction.x + direction.y * direction.y + direction.z * direction.z).sqrt();
-        return Vector3D::new(direction.x / norme, direction.y / norme, direction.z / norme)
+        (hit_point - self.center).normalize()
+    }
+    fn get_color(&self) -> Vector3D {
+        self.color
     }
 }
 

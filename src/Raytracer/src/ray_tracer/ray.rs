@@ -5,8 +5,8 @@
 // ray
 //
 
-use crate::Math::Point3D::Point3D;
-use crate::Math::Vector3D::Vector3D;
+use crate::math::point3d::Point3D;
+use crate::math::vector3d::Vector3D;
 
 #[derive(Copy, Clone)]
 pub struct Ray {

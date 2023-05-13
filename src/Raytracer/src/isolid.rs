@@ -5,9 +5,9 @@
 // Isolid
 //
 
-use crate::Rgb::Rgb;
+use crate::rgb::Rgb;
 
 pub trait Solid {
-    fn getColor(&self) -> Rgb;
+    fn getcolor(&self) -> Rgb;
     // fn 
 }
