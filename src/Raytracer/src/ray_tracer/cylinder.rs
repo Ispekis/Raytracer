@@ -104,17 +104,6 @@ impl Primitives for Cylinder {
         if ( r >= center[2] && r <= center[2] + self.height) {
             return Some(Point3D::default());
         }
-
-        let t3: f64 = origin[2] - self.radius.powi(2) / -direction[2];
-        let t4: f64 = origin[2] + self.radius.powi(2) / -direction[2];
-
-        let poi1 = vec![origin[0] + direction[0] * t3, origin[1] + direction[1] * t3];
-        let poi2 = vec![origin[0] + direction[0] * t4, origin[1] + direction[1] * t4];
-        if (t3 > 0.0 && (poi1[0].powi(2) + poi1[1].powi(2)).sqrt() < self.radius) {
-            return Some(Point3D::default());
-        } else if (t4 > 0.0 && (poi2[0].powi(2) + poi2[1].powi(2)).sqrt() < self.radius) {
-            return Some(Point3D::default());
-        }
         return None;
     }
     fn translate(&mut self, Translate:Vector3D) {
