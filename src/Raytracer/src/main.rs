@@ -7,20 +7,22 @@ mod math {
     pub mod formulas;
 }
 
-pub mod rgb;
-
 mod tools;
+
+mod canvas {
+    pub mod color;
+    pub mod sphere;
+    pub mod plane;
+    pub mod cylinder;
+    pub mod cone;
+    pub mod material;
+}
 
 mod ray_tracer {
     pub mod ray;
-    pub mod sphere;
     pub mod camera;
-    pub mod plane;
-    pub mod cylinder;
     pub mod rectangle3d;
     pub mod light;
-    pub mod cone;
-    pub mod material;
 }
 
 mod interfaces {

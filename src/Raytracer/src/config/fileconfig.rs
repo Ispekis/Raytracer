@@ -6,22 +6,26 @@
 //
 
 use serde_json::{Value};
+use crate::canvas::color::Color;
 use crate::interfaces::primitives::Primitives;
 use crate::math::{
     point3d::Point3D,
     vector3d::Vector3D
 };
-use crate::ray_tracer::{
-    camera::Camera,
+use crate::canvas::{
     sphere::Sphere,
     plane::Plane,
+    cylinder::Cylinder,
+    cone::Cone,
+    material
+};
+
+use crate::ray_tracer::{
+    camera::Camera,
     light::{
         Light,
         PointLight
     },
-    cone::Cone,
-    cylinder::Cylinder,
-    material
 };
 use crate::tools;
 
@@ -77,7 +81,7 @@ fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::
 
         let radius = data["primitives"]["spheres"][i]["r"].to_string().parse::<f64>()?;
 
-        let color = Vector3D::new(
+        let color = Color::new(
             data["primitives"]["spheres"][i]["color"]["r"].to_string().parse::<f64>()?,
             data["primitives"]["spheres"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["spheres"][i]["color"]["b"].to_string().parse::<f64>()?);
@@ -130,7 +134,7 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
         let axis_str = data["primitives"]["planes"][i]["axis"].to_string().parse::<String>()?;
         let axis = axis_str[1..2].chars().next().unwrap();
         let position = data["primitives"]["planes"][i]["position"].to_string().parse::<f64>()?;
-        let color = Vector3D::new(
+        let color = Color::new(
             data["primitives"]["planes"][i]["color"]["r"].to_string().parse::<f64>()?,
             data["primitives"]["planes"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["planes"][i]["color"]["b"].to_string().parse::<f64>()?);
@@ -182,7 +186,7 @@ fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn s
         let axis_str = data["primitives"]["cylinders"][i]["axis"].to_string().parse::<String>()?;
         let axis = axis_str[1..2].chars().next().unwrap();
         let height = data["primitives"]["cylinders"][i]["h"].to_string().parse::<f64>()?;
-        let color = Vector3D::new(
+        let color = Color::new(
             data["primitives"]["cylinders"][i]["color"]["r"].to_string().parse::<f64>()?,
             data["primitives"]["cylinders"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["cylinders"][i]["color"]["b"].to_string().parse::<f64>()?);
@@ -215,7 +219,7 @@ fn config_cones(data:&Value) -> std::result::Result<Vec<Cone>, Box<dyn std::erro
         let axis_str = data["primitives"]["cones"][i]["axis"].to_string().parse::<String>()?;
         let axis = axis_str[1..2].chars().next().unwrap();
         let height = data["primitives"]["cones"][i]["h"].to_string().parse::<f64>()?;
-        let color = Vector3D::new(
+        let color = Color::new(
             data["primitives"]["cones"][i]["color"]["r"].to_string().parse::<f64>()?,
             data["primitives"]["cones"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["cones"][i]["color"]["b"].to_string().parse::<f64>()?);
