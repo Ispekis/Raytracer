@@ -27,6 +27,9 @@
                     "r": 64,
                     "g": 255,
                     "b": 64
+                },
+                "material": {
+                    "reflectiveness": 0.5
                 }
             }
         ],
@@ -41,7 +44,9 @@
                 },
                 "pattern": "solid"
             }
-        ]
+        ],
+        "cylinders": [],
+        "cones": []
     },
     "lights":
     {

@@ -19,6 +19,7 @@ mod ray_tracer {
     pub mod cylinder;
     pub mod rectangle3d;
     pub mod light;
+    pub mod cone;
     pub mod material;
 }
 

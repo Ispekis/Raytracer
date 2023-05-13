@@ -43,9 +43,10 @@ impl Vector3D {
     }
 
     pub fn reflect(&self, other:Vector3D) -> Vector3D {
-        let normal = other / other.normalize();
-        let reflected_vector = *self - normal * 2.0 * (*self).scal(&normal);
-        reflected_vector
+        *self - other * 2.0 * self.scal(&other)
+        // let normal = other / other.normalize();
+        // let reflected_vector = *self - normal * 2.0 * (*self).scal(&normal);
+        // reflected_vector
     }
 }
 
