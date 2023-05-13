@@ -28,7 +28,7 @@ use crate::tools;
 pub struct Primitivest {
     pub spheres:Vec<Sphere>,
     pub planes:Vec<Plane>,
-    pub cylinders:Vec<Cylinder>
+    pub cylinders:Vec<Cylinder>,
     pub cones:Vec<Cone>
 }
 

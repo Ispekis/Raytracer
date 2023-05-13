@@ -79,9 +79,9 @@ impl Cone {
 
 impl Primitives for Cone {
     fn hits(&self, ray:Ray) -> Option<Point3D> {
-        let mut origin: Vec<f64> = Vec::new();
-        let mut center: Vec<f64> = Vec::new();
-        let mut direction: Vec<f64> = Vec::new();
+        let origin: Vec<f64>;
+        let center: Vec<f64>;
+        let direction: Vec<f64>;
 
         match self.getorigin(ray) {
             Some(result) => origin = result,
