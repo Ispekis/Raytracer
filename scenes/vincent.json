@@ -29,7 +29,7 @@
                     "b": 64
                 },
                 "material": {
-                    "reflectiveness": 1.0
+                    "reflectiveness": 0.5
                 }
             }
         ],
@@ -42,9 +42,11 @@
                     "g": 64,
                     "b": 255
                 },
-                "pattern": "chessboard"
+                "pattern": "solid"
             }
-        ]
+        ],
+        "cylinders": [],
+        "cones": []
     },
     "lights":
     {
