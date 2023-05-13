@@ -7,8 +7,6 @@ mod math {
     pub mod formulas;
 }
 
-pub mod rgb;
-
 mod tools;
 
 mod canvas {
