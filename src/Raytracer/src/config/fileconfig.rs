@@ -178,7 +178,14 @@ fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn s
             data["primitives"]["cylinders"][i]["color"]["r"].to_string().parse::<f64>()?,
             data["primitives"]["cylinders"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["cylinders"][i]["color"]["b"].to_string().parse::<f64>()?);
-        cylinders.push(Cylinder::new_config(position, radius, height, color, axis));
+
+        let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
+        if !data["primitives"]["cylinders"][i]["pattern"].is_null() {
+            let pattern_str = data["primitives"]["cylinders"][i]["pattern"].to_string().parse::<String>()?;
+            pattern = material::get_material_pattern(pattern_str.as_str());
+        }
+        pattern.set_color(color);
+        cylinders.push(Cylinder::new_config(position, radius, height, color, axis, pattern));
     }
 
     Ok(cylinders)

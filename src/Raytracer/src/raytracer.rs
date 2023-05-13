@@ -31,7 +31,7 @@ impl World {
             objects.push(Box::new(scene.primitives.planes[i].clone()))
         }
         for i in 0..scene.primitives.cylinders.len() {
-            objects.push(Box::new(scene.primitives.cylinders[i]))
+            objects.push(Box::new(scene.primitives.cylinders[i].clone()))
         }
         Self { scene, objects, light_model }
     }

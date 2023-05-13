@@ -57,7 +57,7 @@ pub fn get_closest_point(hit_points:Vec<Point3D>, origin:Point3D) -> Point3D {
     }
 }
 
-pub fn suface_normal_vector(hit_point:Vector3D) -> Vector3D {
+pub fn _suface_normal_vector(hit_point:Vector3D) -> Vector3D {
     let norme = (hit_point.x * hit_point.x + hit_point.y * hit_point.y + hit_point.z * hit_point.z).sqrt();
     return Vector3D::new(hit_point.x / norme, hit_point.y / norme, hit_point.z / norme)
 }
