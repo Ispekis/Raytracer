@@ -82,6 +82,9 @@ impl Primitives for Cone {
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
         return Vector3D::default();
     }
+    fn get_color(&self) -> Vector3D {
+        self.color
+    }
 }
 
 impl Default for Cone {
