@@ -17,7 +17,8 @@ use crate::ray_tracer::{
     plane::Plane,
     light::{
         Light,
-        PointLight
+        PointLight,
+        DirectionnalLight
     },
     cylinder::Cylinder,
 };
@@ -32,7 +33,7 @@ pub struct Primitivest {
 pub struct SceneData {
     pub camera:Camera,
     pub primitives:Primitivest,
-    pub lights:Light
+    pub lights:Light,
 }
 
 fn convert_string_to_json_obj(str: String) -> std::result::Result<Value, Box<dyn std::error::Error>> {
@@ -191,7 +192,7 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
     .as_array()
     .ok_or("Not an array")?.len();
     let mut points: Vec<PointLight> = Vec::new();
-    let mut directionals: Vec<Vector3D> = Vec::new();
+    let mut directionals: Vec<DirectionnalLight> = Vec::new();
 
     for i in 0..points_len {
         let point = Point3D::new(
@@ -199,9 +200,9 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
             data["lights"]["point"][i]["y"].to_string().parse::<f64>()?,
             data["lights"]["point"][i]["z"].to_string().parse::<f64>()?);
 
-        let mut color = Vector3D::new(255.0, 255.0, 255.0);
+        let mut color = Point3D::new(255.0, 255.0, 255.0);
         if !data["lights"]["point"][i]["color"].is_null() {
-            color = Vector3D::new(
+            color = Point3D::new(
                 data["lights"]["point"][i]["color"]["x"].to_string().parse::<f64>()?,
                 data["lights"]["point"][i]["color"]["y"].to_string().parse::<f64>()?,
                 data["lights"]["point"][i]["color"]["z"].to_string().parse::<f64>()?);
@@ -216,11 +217,24 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
     }
 
     for i in 0..directionals_len {
-        let directional = Vector3D::new(
+
+        let point = Point3D::new(
             data["lights"]["directional"][i]["x"].to_string().parse::<f64>()?,
             data["lights"]["directional"][i]["y"].to_string().parse::<f64>()?,
-            data["lights"]["directional"][i]["z"].to_string().parse::<f64>()?);
-        directionals.push(directional);
+            data["lights"]["directional"][i]["z"].to_string().parse::<f64>()?
+        );
+        let color = Point3D::new(
+            data["lights"]["directional"][i]["color"]["x"].to_string().parse::<f64>()?,
+            data["lights"]["directional"][i]["color"]["y"].to_string().parse::<f64>()?,
+            data["lights"]["directional"][i]["color"]["z"].to_string().parse::<f64>()?
+        );
+        let intensity = data["lights"]["directional"][i]["intensity"].to_string().parse::<f64>()?;
+        let rotation = Point3D::new(
+            data["lights"]["directional"][i]["rotation"]["x"].to_string().parse::<f64>()?,
+            data["lights"]["directional"][i]["rotation"]["y"].to_string().parse::<f64>()?,
+            data["lights"]["directional"][i]["rotation"]["z"].to_string().parse::<f64>()?
+        );
+        directionals.push(DirectionnalLight {origin: point, color, intensity, rotation});
     }
     Ok(Light::new_config(ambient, diffuse, specular, points, directionals))
 }
