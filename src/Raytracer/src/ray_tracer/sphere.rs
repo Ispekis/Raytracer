@@ -10,12 +10,13 @@ use crate::ray_tracer::ray::Ray;
 use crate::interfaces::primitives::Primitives;
 use crate::ray_tracer::material::{Mask, Solid};
 
-// #[derive(Clone)]
+#[derive(Clone)]
 pub struct Sphere {
     pub center:Point3D,
     pub radius:f64,
     pub color:Vector3D,
-    pub pattern:Box<dyn Mask>
+    pub pattern:Box<dyn Mask>,
+    pub reflectiveness: f64
 }
 
 impl Sphere {
@@ -23,8 +24,8 @@ impl Sphere {
     //     return Sphere {center, radius, color:Vector3D::default()};
     // }
 
-    pub fn new_config(center:Point3D, radius:f64, color:Vector3D, pattern:Box<dyn Mask>) -> Self {
-        Sphere {center, radius, color, pattern}
+    pub fn new_config(center:Point3D, radius:f64, color:Vector3D, pattern:Box<dyn Mask>, reflectiveness:f64) -> Self {
+        Sphere {center, radius, color, pattern, reflectiveness}
     }
 }
 
@@ -60,18 +61,21 @@ impl Primitives for Sphere {
     fn get_pattern(&self) -> Box<dyn Mask> {
         self.pattern.clone()
     }
-}
-
-impl Clone for Sphere {
-    fn clone(&self) -> Self {
-        Sphere {
-            center: self.center.clone(),
-            radius: self.radius,
-            color: self.color.clone(),
-            pattern: self.pattern.clone()
-        }
+    fn get_reflectiveness(&self) -> f64 {
+        self.reflectiveness
     }
 }
+
+// impl Clone for Sphere {
+//     fn clone(&self) -> Self {
+//         Sphere {
+//             center: self.center.clone(),
+//             radius: self.radius,
+//             color: self.color.clone(),
+//             pattern: self.pattern.clone()
+//         }
+//     }
+// }
 
 impl Default for Sphere {
     fn default() -> Self {
@@ -79,7 +83,8 @@ impl Default for Sphere {
             center: Point3D::default(),
             radius: 0.0,
             color: Vector3D::default(),
-            pattern: Box::new(Solid::default())
+            pattern: Box::new(Solid::default()),
+            reflectiveness: 0.0
         }
     }
 }

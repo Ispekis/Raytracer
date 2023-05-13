@@ -15,11 +15,12 @@ use crate::ray_tracer::light::PointLight;
 pub struct PhongModel {
     ambient:f64,
     diffuse:f64,
+    specular:f64,
 }
 
 impl PhongModel {
-    pub fn new(ambient:f64, diffuse:f64) -> Self{
-        Self {ambient, diffuse}
+    pub fn new(ambient:f64, diffuse:f64, specular:f64) -> Self {
+        Self {ambient, diffuse, specular}
     }
 
     pub fn lightning(&self, color:Vector3D, light:PointLight, position:Point3D, normal_v:Vector3D, is_shadow:bool) -> Vector3D {
@@ -38,6 +39,7 @@ impl PhongModel {
         } else {
             diffuse = eff_color * self.diffuse * light_dot_normal;
 
+            self.specular; // avoid warnings
             // let reflectv = lightv.reflect(normal_v) * -1.0;
             // let reflect_dot_eye = reflectv.scal(&direction);
             // if (reflect_dot_eye <= 0.0) {
@@ -71,7 +73,8 @@ impl Default for PhongModel {
     fn default() -> Self {
         Self {
             ambient: 1.0,
-            diffuse: 1.0
+            diffuse: 1.0,
+            specular: 1.0
         }
     }
 }

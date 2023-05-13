@@ -27,6 +27,9 @@
                     "r": 64,
                     "g": 255,
                     "b": 64
+                },
+                "material": {
+                    "reflectiveness": 1.0
                 }
             }
         ],
@@ -39,7 +42,7 @@
                     "g": 64,
                     "b": 255
                 },
-                "pattern": "solid"
+                "pattern": "chessboard"
             }
         ]
     },
