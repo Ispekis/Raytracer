@@ -166,6 +166,32 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
     Ok(planes)
 }
 
+fn config_cones(data:&Value) -> std::result::Result<Vec<Cone>, Box<dyn std::error::Error>> {
+    let mut cones: Vec<Cone> = Vec::new();
+
+    let cones_len =  data["primitives"]["cones"]
+    .as_array()
+    .ok_or("Not an array")?.len();
+
+    for i in 0..cones_len {
+        let position = Point3D::new(
+            data["primitives"]["cones"][i]["x"].to_string().parse::<f64>()?,
+            data["primitives"]["cones"][i]["y"].to_string().parse::<f64>()?,
+            data["primitives"]["cones"][i]["z"].to_string().parse::<f64>()?);
+        let radius = data["primitives"]["cones"][i]["r"].to_string().parse::<f64>()?;
+        let axis_str = data["primitives"]["cones"][i]["axis"].to_string().parse::<String>()?;
+        let axis = axis_str[1..2].chars().next().unwrap();
+        let height = data["primitives"]["cones"][i]["h"].to_string().parse::<f64>()?;
+        let color = Vector3D::new(
+            data["primitives"]["cones"][i]["color"]["r"].to_string().parse::<f64>()?,
+            data["primitives"]["cones"][i]["color"]["g"].to_string().parse::<f64>()?,
+            data["primitives"]["cones"][i]["color"]["b"].to_string().parse::<f64>()?);
+        let mut new = Cone::new_config(position, radius, height, color, axis);
+        cones.push(new);
+    }
+    Ok(cones)
+}
+
 fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn std::error::Error>> {
     let mut cylinders: Vec<Cylinder> = Vec::new();
 

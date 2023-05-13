@@ -41,6 +41,9 @@ impl World {
         for i in 0..scene.primitives.cylinders.len() {
             objects.push(Box::new(scene.primitives.cylinders[i].clone()))
         }
+        for i in 0..scene.primitives.cones.len() {
+            objects.push(Box::new(scene.primitives.cones[i]))
+        }
         Self { scene, objects, light_model }
     }
 
