@@ -9,6 +9,7 @@ use crate::math::{vector3d::Vector3D, point3d::Point3D};
 use crate::interfaces::primitives::Primitives;
 use crate::ray_tracer::ray::Ray;
 
+use super::color::Color;
 use super::material::{
     Solid,
     Mask
@@ -19,13 +20,13 @@ pub struct Plane {
     pub axis:char,
     pub center:Point3D,
     pub direction:Vector3D,
-    pub color:Vector3D,
+    pub color:Color,
     pub pattern: Box<dyn Mask>,
     pub reflectiveness: f64
 }
 
 impl Plane {
-    pub fn new_config(axis:char, position:f64, color:Vector3D, pattern:Box<dyn Mask>) -> Self {
+    pub fn new_config(axis:char, position:f64, color:Color, pattern:Box<dyn Mask>) -> Self {
         let mut pos = Point3D::default();
         let mut direction = Vector3D::default();
         if axis == 'X' {
@@ -105,7 +106,7 @@ impl Primitives for Plane {
     fn suface_normal(&self, _:Point3D) -> Vector3D {
         Vector3D::new(0.0, 1.0, 0.1)
     }
-    fn get_color(&self) -> Vector3D {
+    fn get_color(&self) -> Color {
         self.color
     }
 
@@ -123,7 +124,7 @@ impl Default for Plane {
             axis: 'C',
             center: Point3D::default(),
             direction: Vector3D::default(),
-            color: Vector3D::default() ,
+            color: Color::default() ,
             pattern: Box::new(Solid::default()),
             reflectiveness: 0.0
         }

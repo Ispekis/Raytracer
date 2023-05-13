@@ -5,13 +5,12 @@
 // raytracer
 //
 
+use crate::canvas::color::Color;
 use crate::config::fileconfig;
 use crate::interfaces::primitives::Primitives;
 use crate::math::{point3d::Point3D, vector3d::Vector3D};
-use crate::ray_tracer::{
-    ray::Ray,
-    material::PhongModel
-};
+use crate::canvas::material::PhongModel;
+use crate::ray_tracer::ray::Ray;
 
 struct World {
     scene:fileconfig::SceneData,
@@ -40,12 +39,12 @@ impl World {
         Self { scene, objects, light_model, reflection_limit:5 }
     }
 
-    pub fn color_at(&self, ray:Ray) -> Vector3D {
+    pub fn color_at(&self, ray:Ray) -> Color {
         self.color_at_with_reflection(ray, self.reflection_limit)
     }
 
-    pub fn color_at_with_reflection(&self, ray:Ray, remain_reflection:usize) -> Vector3D {
-        let mut color:Vector3D = Vector3D::new(0.0, 0.0, 0.0);
+    pub fn color_at_with_reflection(&self, ray:Ray, remain_reflection:usize) -> Color {
+        let mut color:Color = Color::black();
         let mut distance:f64 = f64::INFINITY;
 
         for i in 0..self.objects.len() {
@@ -106,15 +105,15 @@ impl World {
         return None;
     }
 
-    fn reflected_color_at(&self, hit_point:Point3D, reflectv:Vector3D, remain_reflection:usize, index:usize) -> Vector3D{
+    fn reflected_color_at(&self, hit_point:Point3D, reflectv:Vector3D, remain_reflection:usize, index:usize) -> Color {
         // Hit non reflective object
         if self.objects[index].get_reflectiveness() == 0.0 || remain_reflection == 0 {
-            return Vector3D::new(0.0, 0.0, 0.0);
+            return Color::black();
         }
 
         let reflected_ray = Ray::new(hit_point, reflectv);
 
-        let reflected_color:Vector3D = self.color_at_with_reflection(reflected_ray, remain_reflection - 1);
+        let reflected_color:Color = self.color_at_with_reflection(reflected_ray, remain_reflection - 1);
         reflected_color * self.objects[index].get_reflectiveness()
     }
 
@@ -135,8 +134,8 @@ impl World {
     }
 }
 
-fn write_flat_color(color:Vector3D) {
-    println!("{} {} {}", color.x as u32, color.y as u32, color.z as u32);
+fn write_flat_color(color:Color) {
+    println!("{} {} {}", color.r as u32, color.g as u32, color.b as u32);
 }
 
 pub fn run_raytracer(scene:fileconfig::SceneData) -> u32

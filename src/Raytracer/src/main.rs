@@ -11,16 +11,19 @@ pub mod rgb;
 
 mod tools;
 
-mod ray_tracer {
-    pub mod ray;
+mod canvas {
+    pub mod color;
     pub mod sphere;
-    pub mod camera;
     pub mod plane;
     pub mod cylinder;
+    pub mod material;
+}
+
+mod ray_tracer {
+    pub mod ray;
+    pub mod camera;
     pub mod rectangle3d;
     pub mod light;
-    pub mod cone;
-    pub mod material;
 }
 
 mod interfaces {

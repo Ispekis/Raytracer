@@ -12,6 +12,8 @@ use crate::math::{
 
 use crate::ray_tracer::light::PointLight;
 
+use super::color::Color;
+
 pub struct PhongModel {
     ambient:f64,
     diffuse:f64,
@@ -23,19 +25,19 @@ impl PhongModel {
         Self {ambient, diffuse, specular}
     }
 
-    pub fn lightning(&self, color:Vector3D, light:PointLight, position:Point3D, normal_v:Vector3D, is_shadow:bool) -> Vector3D {
+    pub fn lightning(&self, color:Color, light:PointLight, position:Point3D, normal_v:Vector3D, is_shadow:bool) -> Color {
         let eff_color = color * light.intensity;
-        let ambient:Vector3D;
-        let diffuse:Vector3D;
-        let specular:Vector3D;
+        let ambient:Color;
+        let diffuse:Color;
+        let specular:Color;
 
         let lightv = (light.origin - position).normalize();
 
         ambient = eff_color * self.ambient;
         let light_dot_normal = lightv.scal(&normal_v);
         if light_dot_normal < 0.0 {
-            diffuse = Vector3D::new(0.0, 0.0, 0.0); // Black
-            specular = Vector3D::new(0.0, 0.0, 0.0); // Black
+            diffuse = Color::black(); // Black
+            specular = Color::black(); // Black
         } else {
             diffuse = eff_color * self.diffuse * light_dot_normal;
 
@@ -48,22 +50,22 @@ impl PhongModel {
             //     let factor = reflect_dot_eye.powf(200.0);
             //     specular = color * self.specular * factor * light.intensity
             // }
-            specular = Vector3D::default();
+            specular = Color::default();
         }
-        let mut ret_color: Vector3D;
+        let mut ret_color: Color;
         if is_shadow {
             ret_color = ambient;
         } else {
             ret_color = ambient + diffuse + specular;
         }
-        if ret_color.x >= 255.0 {
-            ret_color.x = 255.0;
+        if ret_color.r >= 255.0 {
+            ret_color.r = 255.0;
         }
-        if ret_color.y >= 255.0 {
-            ret_color.y = 255.0;
+        if ret_color.g >= 255.0 {
+            ret_color.g = 255.0;
         }
-        if ret_color.z >= 255.0 {
-            ret_color.z = 255.0;
+        if ret_color.b >= 255.0 {
+            ret_color.b = 255.0;
         }
         ret_color
     }
@@ -80,9 +82,9 @@ impl Default for PhongModel {
 }
 
 pub trait Mask {
-    fn color_at(&self, position:Point3D) -> Vector3D;
+    fn color_at(&self, position:Point3D) -> Color;
     fn box_clone(&self) -> Box<dyn Mask>;
-    fn set_color(&mut self, color:Vector3D);
+    fn set_color(&mut self, color:Color);
 }
 
 impl Clone for Box<dyn Mask> {
@@ -98,11 +100,11 @@ impl Clone for Box<dyn Mask> {
 
 #[derive(Copy, Clone)]
 pub struct Solid {
-    color: Vector3D
+    color: Color
 }
 
 impl Solid {
-    pub fn new(color:Vector3D) -> Self {
+    pub fn new(color:Color) -> Self {
         Self { color }
     }
 }
@@ -119,12 +121,12 @@ pub fn get_material_pattern(str: &str) -> Box<dyn Mask> {
 
 impl Default for Solid {
     fn default() -> Self {
-        Solid { color: Vector3D::default() }
+        Solid { color: Color::default() }
     }
 }
 
 impl Mask for Solid {
-    fn color_at(&self, _position:Point3D) -> Vector3D {
+    fn color_at(&self, _position:Point3D) -> Color {
         self.color
     }
 
@@ -132,25 +134,25 @@ impl Mask for Solid {
         Box::new(*self)
     }
 
-    fn set_color(&mut self, color:Vector3D) {
+    fn set_color(&mut self, color:Color) {
         self.color = color;
     }
 }
 
 #[derive(Copy, Clone)]
 pub struct Chessboard {
-    color_a: Vector3D,
-    color_b: Vector3D
+    color_a: Color,
+    color_b: Color
 }
 
 impl Default for Chessboard {
     fn default() -> Self {
-        Self { color_a: Vector3D::new(0.0, 0.0, 0.0), color_b: Vector3D::new(255.0, 255.0, 255.0) }
+        Self { color_a: Color::black(), color_b: Color::white() }
     }
 }
 
 impl Mask for Chessboard {
-    fn color_at(&self, position:Point3D) -> Vector3D {
+    fn color_at(&self, position:Point3D) -> Color {
         let x = position.x;
         let y = position.y;
         let z = position.z;
@@ -166,5 +168,5 @@ impl Mask for Chessboard {
         Box::new(*self)
     }
 
-    fn set_color(&mut self, _color:Vector3D) {}
+    fn set_color(&mut self, _color:Color) {}
 }
