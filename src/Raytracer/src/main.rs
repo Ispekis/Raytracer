@@ -14,6 +14,7 @@ mod canvas {
     pub mod sphere;
     pub mod plane;
     pub mod cylinder;
+    pub mod cone;
     pub mod material;
 }
 

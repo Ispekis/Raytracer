@@ -16,6 +16,7 @@ use crate::canvas::{
     sphere::Sphere,
     plane::Plane,
     cylinder::Cylinder,
+    cone::Cone,
     material
 };
 
@@ -218,7 +219,7 @@ fn config_cones(data:&Value) -> std::result::Result<Vec<Cone>, Box<dyn std::erro
         let axis_str = data["primitives"]["cones"][i]["axis"].to_string().parse::<String>()?;
         let axis = axis_str[1..2].chars().next().unwrap();
         let height = data["primitives"]["cones"][i]["h"].to_string().parse::<f64>()?;
-        let color = Vector3D::new(
+        let color = Color::new(
             data["primitives"]["cones"][i]["color"]["r"].to_string().parse::<f64>()?,
             data["primitives"]["cones"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["cones"][i]["color"]["b"].to_string().parse::<f64>()?);
