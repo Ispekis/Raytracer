@@ -9,19 +9,24 @@ use crate::math::{vector3d::Vector3D, point3d::Point3D};
 use crate::interfaces::primitives::Primitives;
 use crate::ray_tracer::ray::Ray;
 use crate::math::formulas;
+use super::material::{
+    Solid,
+    Mask
+};
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct Cone {
     pub center:Point3D,
     pub radius:f64,
     pub height:f64,
     pub color:Vector3D,
     pub axis:char,
-    pub direction:Vector3D
+    pub direction:Vector3D,
+    pub pattern:Box<dyn Mask>
 }
 
 impl Cone {
-    pub fn new_config(center:Point3D, radius:f64, height: f64, color:Vector3D, axis:char) -> Self {
+    pub fn new_config(center:Point3D, radius:f64, height: f64, color:Vector3D, axis:char, pattern:Box<dyn Mask>) -> Self {
         let mut direction = Vector3D::default();
         if axis == 'X' {
             direction.x = 1.0;
@@ -32,7 +37,7 @@ impl Cone {
         if axis == 'Z' {
             direction.y = 1.0;
         }
-        Cone {center, radius, height, color, axis, direction}
+        Cone {center, radius, height, color, axis, direction, pattern}
     }
 
     fn getOrigin(&self, ray:Ray) -> Option<Vec<f64>> {
@@ -121,7 +126,7 @@ impl Primitives for Cone {
 
         let r = origin[2] + t * direction[2];
 
-        if ( r >= center[2] && r <= center[2] + self.height) {
+        if r >= center[2] && r <= center[2] + self.height {
             return Some(Point3D::default());
         }
         return None;
@@ -140,6 +145,9 @@ impl Primitives for Cone {
     fn get_color(&self) -> Vector3D {
         self.color
     }
+    fn get_pattern(&self) -> Box<dyn super::material::Mask> {
+        self.pattern.clone()
+    }
 }
 
 impl Default for Cone {
@@ -150,7 +158,8 @@ impl Default for Cone {
             height: 0.0,
             color: Vector3D::default(),
             axis: 'Z',
-            direction: Vector3D::default()
+            direction: Vector3D::default(),
+            pattern: Box::new(Solid::default())
         }
     }
 }

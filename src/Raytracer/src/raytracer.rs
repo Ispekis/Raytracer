@@ -34,17 +34,10 @@ impl World {
         for i in 0..scene.primitives.cylinders.len() {
             objects.push(Box::new(scene.primitives.cylinders[i].clone()))
         }
+        for i in 0..scene.primitives.cones.len() {
+            objects.push(Box::new(scene.primitives.cones[i].clone()))
+        }
         Self { scene, objects, light_model, reflection_limit:5 }
-        for i in 0..scene.primitives.cones.len() {
-            objects.push(Box::new(scene.primitives.cones[i]))
-        }
-        for i in 0..scene.primitives.cylinders.len() {
-            objects.push(Box::new(scene.primitives.cylinders[i].clone()))
-        }
-        for i in 0..scene.primitives.cones.len() {
-            objects.push(Box::new(scene.primitives.cones[i]))
-        }
-        Self { scene, objects, light_model }
     }
 
     pub fn color_at(&self, ray:Ray) -> Vector3D {
