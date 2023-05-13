@@ -15,16 +15,12 @@ use crate::ray_tracer::{
     camera::Camera,
     sphere::Sphere,
     plane::Plane,
-    cone::Cone,
     light::{
         Light,
         PointLight
     },
+    cone::Cone,
     cylinder::Cylinder,
-    material::{
-        Solid,
-        Mask
-    }
     material
 };
 use crate::tools;
@@ -173,63 +169,6 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
 fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn std::error::Error>> {
     let mut cylinders: Vec<Cylinder> = Vec::new();
 
-    let cylinders_len =  data["primitives"]["cylinders"]
-    .as_array()
-    .ok_or("Not an array")?.len();
-
-    for i in 0..cylinders_len {
-        let position = Point3D::new(
-            data["primitives"]["spheres"][i]["x"].to_string().parse::<f64>()?,
-            data["primitives"]["spheres"][i]["y"].to_string().parse::<f64>()?,
-            data["primitives"]["spheres"][i]["z"].to_string().parse::<f64>()?);
-
-        let radius = data["primitives"]["spheres"][i]["r"].to_string().parse::<f64>()?;
-        let color = Vector3D::new(
-            data["primitives"]["cylinders"][i]["color"]["r"].to_string().parse::<f64>()?,
-            data["primitives"]["cylinders"][i]["color"]["g"].to_string().parse::<f64>()?,
-            data["primitives"]["cylinders"][i]["color"]["b"].to_string().parse::<f64>()?);
-
-        cylinders.push(Cylinder::new_config(position, radius, color));
-    }
-
-    Ok(cylinders)
-}
-
-fn config_cones(data:&Value) -> std::result::Result<Vec<Cone>, Box<dyn std::error::Error>> {
-    let mut cones: Vec<Cone> = Vec::new();
-
-    let cones_len =  data["primitives"]["cones"]
-    .as_array()
-    .ok_or("Not an array")?.len();
-
-    for i in 0..cones_len {
-        let position = Point3D::new(
-            data["primitives"]["cones"][i]["x"].to_string().parse::<f64>()?,
-            data["primitives"]["cones"][i]["y"].to_string().parse::<f64>()?,
-            data["primitives"]["cones"][i]["z"].to_string().parse::<f64>()?);
-        let radius = data["primitives"]["cones"][i]["r"].to_string().parse::<f64>()?;
-        let axis_str = data["primitives"]["cones"][i]["axis"].to_string().parse::<String>()?;
-        let axis = axis_str[1..2].chars().next().unwrap();
-        let height = data["primitives"]["cones"][i]["h"].to_string().parse::<f64>()?;
-        let color = Vector3D::new(
-            data["primitives"]["cones"][i]["color"]["r"].to_string().parse::<f64>()?,
-            data["primitives"]["cones"][i]["color"]["g"].to_string().parse::<f64>()?,
-            data["primitives"]["cones"][i]["color"]["b"].to_string().parse::<f64>()?);
-        let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
-        if !data["primitives"]["cones"][i]["pattern"].is_null() {
-            let pattern_str = data["primitives"]["cones"][i]["pattern"].to_string().parse::<String>()?;
-            pattern = material::get_material_pattern(pattern_str.as_str());
-        }
-        pattern.set_color(color);
-        let mut new = Cone::new_config(position, radius, height, color, axis, pattern);
-        cones.push(new);
-    }
-    Ok(cones)
-}
-
-fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn std::error::Error>> {
-    let mut cylinders: Vec<Cylinder> = Vec::new();
-
     let cylinders_len = data["primitives"]["cylinders"]
     .as_array()
     .map_or(0, |arr| arr.len());
@@ -286,7 +225,7 @@ fn config_cones(data:&Value) -> std::result::Result<Vec<Cone>, Box<dyn std::erro
             pattern = material::get_material_pattern(pattern_str.as_str());
         }
         pattern.set_color(color);
-        let mut new = Cone::new_config(position, radius, height, color, axis, pattern);
+        let new = Cone::new_config(position, radius, height, color, axis, pattern);
         cones.push(new);
     }
     Ok(cones)
