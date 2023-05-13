@@ -39,25 +39,53 @@ impl Plane {
             pos.z = position;
             direction.y = 1.0;
         }
-        Plane {axis, center:pos, direction, color, pattern}
+        Plane {axis, center:pos, direction: direction.normalize(), color, pattern}
     }
 }
 
 impl Primitives for Plane {
     fn hits(&self, ray:Ray) -> Option<Point3D>{
-        // if (ray.origin.y.abs() <= std::f64::EPSILON) {
+        // if ray.origin.y.abs() <= std::f64::EPSILON {
         //     return None;
+        // }
+        // let mut tmp:Vector3D = ray.direction;
+        // let mut tmp1:f64;
+        // if self.axis == 'X' {
+        //     tmp1 = tmp.x;
+        //     tmp.x = tmp.y;
+        //     tmp.y = tmp1;
+        // }
+        // if self.axis == 'Y' {
+        //     tmp1 = tmp.y;
+        //     tmp.y = tmp.z;
+        //     tmp.z = tmp1;
+        // }
+        // if self.axis == 'Z' {
+        //     tmp1 = tmp.z;
+        //     tmp.z = tmp.x;
+        //     tmp.x = tmp1;
         // }
         let dot = ray.direction.scal(&self.direction);
 
-        if dot > 1e-6 {
-            let t = ((self.center - ray.origin).scal(&self.direction)) / dot;
+        // print!("dot = {} {} ", dot, ray.direction);
+        if dot.abs() > 1e-6 {
+            let t = (self.center - ray.origin).scal(&self.direction) / dot;
             if t >= 0.0 {
                 let inter_point = ray.origin + (ray.direction * t);
                 return Some(inter_point);
             }
         }
-        return None;
+        None
+        // let dot = ray.direction.scal(&self.direction);
+
+        // if dot > 1e-6 {
+        //     let t = ((self.center - ray.origin).scal(&self.direction)) / dot;
+        //     if t >= 0.0 {
+        //         let inter_point = ray.origin + (ray.direction * t);
+        //         return Some(inter_point);
+        //     }
+        // }
+        // return None;
         // if (ray.direction.y.abs() <= EPSILON) {
         //     return None;
         // }
@@ -88,7 +116,7 @@ impl Primitives for Plane {
 impl Default for Plane {
     fn default() -> Self {
         Plane {
-            axis: 'X',
+            axis: 'C',
             center: Point3D::default(),
             direction: Vector3D::default(),
             color: Vector3D::default() ,

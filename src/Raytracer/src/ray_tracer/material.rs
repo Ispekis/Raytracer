@@ -10,8 +10,6 @@ use crate::math::{
     point3d::Point3D
 };
 
-use std::default;
-
 use crate::ray_tracer::light::PointLight;
 
 pub struct PhongModel {
@@ -165,5 +163,5 @@ impl Mask for Chessboard {
         Box::new(*self)
     }
 
-    fn set_color(&mut self, color:Vector3D) {}
+    fn set_color(&mut self, _color:Vector3D) {}
 }

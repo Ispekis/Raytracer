@@ -8,7 +8,7 @@
 use crate::math::{point3d::Point3D, formulas, vector3d::Vector3D};
 use crate::ray_tracer::ray::Ray;
 use crate::interfaces::primitives::Primitives;
-use crate::RayTracer::material::{Mask, Solid};
+use crate::ray_tracer::material::{Mask, Solid};
 
 // #[derive(Clone)]
 pub struct Sphere {

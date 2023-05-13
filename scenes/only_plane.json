@@ -6,7 +6,7 @@
         },
         "position": {
             "x": 0,
-            "y": -50,
+            "y": 0,
             "z": 0
         },
         "rotation": {
@@ -17,23 +17,11 @@
         "fieldOfView": 72.0
     },
     "primitives": {
-        "spheres": [
-            {
-                "x": 100,
-                "y": 0,
-                "z": -550,
-                "r": 50,
-                "color": {
-                    "r": 64,
-                    "g": 255,
-                    "b": 64
-                }
-            }
-        ],
+        "spheres": [],
         "planes": [
             {
                 "axis": "Z",
-                "position": -20,
+                "position": 0,
                 "color": {
                     "r": 64,
                     "g": 64,
@@ -46,12 +34,12 @@
     "lights":
     {
         "ambient": 0.4,
-        "diffuse": 1.0,
+        "diffuse": 0.6,
         "specular": 0.5,
         "point": [
             {
-                "x": 1,
-                "y": -10,
+                "x": 0,
+                "y": 0,
                 "z": 0,
                 "color":{
                     "x": 255,

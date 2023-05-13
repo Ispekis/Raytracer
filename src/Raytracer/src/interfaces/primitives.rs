@@ -8,7 +8,7 @@
 use crate::math::point3d::Point3D;
 use crate::math::vector3d::Vector3D;
 use crate::ray_tracer::{
-    Ray::Ray,
+    ray::Ray,
     material::Mask
 };
 
