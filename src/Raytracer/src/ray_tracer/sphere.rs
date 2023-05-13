@@ -8,21 +8,23 @@
 use crate::math::{point3d::Point3D, formulas, vector3d::Vector3D};
 use crate::ray_tracer::ray::Ray;
 use crate::interfaces::primitives::Primitives;
+use crate::ray_tracer::material::{Mask, Solid};
 
-#[derive(Copy, Clone)]
+// #[derive(Clone)]
 pub struct Sphere {
     pub center:Point3D,
     pub radius:f64,
     pub color:Vector3D,
+    pub pattern:Box<dyn Mask>
 }
 
 impl Sphere {
-    pub fn new(center:Point3D, radius:f64) -> Sphere {
-        return Sphere {center, radius, color:Vector3D::default()};
-    }
+    // pub fn new(center:Point3D, radius:f64) -> Sphere {
+    //     return Sphere {center, radius, color:Vector3D::default()};
+    // }
 
-    pub fn new_config(center:Point3D, radius:f64, color:Vector3D) -> Self {
-        Sphere {center, radius, color}
+    pub fn new_config(center:Point3D, radius:f64, color:Vector3D, pattern:Box<dyn Mask>) -> Self {
+        Sphere {center, radius, color, pattern}
     }
 }
 
@@ -54,6 +56,21 @@ impl Primitives for Sphere {
     fn get_color(&self) -> Vector3D {
         self.color
     }
+
+    fn get_pattern(&self) -> Box<dyn Mask> {
+        self.pattern.clone()
+    }
+}
+
+impl Clone for Sphere {
+    fn clone(&self) -> Self {
+        Sphere {
+            center: self.center.clone(),
+            radius: self.radius,
+            color: self.color.clone(),
+            pattern: self.pattern.clone()
+        }
+    }
 }
 
 impl Default for Sphere {
@@ -61,7 +78,8 @@ impl Default for Sphere {
         Sphere {
             center: Point3D::default(),
             radius: 0.0,
-            color: Vector3D::default()
+            color: Vector3D::default(),
+            pattern: Box::new(Solid::default())
         }
     }
 }

@@ -9,7 +9,6 @@ use crate::config::fileconfig;
 use crate::interfaces::primitives::Primitives;
 use crate::math::{point3d::Point3D, vector3d::Vector3D};
 use crate::ray_tracer::{
-    light::Light,
     ray::Ray,
     material::PhongModel
 };
@@ -26,32 +25,35 @@ impl World {
         let mut objects: Vec<Box<dyn Primitives>> = Vec::new();
 
         for i in 0..scene.primitives.spheres.len() {
-            objects.push(Box::new(scene.primitives.spheres[i]))
+            objects.push(Box::new(scene.primitives.spheres[i].clone()))
         }
         for i in 0..scene.primitives.planes.len() {
-            objects.push(Box::new(scene.primitives.planes[i]))
+            objects.push(Box::new(scene.primitives.planes[i].clone()))
         }
         for i in 0..scene.primitives.cylinders.len() {
-            objects.push(Box::new(scene.primitives.cylinders[i]))
+            objects.push(Box::new(scene.primitives.cylinders[i].clone()))
         }
         Self { scene, objects, light_model }
     }
 
     pub fn draw_primitives(&mut self, u:f64, v:f64) {
         let ray = self.scene.camera.ray(u, v);
+        let mut color:Vector3D = Vector3D::new(0.0, 0.0, 0.0);
+        let mut distance:f64 = f64::INFINITY;
 
         for i in 0..self.objects.len() {
             let hit_res = self.objects[i].hits(ray);
             if let Some(hit_point) = hit_res {
-                let color = self.light_model.lightning(self.objects[i].get_color(), self.scene.lights.point[0],
-                hit_point, self.objects[i].suface_normal(hit_point),
-                self.is_shadowed(hit_point, i));
-
-                write_flat_color(color);
-                return;
+                if (hit_point - ray.origin).length() < distance {
+                    color = self.light_model.lightning(self.objects[i].get_pattern().color_at(hit_point), self.scene.lights.point[0],
+                    hit_point, self.objects[i].suface_normal(hit_point),
+                    self.is_shadowed(hit_point, i));
+                    distance = (hit_point - ray.origin).length();
+                }
             }
         }
-        write_flat_color(Vector3D::new(0.0, 0.0, 0.0));
+        write_flat_color(color);
+        return;
     }
 
         fn intersect(&self, ray:Ray, object_index:usize) -> Option<Point3D> {
@@ -86,24 +88,6 @@ impl World {
 
 fn write_flat_color(color:Vector3D) {
     println!("{} {} {}", color.x as u32, color.y as u32, color.z as u32);
-}
-
-fn write_color(color:Vector3D, light:&mut Light, coeff:f64, is_shadow:bool) {
-    let color_light = light.point[0].color * light.diffuse;
-    let r: f64;
-    let g: f64;
-    let b: f64;
-    if is_shadow {
-        r = color.x * light.ambient;
-        g = color.y * light.ambient;
-        b = color.z * light.ambient;
-    } else {
-        r = color.x * light.ambient + (color_light.x * coeff);
-        g = color.y * light.ambient + (color_light.y * coeff);
-        b = color.z * light.ambient + (color_light.z * coeff);
-    }
-
-    write_flat_color(Vector3D::new(r, g, b));
 }
 
 pub fn run_raytracer(scene:fileconfig::SceneData) -> u32

@@ -18,7 +18,7 @@ impl Rectangle3D {
     pub fn new(origin:Point3D, bottom_side:Vector3D, left_side:Vector3D) -> Self {
         Rectangle3D { origin, bottom_side, left_side }
     }
-    pub fn pointat(&self, u:f64, v:f64) -> Point3D {
+    pub fn point_at(&self, u:f64, v:f64) -> Point3D {
         let x = self.origin.x + u * self.bottom_side.x + v * self.left_side.x;
         let y = self.origin.y + u * self.bottom_side.y + v * self.left_side.y;
         let z = self.origin.z + u * self.bottom_side.z + v * self.left_side.z;

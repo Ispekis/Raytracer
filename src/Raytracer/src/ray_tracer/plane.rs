@@ -9,16 +9,22 @@ use crate::math::{vector3d::Vector3D, point3d::Point3D};
 use crate::interfaces::primitives::Primitives;
 use crate::ray_tracer::ray::Ray;
 
-#[derive(Copy, Clone)]
+use super::material::{
+    Solid,
+    Mask
+};
+
+#[derive(Clone)]
 pub struct Plane {
     pub axis:char,
     pub center:Point3D,
     pub direction:Vector3D,
-    pub color:Vector3D
+    pub color:Vector3D,
+    pub pattern: Box<dyn Mask>
 }
 
 impl Plane {
-    pub fn new_config(axis:char, position:f64, color:Vector3D) -> Self {
+    pub fn new_config(axis:char, position:f64, color:Vector3D, pattern:Box<dyn Mask>) -> Self {
         let mut pos = Point3D::default();
         let mut direction = Vector3D::default();
         if axis == 'X' {
@@ -33,25 +39,53 @@ impl Plane {
             pos.z = position;
             direction.y = 1.0;
         }
-        Plane {axis, center:pos, direction, color}
+        Plane {axis, center:pos, direction: direction.normalize(), color, pattern}
     }
 }
 
 impl Primitives for Plane {
     fn hits(&self, ray:Ray) -> Option<Point3D>{
-        // if (ray.origin.y.abs() <= std::f64::EPSILON) {
+        // if ray.origin.y.abs() <= std::f64::EPSILON {
         //     return None;
+        // }
+        // let mut tmp:Vector3D = ray.direction;
+        // let mut tmp1:f64;
+        // if self.axis == 'X' {
+        //     tmp1 = tmp.x;
+        //     tmp.x = tmp.y;
+        //     tmp.y = tmp1;
+        // }
+        // if self.axis == 'Y' {
+        //     tmp1 = tmp.y;
+        //     tmp.y = tmp.z;
+        //     tmp.z = tmp1;
+        // }
+        // if self.axis == 'Z' {
+        //     tmp1 = tmp.z;
+        //     tmp.z = tmp.x;
+        //     tmp.x = tmp1;
         // }
         let dot = ray.direction.scal(&self.direction);
 
-        if dot > 1e-6 {
-            let t = ((self.center - ray.origin).scal(&self.direction)) / dot;
+        // print!("dot = {} {} ", dot, ray.direction);
+        if dot.abs() > 1e-6 {
+            let t = (self.center - ray.origin).scal(&self.direction) / dot;
             if t >= 0.0 {
                 let inter_point = ray.origin + (ray.direction * t);
                 return Some(inter_point);
             }
         }
-        return None;
+        None
+        // let dot = ray.direction.scal(&self.direction);
+
+        // if dot > 1e-6 {
+        //     let t = ((self.center - ray.origin).scal(&self.direction)) / dot;
+        //     if t >= 0.0 {
+        //         let inter_point = ray.origin + (ray.direction * t);
+        //         return Some(inter_point);
+        //     }
+        // }
+        // return None;
         // if (ray.direction.y.abs() <= EPSILON) {
         //     return None;
         // }
@@ -73,11 +107,21 @@ impl Primitives for Plane {
     fn get_color(&self) -> Vector3D {
         self.color
     }
+
+    fn get_pattern(&self) -> Box<dyn super::material::Mask> {
+        self.pattern.clone()
+    }
 }
 
 impl Default for Plane {
     fn default() -> Self {
-        Plane { axis: 'X', center: Point3D::default(), direction: Vector3D::default(), color: Vector3D::default() }
+        Plane {
+            axis: 'C',
+            center: Point3D::default(),
+            direction: Vector3D::default(),
+            color: Vector3D::default() ,
+            pattern: Box::new(Solid::default())
+        }
     }
 }
 
