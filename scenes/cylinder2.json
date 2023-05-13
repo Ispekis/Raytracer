@@ -1,0 +1,58 @@
+{
+    "camera": {
+        "resolution": {
+            "width": 1920,
+            "height": 1080
+        },
+        "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "fieldOfView": 72.0
+    },
+    "primitives": {
+        "cylinders": [
+            {
+                "x": 1,
+                "y": 50,
+                "z": 1,
+                "r": 20,
+                "axis":"X",
+                "h": 500,
+                "color": {
+                    "r": 12,
+                    "g": 145,
+                    "b": 90
+                    }
+            }
+        ]
+    },
+    "lights":
+    {
+        "ambient": 1,
+        "diffuse": 1,
+        "specular": 1,
+        "point": [
+            {
+                "x": 1,
+                "y": -10,
+                "z": 0,
+                "color":{
+                    "x": 255,
+                    "y": 255,
+                    "z": 255
+                },
+                "intensity": 1
+            }
+
+        ],
+        "directional": [
+        ]
+    }
+}

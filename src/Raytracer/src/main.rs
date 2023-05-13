@@ -17,6 +17,7 @@ mod ray_tracer {
     pub mod sphere;
     pub mod camera;
     pub mod plane;
+    pub mod cylinder;
     pub mod rectangle3d;
     pub mod light;
     pub mod material;

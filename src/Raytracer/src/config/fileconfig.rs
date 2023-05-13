@@ -18,13 +18,15 @@ use crate::ray_tracer::{
     light::{
         Light,
         PointLight
-    }
+    },
+    cylinder::Cylinder,
 };
 use crate::tools;
 
 pub struct Primitivest {
     pub spheres:Vec<Sphere>,
-    pub planes:Vec<Plane>
+    pub planes:Vec<Plane>,
+    pub cylinders:Vec<Cylinder>
 }
 
 pub struct SceneData {
@@ -59,9 +61,9 @@ fn config_cam(data:&Value) -> std::result::Result<Camera, Box<dyn std::error::Er
 }
 
 fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::error::Error>> {
-    let spheres_len =  data["primitives"]["spheres"]
+    let spheres_len = data["primitives"]["spheres"]
     .as_array()
-    .ok_or("Not an array")?.len();
+    .map_or(0, |arr| arr.len());
     let mut spheres: Vec<Sphere> = Vec::new();
 
     for i in 0..spheres_len {
@@ -104,9 +106,9 @@ fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::
 fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::error::Error>> {
     let mut planes: Vec<Plane> = Vec::new();
 
-    let planes_len =  data["primitives"]["planes"]
+    let planes_len = data["primitives"]["planes"]
     .as_array()
-    .ok_or("Not an array")?.len();
+    .map_or(0, |arr| arr.len());
 
     for i in 0..planes_len {
         let axis_str = data["primitives"]["planes"][i]["axis"].to_string().parse::<String>()?;
@@ -142,13 +144,40 @@ fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::er
     Ok(planes)
 }
 
-fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn std::error::Error>> {
+fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn std::error::Error>> {
+    let mut cylinders: Vec<Cylinder> = Vec::new();
 
+    let cylinders_len = data["primitives"]["cylinders"]
+    .as_array()
+    .map_or(0, |arr| arr.len());
+
+    for i in 0..cylinders_len {
+        let position = Point3D::new(
+            data["primitives"]["cylinders"][i]["x"].to_string().parse::<f64>()?,
+            data["primitives"]["cylinders"][i]["y"].to_string().parse::<f64>()?,
+            data["primitives"]["cylinders"][i]["z"].to_string().parse::<f64>()?);
+        let radius = data["primitives"]["cylinders"][i]["r"].to_string().parse::<f64>()?;
+        let axis_str = data["primitives"]["cylinders"][i]["axis"].to_string().parse::<String>()?;
+        let axis = axis_str[1..2].chars().next().unwrap();
+        let height = data["primitives"]["cylinders"][i]["h"].to_string().parse::<f64>()?;
+        let color = Vector3D::new(
+            data["primitives"]["cylinders"][i]["color"]["r"].to_string().parse::<f64>()?,
+            data["primitives"]["cylinders"][i]["color"]["g"].to_string().parse::<f64>()?,
+            data["primitives"]["cylinders"][i]["color"]["b"].to_string().parse::<f64>()?);
+        cylinders.push(Cylinder::new_config(position, radius, height, color, axis));
+    }
+
+    Ok(cylinders)
+}
+
+fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn std::error::Error>> {
     let spheres = config_spheres(data)?;
 
     let planes = config_planes(data)?;
 
-    Ok(Primitivest {spheres, planes})
+    let cylinders = config_cylinders(data)?;
+
+    Ok(Primitivest {spheres, planes, cylinders})
 }
 
 fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::Error>> {

@@ -31,6 +31,9 @@ impl World {
         for i in 0..scene.primitives.planes.len() {
             objects.push(Box::new(scene.primitives.planes[i]))
         }
+        for i in 0..scene.primitives.cylinders.len() {
+            objects.push(Box::new(scene.primitives.cylinders[i]))
+        }
         Self { scene, objects, light_model }
     }
 
