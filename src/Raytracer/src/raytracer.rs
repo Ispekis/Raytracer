@@ -135,6 +135,7 @@ impl World {
     }
 }
 
+
 fn write_flat_color(color:Vector3D) {
     println!("{} {} {}", color.x as u32, color.y as u32, color.z as u32);
 }
