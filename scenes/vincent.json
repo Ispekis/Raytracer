@@ -42,7 +42,7 @@
                     "g": 64,
                     "b": 255
                 },
-                "pattern": "solid"
+                "pattern": "chessboard"
             }
         ]
     },

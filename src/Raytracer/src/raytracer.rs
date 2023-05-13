@@ -111,6 +111,8 @@ impl World {
         if self.objects[index].get_reflectiveness() == 0.0 || remain_reflection == 0 {
             return Vector3D::new(0.0, 0.0, 0.0);
         }
+        return None;
+    }
 
         let reflected_ray = Ray::new(hit_point, reflectv);
 

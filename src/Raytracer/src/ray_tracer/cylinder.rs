@@ -20,21 +20,13 @@ pub struct Cylinder {
     pub height:f64,
     pub color:Vector3D,
     pub axis:char,
-<<<<<<< HEAD
     pub pattern:Box<dyn Mask>,
     pub reflectiveness:f64
-=======
-    pub pattern:Box<dyn Mask>
->>>>>>> 7ec4817 (42 : fix : function to cylinder primitive, and removing warning)
 }
 
 impl Cylinder {
     pub fn new_config(center:Point3D, radius:f64, height: f64, color:Vector3D, axis:char, pattern:Box<dyn Mask>) -> Self {
-<<<<<<< HEAD
         Cylinder {center, radius, height, color, axis, pattern, reflectiveness: 0.0}
-=======
-        Cylinder {center, radius, height, color, axis, pattern}
->>>>>>> 7ec4817 (42 : fix : function to cylinder primitive, and removing warning)
     }
 
     fn get_origin(&self, ray:Ray) -> Option<Vec<f64>> {
