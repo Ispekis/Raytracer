@@ -20,7 +20,8 @@ pub struct Plane {
     pub center:Point3D,
     pub direction:Vector3D,
     pub color:Vector3D,
-    pub pattern: Box<dyn Mask>
+    pub pattern: Box<dyn Mask>,
+    pub reflectiveness: f64
 }
 
 impl Plane {
@@ -39,7 +40,7 @@ impl Plane {
             pos.z = position;
             direction.y = 1.0;
         }
-        Plane {axis, center:pos, direction: direction.normalize(), color, pattern}
+        Plane {axis, center:pos, direction: direction.normalize(), color, pattern, reflectiveness:0.0}
     }
 }
 
@@ -111,6 +112,9 @@ impl Primitives for Plane {
     fn get_pattern(&self) -> Box<dyn super::material::Mask> {
         self.pattern.clone()
     }
+    fn get_reflectiveness(&self) -> f64 {
+        self.reflectiveness
+    }
 }
 
 impl Default for Plane {
@@ -120,7 +124,8 @@ impl Default for Plane {
             center: Point3D::default(),
             direction: Vector3D::default(),
             color: Vector3D::default() ,
-            pattern: Box::new(Solid::default())
+            pattern: Box::new(Solid::default()),
+            reflectiveness: 0.0
         }
     }
 }

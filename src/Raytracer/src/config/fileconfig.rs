@@ -80,14 +80,20 @@ fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::
             data["primitives"]["spheres"][i]["color"]["g"].to_string().parse::<f64>()?,
             data["primitives"]["spheres"][i]["color"]["b"].to_string().parse::<f64>()?);
 
-            // pattern
+        // Set the color
         let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
         if !data["primitives"]["spheres"][i]["pattern"].is_null() {
             let pattern_str = data["primitives"]["spheres"][i]["pattern"].to_string().parse::<String>()?;
             pattern = material::get_material_pattern(pattern_str.as_str());
         }
         pattern.set_color(color);
-        let mut new = Sphere::new_config(position, radius, color, pattern);
+
+        // Set the reflectiveness
+        let mut reflectiveness:f64 = 0.0;
+        if !data["primitives"]["spheres"][i]["material"]["reflectiveness"].is_null() {
+            reflectiveness = data["primitives"]["spheres"][i]["material"]["reflectiveness"].to_string().parse::<f64>()?;
+        }
+        let mut new = Sphere::new_config(position, radius, color, pattern, reflectiveness);
 
         if !data["primitives"]["spheres"][i]["translation"].is_null() {
             let translation = Vector3D::new(

@@ -20,12 +20,13 @@ pub struct Cylinder {
     pub height:f64,
     pub color:Vector3D,
     pub axis:char,
-    pub pattern:Box<dyn Mask>
+    pub pattern:Box<dyn Mask>,
+    pub reflectiveness:f64
 }
 
 impl Cylinder {
     pub fn new_config(center:Point3D, radius:f64, height: f64, color:Vector3D, axis:char, pattern:Box<dyn Mask>) -> Self {
-        Cylinder {center, radius, height, color, axis, pattern}
+        Cylinder {center, radius, height, color, axis, pattern, reflectiveness: 0.0}
     }
 
     fn get_origin(&self, ray:Ray) -> Option<Vec<f64>> {
@@ -125,7 +126,11 @@ impl Primitives for Cylinder {
     }
 
     fn get_pattern(&self) -> Box<dyn super::material::Mask> {
-        todo!()
+        self.pattern.clone()
+    }
+
+    fn get_reflectiveness(&self) -> f64 {
+        self.reflectiveness
     }
 }
 
@@ -137,7 +142,8 @@ impl Default for Cylinder {
             height: 0.0,
             color: Vector3D::default(),
             axis: 'Z',
-            pattern: Box::new(Solid::default())
+            pattern: Box::new(Solid::default()),
+            reflectiveness: 0.0
         }
     }
 }

@@ -21,4 +21,5 @@ pub trait Primitives {
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D;
     fn get_color(&self) -> Vector3D;
     fn get_pattern(&self) -> Box<dyn Mask>;
+    fn get_reflectiveness(&self) -> f64;
 }
