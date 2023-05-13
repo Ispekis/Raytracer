@@ -34,41 +34,73 @@ impl Cone {
         }
         Cone {center, radius, height, color, axis, direction}
     }
+
+    fn getOrigin(&self, ray:Ray) -> Option<Vec<f64>> {
+        if (self.axis == 'X') {
+            return Some(vec![ray.origin.y, ray.origin.z, ray.origin.x]);
+        } else if (self.axis == 'Y') {
+            return Some(vec![ray.origin.x, ray.origin.z, ray.origin.y]);
+        } else if (self.axis == 'Z') {
+            return Some(vec![ray.origin.x, ray.origin.y, ray.origin.z]);
+        } else {
+            return None;
+        }
+    }
+
+    fn getCenter(&self, ray:Ray) -> Option<Vec<f64>> {
+        if (self.axis == 'X') {
+            return Some(vec![self.center.y, self.center.z, self.center.x]);
+        } else if (self.axis == 'Y') {
+            return Some(vec![self.center.x, self.center.z, self.center.y]);
+        } else if (self.axis == 'Z') {
+            return Some(vec![self.center.x, self.center.y, self.center.z]);
+        } else {
+            return None;
+        }
+    }
+
+    fn getDirection(&self, ray:Ray) -> Option<Vec<f64>> {
+        if (self.axis == 'X') {
+            return Some(vec![ray.direction.y, ray.direction.z, ray.direction.x]);
+        } else if (self.axis == 'Y') {
+            return Some(vec![ray.direction.x, ray.direction.z, ray.direction.y]);
+        } else if (self.axis == 'Z') {
+            return Some(vec![ray.direction.x, ray.direction.y, ray.direction.z]);
+        } else {
+            return None;
+        }
+    }
 }
 
 impl Primitives for Cone {
     fn hits(&self, ray:Ray) -> Option<Point3D> {
-        let mut a1 = 0.0;
-        let mut b1 = 0.0;
-        let mut d1 = 0.0;
+        let mut origin: Vec<f64> = Vec::new();
+        let mut center: Vec<f64> = Vec::new();
+        let mut direction: Vec<f64> = Vec::new();
+
+        match self.getOrigin(ray) {
+            Some(result) => origin = result,
+            None => return None
+        }
+        match self.getCenter(ray) {
+            Some(result) => center = result,
+            None => return None
+        }
+        match self.getDirection(ray) {
+            Some(result) => direction = result,
+            None => return None
+        }
+
+        let mut a1 = origin[0] + center[0];
+        let mut b1 = origin[1] + center[1];
+        let mut d1 = self.height - origin[2] + center[2];
 
         let tan:f64 = (self.radius / self.height) * (self.radius / self.height);
 
-        let mut a2 = 0.0;
-        let mut b2 = 0.0;
-        let mut c = 0.0;
+        let mut a2 = direction[0].powf(2.0) + direction[1].powf(2.0) - tan * direction[2].powf(2.0);
+        let mut b2 = 2.0 * a1 * direction[0] + (2.0 * b1 * direction[1]) + (2.0 * tan * d1 * direction[2]);
+        let mut c = a1.powf(2.0) + b1.powf(2.0) - (tan * d1.powf(2.0));
 
-        if (self.axis == 'X') {
-            a1 = ray.origin.z - self.center.z;
-            b1 = ray.origin.y - self.center.y;
-            d1 = self.height - ray.origin.x + self.center.x;
-            a2 = (ray.direction.z).powf(2.0) + (ray.direction.y).powf(2.0) - (tan * ray.direction.x.powf(2.0));
-            b2 = (2.0 * a1 * ray.direction.z) + (2.0 * b1 * ray.direction.y) + (2.0 * (tan * d1 * ray.direction.x));
-        }
-        else if (self.axis == 'Y') {
-            a1 = ray.origin.x - self.center.x;
-            b1 = ray.origin.z - self.center.z;
-            d1 = self.height - ray.origin.y + self.center.y;
-            a2 = (ray.direction.x).powf(2.0) + (ray.direction.z).powf(2.0) - tan * ray.direction.y.powf(2.0);
-            b2 = (2.0 * a1 * ray.direction.x) + (2.0 * b1 * ray.direction.z) + (2.0 * (tan * d1 * ray.direction.y));
-        }
-        else {
-            a1 = ray.origin.y - self.center.y;
-            b1 = ray.origin.x - self.center.x;
-            d1 = self.height - ray.origin.z + self.center.z;
-            a2 = (ray.direction.y).powf(2.0) + (ray.direction.x).powf(2.0) - tan * ray.direction.z.powf(2.0);
-            b2 = (2.0 * a1 * ray.direction.y) + (2.0 * b1 * ray.direction.x) + (2.0 * (tan * d1 * ray.direction.z));
-        }
         c = a1 * a1 + b1 * b1 - (tan * d1.powf(2.0));
         let delta:f64 = b2.powf(2.0) - 4.0 * (a2 * c);
         if delta.abs() < 0.001 {
@@ -87,30 +119,12 @@ impl Primitives for Cone {
             t = t1;
         }
 
-        let mut r1 = 0.0;
-        let mut r2 = 0.0;
-        let mut r3 = 0.0;
-        if (self.axis == 'X') {
-           r1 = ray.origin.x;
-           r2 = ray.direction.x;
-           r3 = self.center.x;
-        }
-        else if (self.axis == 'Y') {
-           r1 = ray.origin.y;
-           r2 = ray.direction.y;
-           r3 = self.center.y;
-        }
-        else {
-           r1 = ray.origin.z;
-           r2 = ray.direction.z;
-           r3 = self.center.z;
-        }
-        let r:f64 = r1 + t * r2;
-        if r > r3 && r < r3 + self.height {
+        let r = origin[2] + t * direction[2];
+
+        if ( r >= center[2] && r <= center[2] + self.height) {
             return Some(Point3D::default());
-        } else {
-            return None;
         }
+        return None;
     }
     fn translate(&mut self, translate:Vector3D) {
         self.center.x += &translate.x;
