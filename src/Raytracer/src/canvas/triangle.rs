@@ -32,8 +32,41 @@ pub struct Triangle {
     pub c:Vector3D
 }
 
+impl Triangle {
+    fn isInside(&self, q:Vector3D) -> bool {
+        let n:Vector3D = q.normal();
+        let ua: Vector3D = self.b - self.a;
+        let ub: Vector3D = self.c - self.b;
+        let uc: Vector3D = self.a - self.c;
+        let va: Vector3D = q - self.a;
+        let vb: Vector3D = q - self.b;
+        let vc: Vector3D = q - self.c;
+
+        if ((ua.cross(va).scale(&n)>0) && (ub.cross(vb).scale(&n)>0) && (uc.cross(vc).scale(&n)>0)){
+            return true;
+        }
+        return false;
+    }
+}
+
 impl Primitives for Triangle {
     fn hits(&self, ray:Ray) -> Option<Point3D> {
+        let vecorigin: Vector3D = Vector3D::new(ray.origin.x, ray.origin.y, ray.origin.z);
+        let n: Vector3D = vecorigin.normal();
+        let vdif: Vector3D = self.a - vecorigin;
+        let vdotn; f64 = ray.direction.scale(&n);
+
+        if vdotn.abs() < 0.0001 {
+            return None;
+        }
+        let t: f64 = vdif.scale(n) / vdotn;
+        if t.abs() < 0.0001 {
+            return None;
+        }
+        let q: Vector3D = vecorigin + ray.direction * t;
+        if self.isInside(q) {
+            return Some(Point3D::default());
+        }
         return None;
     }
     fn translate(&mut self, translate:Vector3D) {
