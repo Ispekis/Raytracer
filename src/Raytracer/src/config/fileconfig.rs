@@ -8,18 +8,16 @@
 use serde_json::{Value};
 use crate::canvas::color::Color;
 use crate::interfaces::primitives::Primitives;
+use crate::builder::primitives_builder::PrimitivesBuilder;
 use crate::math::{
     point3d::Point3D,
     vector3d::Vector3D
 };
 use crate::canvas::{
-    sphere::Sphere,
-    plane::Plane,
-    cylinder::Cylinder,
-    cone::Cone,
     material
 };
 
+use crate::factory::primitives_factory::Factory;
 use crate::ray_tracer::{
     camera::Camera,
     light::{
@@ -29,16 +27,10 @@ use crate::ray_tracer::{
 };
 use crate::tools;
 
-pub struct Primitivest {
-    pub spheres:Vec<Sphere>,
-    pub planes:Vec<Plane>,
-    pub cylinders:Vec<Cylinder>,
-    pub cones:Vec<Cone>
-}
-
+#[derive(Clone)]
 pub struct SceneData {
     pub camera:Camera,
-    pub primitives:Primitivest,
+    pub primitives:Vec<Box<dyn Primitives>>,
     pub lights:Light
 }
 
@@ -67,185 +59,185 @@ fn config_cam(data:&Value) -> std::result::Result<Camera, Box<dyn std::error::Er
     Ok(Camera::new_config(width, height, position, rotation, fov))
 }
 
-fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::error::Error>> {
-    let spheres_len = data["primitives"]["spheres"]
-    .as_array()
-    .map_or(0, |arr| arr.len());
-    let mut spheres: Vec<Sphere> = Vec::new();
+// fn config_spheres(data:&Value) -> std::result::Result<Vec<Sphere>, Box<dyn std::error::Error>> {
+//     let spheres_len = data["primitives"]["spheres"]
+//     .as_array()
+//     .map_or(0, |arr| arr.len());
+//     let mut spheres: Vec<Sphere> = Vec::new();
 
-    for i in 0..spheres_len {
-        let position = Point3D::new(
-            data["primitives"]["spheres"][i]["x"].to_string().parse::<f64>()?,
-            data["primitives"]["spheres"][i]["y"].to_string().parse::<f64>()?,
-            data["primitives"]["spheres"][i]["z"].to_string().parse::<f64>()?);
+//     for i in 0..spheres_len {
+//         let position = Point3D::new(
+//             data["primitives"]["spheres"][i]["x"].to_string().parse::<f64>()?,
+//             data["primitives"]["spheres"][i]["y"].to_string().parse::<f64>()?,
+//             data["primitives"]["spheres"][i]["z"].to_string().parse::<f64>()?);
 
-        let radius = data["primitives"]["spheres"][i]["r"].to_string().parse::<f64>()?;
+//         let radius = data["primitives"]["spheres"][i]["r"].to_string().parse::<f64>()?;
 
-        let color = Color::new(
-            data["primitives"]["spheres"][i]["color"]["r"].to_string().parse::<f64>()?,
-            data["primitives"]["spheres"][i]["color"]["g"].to_string().parse::<f64>()?,
-            data["primitives"]["spheres"][i]["color"]["b"].to_string().parse::<f64>()?);
+//         let color = Color::new(
+//             data["primitives"]["spheres"][i]["color"]["r"].to_string().parse::<f64>()?,
+//             data["primitives"]["spheres"][i]["color"]["g"].to_string().parse::<f64>()?,
+//             data["primitives"]["spheres"][i]["color"]["b"].to_string().parse::<f64>()?);
 
-        // Set the color
-        let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
-        if !data["primitives"]["spheres"][i]["pattern"].is_null() {
-            let pattern_str = data["primitives"]["spheres"][i]["pattern"].to_string().parse::<String>()?;
-            pattern = material::get_material_pattern(pattern_str.as_str());
-        }
-        pattern.set_color(color);
+//         // Set the color
+//         let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
+//         if !data["primitives"]["spheres"][i]["pattern"].is_null() {
+//             let pattern_str = data["primitives"]["spheres"][i]["pattern"].to_string().parse::<String>()?;
+//             pattern = material::get_material_pattern(pattern_str.as_str());
+//         }
+//         pattern.set_color(color);
 
-        // Set the reflectiveness
-        let mut reflectiveness:f64 = 0.0;
-        if !data["primitives"]["spheres"][i]["material"]["reflectiveness"].is_null() {
-            reflectiveness = data["primitives"]["spheres"][i]["material"]["reflectiveness"].to_string().parse::<f64>()?;
-        }
-        let mut new = Sphere::new_config(position, radius, color, pattern, reflectiveness);
+//         // Set the reflectiveness
+//         let mut reflectiveness:f64 = 0.0;
+//         if !data["primitives"]["spheres"][i]["material"]["reflectiveness"].is_null() {
+//             reflectiveness = data["primitives"]["spheres"][i]["material"]["reflectiveness"].to_string().parse::<f64>()?;
+//         }
+//         let mut new = Sphere::new_config(position, radius, color, pattern, reflectiveness);
 
-        if !data["primitives"]["spheres"][i]["translation"].is_null() {
-            let translation = Vector3D::new(
-                data["primitives"]["spheres"][i]["translation"]["x"].to_string().parse::<f64>()?,
-                data["primitives"]["spheres"][i]["translation"]["y"].to_string().parse::<f64>()?,
-                data["primitives"]["spheres"][i]["translation"]["z"].to_string().parse::<f64>()?);
-            new.translate(translation);
-        }
-        if !data["primitives"]["spheres"][i]["rotation"].is_null() {
-            let rotation = Vector3D::new(
-                data["primitives"]["spheres"][i]["rotation"]["x"].to_string().parse::<f64>()?,
-                data["primitives"]["spheres"][i]["rotation"]["y"].to_string().parse::<f64>()?,
-                data["primitives"]["spheres"][i]["rotation"]["z"].to_string().parse::<f64>()?);
-                new.rotatex(rotation.x);
-                new.rotatey(rotation.y);
-                new.rotatez(rotation.z);
-        }
-        spheres.push(new);
-    }
+//         if !data["primitives"]["spheres"][i]["translation"].is_null() {
+//             let translation = Vector3D::new(
+//                 data["primitives"]["spheres"][i]["translation"]["x"].to_string().parse::<f64>()?,
+//                 data["primitives"]["spheres"][i]["translation"]["y"].to_string().parse::<f64>()?,
+//                 data["primitives"]["spheres"][i]["translation"]["z"].to_string().parse::<f64>()?);
+//             new.translate(translation);
+//         }
+//         if !data["primitives"]["spheres"][i]["rotation"].is_null() {
+//             let rotation = Vector3D::new(
+//                 data["primitives"]["spheres"][i]["rotation"]["x"].to_string().parse::<f64>()?,
+//                 data["primitives"]["spheres"][i]["rotation"]["y"].to_string().parse::<f64>()?,
+//                 data["primitives"]["spheres"][i]["rotation"]["z"].to_string().parse::<f64>()?);
+//                 new.rotatex(rotation.x);
+//                 new.rotatey(rotation.y);
+//                 new.rotatez(rotation.z);
+//         }
+//         spheres.push(new);
+//     }
 
-    Ok(spheres)
-}
+//     Ok(spheres)
+// }
 
-fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::error::Error>> {
-    let mut planes: Vec<Plane> = Vec::new();
+// fn config_planes(data:&Value) -> std::result::Result<Vec<Plane>, Box<dyn std::error::Error>> {
+//     let mut planes: Vec<Plane> = Vec::new();
 
-    let planes_len = data["primitives"]["planes"]
-    .as_array()
-    .map_or(0, |arr| arr.len());
+//     let planes_len = data["primitives"]["planes"]
+//     .as_array()
+//     .map_or(0, |arr| arr.len());
 
-    for i in 0..planes_len {
-        let axis_str = data["primitives"]["planes"][i]["axis"].to_string().parse::<String>()?;
-        let axis = axis_str[1..2].chars().next().unwrap();
-        let position = data["primitives"]["planes"][i]["position"].to_string().parse::<f64>()?;
-        let color = Color::new(
-            data["primitives"]["planes"][i]["color"]["r"].to_string().parse::<f64>()?,
-            data["primitives"]["planes"][i]["color"]["g"].to_string().parse::<f64>()?,
-            data["primitives"]["planes"][i]["color"]["b"].to_string().parse::<f64>()?);
+//     for i in 0..planes_len {
+//         let axis_str = data["primitives"]["planes"][i]["axis"].to_string().parse::<String>()?;
+//         let axis = axis_str[1..2].chars().next().unwrap();
+//         let position = data["primitives"]["planes"][i]["position"].to_string().parse::<f64>()?;
+//         let color = Color::new(
+//             data["primitives"]["planes"][i]["color"]["r"].to_string().parse::<f64>()?,
+//             data["primitives"]["planes"][i]["color"]["g"].to_string().parse::<f64>()?,
+//             data["primitives"]["planes"][i]["color"]["b"].to_string().parse::<f64>()?);
 
-        let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
-        if !data["primitives"]["planes"][i]["pattern"].is_null() {
-            let pattern_str = data["primitives"]["planes"][i]["pattern"].to_string().parse::<String>()?;
-            pattern = material::get_material_pattern(pattern_str.as_str());
-        }
-        pattern.set_color(color);
-        let mut new = Plane::new_config(axis, position, color, pattern);
+//         let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
+//         if !data["primitives"]["planes"][i]["pattern"].is_null() {
+//             let pattern_str = data["primitives"]["planes"][i]["pattern"].to_string().parse::<String>()?;
+//             pattern = material::get_material_pattern(pattern_str.as_str());
+//         }
+//         pattern.set_color(color);
+//         let mut new = Plane::new_config(axis, position, color, pattern);
 
-        if !data["primitives"]["planes"][i]["translation"].is_null() {
-            let translation = Vector3D::new(
-                data["primitives"]["planes"][i]["translation"]["x"].to_string().parse::<f64>()?,
-                data["primitives"]["planes"][i]["translation"]["y"].to_string().parse::<f64>()?,
-                data["primitives"]["planes"][i]["translation"]["z"].to_string().parse::<f64>()?);
-            new.translate(translation);
-        }
-        if !data["primitives"]["planes"][i]["rotation"].is_null() {
-            let rotation = Vector3D::new(
-                data["primitives"]["planes"][i]["rotation"]["x"].to_string().parse::<f64>()?,
-                data["primitives"]["planes"][i]["rotation"]["y"].to_string().parse::<f64>()?,
-                data["primitives"]["planes"][i]["rotation"]["z"].to_string().parse::<f64>()?);
-                new.rotatex(rotation.x);
-                new.rotatey(rotation.y);
-                new.rotatez(rotation.z);
-        }
+//         if !data["primitives"]["planes"][i]["translation"].is_null() {
+//             let translation = Vector3D::new(
+//                 data["primitives"]["planes"][i]["translation"]["x"].to_string().parse::<f64>()?,
+//                 data["primitives"]["planes"][i]["translation"]["y"].to_string().parse::<f64>()?,
+//                 data["primitives"]["planes"][i]["translation"]["z"].to_string().parse::<f64>()?);
+//             new.translate(translation);
+//         }
+//         if !data["primitives"]["planes"][i]["rotation"].is_null() {
+//             let rotation = Vector3D::new(
+//                 data["primitives"]["planes"][i]["rotation"]["x"].to_string().parse::<f64>()?,
+//                 data["primitives"]["planes"][i]["rotation"]["y"].to_string().parse::<f64>()?,
+//                 data["primitives"]["planes"][i]["rotation"]["z"].to_string().parse::<f64>()?);
+//                 new.rotatex(rotation.x);
+//                 new.rotatey(rotation.y);
+//                 new.rotatez(rotation.z);
+//         }
 
-        planes.push(new);
-    }
+//         planes.push(new);
+//     }
 
-    Ok(planes)
-}
+//     Ok(planes)
+// }
 
-fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn std::error::Error>> {
-    let mut cylinders: Vec<Cylinder> = Vec::new();
+// fn config_cylinders(data:&Value) -> std::result::Result<Vec<Cylinder>, Box<dyn std::error::Error>> {
+//     let mut cylinders: Vec<Cylinder> = Vec::new();
 
-    let cylinders_len = data["primitives"]["cylinders"]
-    .as_array()
-    .map_or(0, |arr| arr.len());
+//     let cylinders_len = data["primitives"]["cylinders"]
+//     .as_array()
+//     .map_or(0, |arr| arr.len());
 
-    for i in 0..cylinders_len {
-        let position = Point3D::new(
-            data["primitives"]["cylinders"][i]["x"].to_string().parse::<f64>()?,
-            data["primitives"]["cylinders"][i]["y"].to_string().parse::<f64>()?,
-            data["primitives"]["cylinders"][i]["z"].to_string().parse::<f64>()?);
-        let radius = data["primitives"]["cylinders"][i]["r"].to_string().parse::<f64>()?;
-        let axis_str = data["primitives"]["cylinders"][i]["axis"].to_string().parse::<String>()?;
-        let axis = axis_str[1..2].chars().next().unwrap();
-        let height = data["primitives"]["cylinders"][i]["h"].to_string().parse::<f64>()?;
-        let color = Color::new(
-            data["primitives"]["cylinders"][i]["color"]["r"].to_string().parse::<f64>()?,
-            data["primitives"]["cylinders"][i]["color"]["g"].to_string().parse::<f64>()?,
-            data["primitives"]["cylinders"][i]["color"]["b"].to_string().parse::<f64>()?);
+//     for i in 0..cylinders_len {
+//         let position = Point3D::new(
+//             data["primitives"]["cylinders"][i]["x"].to_string().parse::<f64>()?,
+//             data["primitives"]["cylinders"][i]["y"].to_string().parse::<f64>()?,
+//             data["primitives"]["cylinders"][i]["z"].to_string().parse::<f64>()?);
+//         let radius = data["primitives"]["cylinders"][i]["r"].to_string().parse::<f64>()?;
+//         let axis_str = data["primitives"]["cylinders"][i]["axis"].to_string().parse::<String>()?;
+//         let axis = axis_str[1..2].chars().next().unwrap();
+//         let height = data["primitives"]["cylinders"][i]["h"].to_string().parse::<f64>()?;
+//         let color = Color::new(
+//             data["primitives"]["cylinders"][i]["color"]["r"].to_string().parse::<f64>()?,
+//             data["primitives"]["cylinders"][i]["color"]["g"].to_string().parse::<f64>()?,
+//             data["primitives"]["cylinders"][i]["color"]["b"].to_string().parse::<f64>()?);
 
-        let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
-        if !data["primitives"]["cylinders"][i]["pattern"].is_null() {
-            let pattern_str = data["primitives"]["cylinders"][i]["pattern"].to_string().parse::<String>()?;
-            pattern = material::get_material_pattern(pattern_str.as_str());
-        }
-        pattern.set_color(color);
-        cylinders.push(Cylinder::new_config(position, radius, height, color, axis, pattern));
-    }
+//         let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
+//         if !data["primitives"]["cylinders"][i]["pattern"].is_null() {
+//             let pattern_str = data["primitives"]["cylinders"][i]["pattern"].to_string().parse::<String>()?;
+//             pattern = material::get_material_pattern(pattern_str.as_str());
+//         }
+//         pattern.set_color(color);
+//         cylinders.push(Cylinder::new_config(position, radius, height, color, axis, pattern));
+//     }
 
-    Ok(cylinders)
-}
+//     Ok(cylinders)
+// }
 
-fn config_cones(data:&Value) -> std::result::Result<Vec<Cone>, Box<dyn std::error::Error>> {
-    let mut cones: Vec<Cone> = Vec::new();
+// fn config_cones(data:&Value) -> std::result::Result<Vec<Cone>, Box<dyn std::error::Error>> {
+//     let mut cones: Vec<Cone> = Vec::new();
 
-    let cones_len =  data["primitives"]["cones"]
-    .as_array()
-    .ok_or("Not an array")?.len();
+//     let cones_len =  data["primitives"]["cones"]
+//     .as_array()
+//     .ok_or("Not an array")?.len();
 
-    for i in 0..cones_len {
-        let position = Point3D::new(
-            data["primitives"]["cones"][i]["x"].to_string().parse::<f64>()?,
-            data["primitives"]["cones"][i]["y"].to_string().parse::<f64>()?,
-            data["primitives"]["cones"][i]["z"].to_string().parse::<f64>()?);
-        let radius = data["primitives"]["cones"][i]["r"].to_string().parse::<f64>()?;
-        let axis_str = data["primitives"]["cones"][i]["axis"].to_string().parse::<String>()?;
-        let axis = axis_str[1..2].chars().next().unwrap();
-        let height = data["primitives"]["cones"][i]["h"].to_string().parse::<f64>()?;
-        let color = Color::new(
-            data["primitives"]["cones"][i]["color"]["r"].to_string().parse::<f64>()?,
-            data["primitives"]["cones"][i]["color"]["g"].to_string().parse::<f64>()?,
-            data["primitives"]["cones"][i]["color"]["b"].to_string().parse::<f64>()?);
-        let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
-        if !data["primitives"]["cones"][i]["pattern"].is_null() {
-            let pattern_str = data["primitives"]["cones"][i]["pattern"].to_string().parse::<String>()?;
-            pattern = material::get_material_pattern(pattern_str.as_str());
-        }
-        pattern.set_color(color);
-        let new = Cone::new_config(position, radius, height, color, axis, pattern);
-        cones.push(new);
-    }
-    Ok(cones)
-}
+//     for i in 0..cones_len {
+//         let position = Point3D::new(
+//             data["primitives"]["cones"][i]["x"].to_string().parse::<f64>()?,
+//             data["primitives"]["cones"][i]["y"].to_string().parse::<f64>()?,
+//             data["primitives"]["cones"][i]["z"].to_string().parse::<f64>()?);
+//         let radius = data["primitives"]["cones"][i]["r"].to_string().parse::<f64>()?;
+//         let axis_str = data["primitives"]["cones"][i]["axis"].to_string().parse::<String>()?;
+//         let axis = axis_str[1..2].chars().next().unwrap();
+//         let height = data["primitives"]["cones"][i]["h"].to_string().parse::<f64>()?;
+//         let color = Color::new(
+//             data["primitives"]["cones"][i]["color"]["r"].to_string().parse::<f64>()?,
+//             data["primitives"]["cones"][i]["color"]["g"].to_string().parse::<f64>()?,
+//             data["primitives"]["cones"][i]["color"]["b"].to_string().parse::<f64>()?);
+//         let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
+//         if !data["primitives"]["cones"][i]["pattern"].is_null() {
+//             let pattern_str = data["primitives"]["cones"][i]["pattern"].to_string().parse::<String>()?;
+//             pattern = material::get_material_pattern(pattern_str.as_str());
+//         }
+//         pattern.set_color(color);
+//         let new = Cone::new_config(position, radius, height, color, axis, pattern);
+//         cones.push(new);
+//     }
+//     Ok(cones)
+// }
 
-fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn std::error::Error>> {
-    let spheres = config_spheres(data)?;
+// fn config_primitives(data:&Value) -> std::result::Result<Primitivest, Box<dyn std::error::Error>> {
+//     let spheres = config_spheres(data)?;
 
-    let planes = config_planes(data)?;
+//     let planes = config_planes(data)?;
 
-    let cones = config_cones(data)?;
+//     let cones = config_cones(data)?;
 
-    let cylinders = config_cylinders(data)?;
+//     let cylinders = config_cylinders(data)?;
 
-    Ok(Primitivest {spheres, planes, cones, cylinders})
-}
+//     Ok(Primitivest {spheres, planes, cones, cylinders})
+// }
 
 fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::Error>> {
     let ambient = data["lights"]["ambient"].to_string().parse::<f64>()?;
@@ -292,6 +284,127 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
     Ok(Light::new_config(ambient, diffuse, specular, points, directionals))
 }
 
+fn get_primitives_keys(data:&Value) -> Vec<String> {
+    let mut new: Vec<String> = Vec::new();
+    if let Some(obj) = data["primitives"].as_object() {
+        for key in obj.keys() {
+            new.push(key.clone());
+        }
+    }
+    new
+}
+
+fn config_prims(data:&Value) -> std::result::Result<Vec<Box<dyn Primitives>>, Box<dyn std::error::Error>> {
+    let mut primitives: Vec<Box<dyn Primitives>> = Vec::new();
+
+    let prims_key: Vec<String> = get_primitives_keys(data);
+
+    // Iterate into each primitive's keys
+    for prims in prims_key {
+
+        // Get the len of the primitive's array
+        let prims_len = data["primitives"][&prims]
+        .as_array()
+        .map_or(0, |arr| arr.len());
+
+        // iterate in each array of primitives
+        for i in 0..prims_len {
+
+            //** Must Values **//
+
+            // Get the position
+            let position: Point3D;
+            if !data["primitives"][&prims][i]["position"].is_null() {
+                position = Point3D::new(
+                    data["primitives"][&prims][i]["position"].to_string().parse::<f64>()?,
+                    0.0,
+                    0.0);
+            } else {
+                position = Point3D::new(
+                data["primitives"][&prims][i]["x"].to_string().parse::<f64>()?,
+                data["primitives"][&prims][i]["y"].to_string().parse::<f64>()?,
+                data["primitives"][&prims][i]["z"].to_string().parse::<f64>()?);
+            }
+
+            // Get the color
+            let color = Color::new(
+                data["primitives"][&prims][i]["color"]["r"].to_string().parse::<f64>()?,
+                data["primitives"][&prims][i]["color"]["g"].to_string().parse::<f64>()?,
+                data["primitives"][&prims][i]["color"]["b"].to_string().parse::<f64>()?);
+
+            //** End Must Values **//
+
+            //** Optional Values **//
+
+            // Get the radius
+            let mut radius = 0.0;
+            if !data["primitives"][&prims][i]["r"].is_null() {
+                radius = data["primitives"][&prims][i]["r"].to_string().parse::<f64>()?;
+            }
+
+            // Set the color
+            let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
+            if !data["primitives"][&prims][i]["pattern"].is_null() {
+                let pattern_str = data["primitives"][&prims][i]["pattern"].to_string().parse::<String>()?;
+                pattern = material::get_material_pattern(pattern_str.as_str());
+            }
+            pattern.set_color(color);
+
+            // Set the reflectiveness
+            let mut reflectiveness:f64 = 0.0;
+            if !data["primitives"][&prims][i]["material"]["reflectiveness"].is_null() {
+                reflectiveness = data["primitives"][&prims][i]["material"]["reflectiveness"].to_string().parse::<f64>()?;
+            }
+
+            // Set the axis
+            let mut axis = 'Z';
+            if !data["primitives"][&prims][i]["axis"].is_null() {
+                let axis_str = data["primitives"][&prims][i]["axis"].to_string().parse::<String>()?;
+                axis = axis_str[1..2].chars().next().unwrap();
+            }
+
+            // Set the height
+            let mut height = 0.0;
+            if !data["primitives"][&prims][i]["h"].is_null() {
+                height = data["primitives"][&prims][i]["h"].to_string().parse::<f64>()?;
+            }
+
+            //** End Optional Values **//
+
+            let mut new = PrimitivesBuilder::new()
+                .with_primitives(Factory::create_primitives(&prims).unwrap())
+                .with_axis(axis)
+                .with_center(position)
+                .with_color(color)
+                .with_pattern(pattern)
+                .with_radius(radius)
+                .with_reflectiveness(reflectiveness)
+                .with_height(height)
+                .build()?;
+
+            // Move and translate after value set
+            if !data["primitives"][&prims][i]["translation"].is_null() {
+                let translation = Vector3D::new(
+                    data["primitives"][&prims][i]["translation"]["x"].to_string().parse::<f64>()?,
+                    data["primitives"][&prims][i]["translation"]["y"].to_string().parse::<f64>()?,
+                    data["primitives"][&prims][i]["translation"]["z"].to_string().parse::<f64>()?);
+                new.translate(translation);
+            }
+            if !data["primitives"][&prims][i]["rotation"].is_null() {
+                let rotation = Vector3D::new(
+                    data["primitives"][&prims][i]["rotation"]["x"].to_string().parse::<f64>()?,
+                    data["primitives"][&prims][i]["rotation"]["y"].to_string().parse::<f64>()?,
+                    data["primitives"][&prims][i]["rotation"]["z"].to_string().parse::<f64>()?);
+                    new.rotatex(rotation.x);
+                    new.rotatey(rotation.y);
+                    new.rotatez(rotation.z);
+            }
+            primitives.push(new);
+        }
+    }
+    Ok(primitives)
+}
+
 impl SceneData {
     pub fn new(filepath: &str) -> std::result::Result<SceneData, Box<dyn std::error::Error>> {
         // Convert string to json
@@ -301,11 +414,11 @@ impl SceneData {
         let camera = config_cam(&data)?;
 
         // Get primitives's configs
-        let primitives = config_primitives(&data)?;
+        let primitives = config_prims(&data)?;
 
         // Get lights's configs
         let lights = config_lights(&data)?;
 
-        Ok(SceneData { camera, primitives, lights })
+        Ok(SceneData { camera, primitives, lights})
     }
 }

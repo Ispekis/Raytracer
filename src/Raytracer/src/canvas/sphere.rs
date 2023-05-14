@@ -21,15 +21,12 @@ pub struct Sphere {
     pub reflectiveness: f64
 }
 
-impl Sphere {
-    // pub fn new(center:Point3D, radius:f64) -> Sphere {
-    //     return Sphere {center, radius, color:Vector3D::default()};
-    // }
+// impl Sphere {
+//     pub fn new_config(center:Point3D, radius:f64, color:Color, pattern:Box<dyn Mask>, reflectiveness:f64) -> Self {
+//         Sphere {center, radius, color, pattern, reflectiveness}
+//     }
+// }
 
-    pub fn new_config(center:Point3D, radius:f64, color:Color, pattern:Box<dyn Mask>, reflectiveness:f64) -> Self {
-        Sphere {center, radius, color, pattern, reflectiveness}
-    }
-}
 
 impl Primitives for Sphere {
     fn hits(&self, ray:Ray) -> Option<Point3D> {
@@ -66,6 +63,67 @@ impl Primitives for Sphere {
     fn get_reflectiveness(&self) -> f64 {
         self.reflectiveness
     }
+
+    fn clone_box(&self) -> Box<dyn Primitives> {
+        Box::new(Self {
+            center: self.center,
+            color: self.color,
+            radius: self.radius,
+            pattern: self.pattern.clone(),
+            reflectiveness: self.reflectiveness
+        })
+    }
+
+    fn with_center(&mut self, center:Option<Point3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if center.is_none() {
+            return Err("Missing center".into());
+        }
+        self.center = center.unwrap();
+        Ok(())
+    }
+
+    fn with_radius(&mut self, radius:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if radius.is_none() {
+            return Err("Missing center".into());
+        }
+        self.radius = radius.unwrap();
+        Ok(())
+    }
+
+    fn with_color(&mut self, color:Option<Color>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if color.is_none() {
+            return Err("Missing color".into());
+        }
+        self.color = color.unwrap();
+        Ok(())
+    }
+
+    fn with_pattern(&mut self, pattern:Option<Box<dyn Mask>>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if pattern.is_none() {
+            self.pattern = Box::new(Solid::new(self.color));
+        } else {
+            self.pattern = pattern.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_reflectiveness(&mut self, reflectiveness:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if reflectiveness.is_none() {
+            self.reflectiveness = 0.0;
+        } else {
+            self.reflectiveness = reflectiveness.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_axis(&mut self, _axis:Option<char>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+
+    fn with_height(&mut self, _height:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+
 }
 
 // impl Clone for Sphere {

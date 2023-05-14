@@ -22,21 +22,23 @@ struct World {
 impl World {
     pub fn new(scene:fileconfig::SceneData) -> Self {
         let light_model = PhongModel::new(scene.lights.ambient, scene.lights.diffuse, scene.lights.specular);
-        let mut objects: Vec<Box<dyn Primitives>> = Vec::new();
+        let objects: Vec<Box<dyn Primitives>> = scene.primitives.clone();
 
-        for i in 0..scene.primitives.spheres.len() {
-            objects.push(Box::new(scene.primitives.spheres[i].clone()))
-        }
-        for i in 0..scene.primitives.planes.len() {
-            objects.push(Box::new(scene.primitives.planes[i].clone()))
-        }
-        for i in 0..scene.primitives.cylinders.len() {
-            objects.push(Box::new(scene.primitives.cylinders[i].clone()))
-        }
-        for i in 0..scene.primitives.cones.len() {
-            objects.push(Box::new(scene.primitives.cones[i].clone()))
-        }
-        Self { scene, objects, light_model, reflection_limit:5 }
+        // let mut objects: Vec<Box<dyn Primitives>> = Vec::new();
+
+        // for i in 0..scene.primitives.spheres.len() {
+        //     objects.push(Box::new(scene.primitives.spheres[i].clone()))
+        // }
+        // for i in 0..scene.primitives.planes.len() {
+        //     objects.push(Box::new(scene.primitives.planes[i].clone()))
+        // }
+        // for i in 0..scene.primitives.cylinders.len() {
+        //     objects.push(Box::new(scene.primitives.cylinders[i].clone()))
+        // }
+        // for i in 0..scene.primitives.cones.len() {
+        //     objects.push(Box::new(scene.primitives.cones[i].clone()))
+        // }
+        Self { scene, objects: objects, light_model, reflection_limit:5 }
     }
 
     pub fn color_at(&self, ray:Ray) -> Color {

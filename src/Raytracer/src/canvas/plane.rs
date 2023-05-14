@@ -26,23 +26,23 @@ pub struct Plane {
 }
 
 impl Plane {
-    pub fn new_config(axis:char, position:f64, color:Color, pattern:Box<dyn Mask>) -> Self {
-        let mut pos = Point3D::default();
-        let mut direction = Vector3D::default();
-        if axis == 'X' {
-            pos.x = position;
-            direction.x = 1.0;
-        }
-        if axis == 'Y' {
-            pos.y = position;
-            direction.y = 1.0;
-        }
-        if axis == 'Z' {
-            pos.z = position;
-            direction.y = 1.0;
-        }
-        Plane {axis, center:pos, direction: direction.normalize(), color, pattern, reflectiveness:0.0}
-    }
+    // pub fn new_config(axis:char, position:f64, color:Color, pattern:Box<dyn Mask>) -> Self {
+    //     let mut pos = Point3D::default();
+    //     let mut direction = Vector3D::default();
+    //     if axis == 'X' {
+    //         pos.x = position;
+    //         direction.x = 1.0;
+    //     }
+    //     if axis == 'Y' {
+    //         pos.y = position;
+    //         direction.y = 1.0;
+    //     }
+    //     if axis == 'Z' {
+    //         pos.z = position;
+    //         direction.y = 1.0;
+    //     }
+    //     Plane {axis, center:pos, direction: direction.normalize(), color, pattern, reflectiveness:0.0}
+    // }
 }
 
 impl Primitives for Plane {
@@ -116,12 +116,88 @@ impl Primitives for Plane {
     fn get_reflectiveness(&self) -> f64 {
         self.reflectiveness
     }
+
+    fn clone_box(&self) -> Box<dyn Primitives> {
+        Box::new(Self {
+            center: self.center,
+            color: self.color,
+            axis: self.axis,
+            direction: self.direction,
+            pattern: self.pattern.clone(),
+            reflectiveness: self.reflectiveness
+        })
+    }
+
+    fn with_center(&mut self, center:Option<Point3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if center.is_none() {
+            return Err("Missing center".into());
+        }
+        let mut pos:Point3D = Point3D::default();
+        if self.axis == 'X' {
+            pos.x = center.unwrap().x;
+            self.direction.x = 1.0;
+        }
+        if self.axis == 'Y' {
+            pos.y = center.unwrap().x;
+            self.direction.y = 1.0;
+        }
+        if self.axis == 'Z' {
+            pos.z = center.unwrap().x;
+            self.direction.y = 1.0;
+        }
+        self.center = pos;
+        Ok(())
+    }
+
+    fn with_radius(&mut self, _radius:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+
+    fn with_color(&mut self, color:Option<Color>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if color.is_none() {
+            return Err("Missing color".into());
+        }
+        self.color = color.unwrap();
+        Ok(())
+    }
+
+    fn with_pattern(&mut self, pattern:Option<Box<dyn Mask>>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if pattern.is_none() {
+            self.pattern = Box::new(Solid::new(self.color));
+        } else {
+            self.pattern = pattern.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_reflectiveness(&mut self, reflectiveness:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if reflectiveness.is_none() {
+            self.reflectiveness = 0.0;
+        } else {
+            self.reflectiveness = reflectiveness.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_axis(&mut self, axis:Option<char>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if axis.is_none() {
+            self.axis = 'Z';
+        } else {
+            self.axis = axis.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_height(&mut self, _height:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+
 }
 
 impl Default for Plane {
     fn default() -> Self {
         Plane {
-            axis: 'C',
+            axis: 'Z',
             center: Point3D::default(),
             direction: Vector3D::default(),
             color: Color::default() ,

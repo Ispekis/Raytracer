@@ -9,6 +9,10 @@ mod math {
 
 mod tools;
 
+mod builder {
+    pub mod primitives_builder;
+}
+
 mod canvas {
     pub mod color;
     pub mod sphere;

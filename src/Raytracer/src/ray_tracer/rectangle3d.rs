@@ -8,6 +8,7 @@
 use crate::math::point3d::Point3D;
 use crate::math::vector3d::Vector3D;
 
+#[derive(Copy, Clone)]
 pub struct Rectangle3D {
     origin:Point3D,
     bottom_side:Vector3D,

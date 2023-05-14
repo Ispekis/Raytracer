@@ -17,6 +17,7 @@ pub struct PointLight {
     pub intensity:f64
 }
 
+#[derive(Clone)]
 pub struct Light {
     pub ambient:f64,
     pub diffuse:f64,
