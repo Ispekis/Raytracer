@@ -5,12 +5,19 @@
 // raytracer
 //
 
+// use tetra::graphics::{self, Color};
+// use tetra::{Context, ContextBuilder, State};
+
+use tetra::ContextBuilder;
+
+use crate::graphic::{GameState, self, render};
 use crate::canvas::color::Color;
 use crate::config::fileconfig;
 use crate::interfaces::{Primitives};
 use crate::math::{point3d::Point3D, vector3d::Vector3D};
 use crate::canvas::material::PhongModel;
 use crate::ray_tracer::ray::Ray;
+
 
 struct World {
     scene:fileconfig::SceneData,
@@ -129,7 +136,14 @@ pub fn run_raytracer(scene:fileconfig::SceneData) -> u32
 {
     let width = scene.camera.width;
     let height = scene.camera.height;
-
+    
+    // let ctx = graphic::new_ctx("Raytracer", width as i32, height as i32);
+    // let game_state = GameState::new();
+    // let graphic = render {ctx.build., game_state};
+// 
+    // graphic.run();
+    ContextBuilder::new("Pong", 640, 480)
+        .quit_on_escape(true).build()?.run(|_| Ok(GameState{}));
     println!("P3");
     println!("{} {}", width, height);
     println!("255");
@@ -141,6 +155,7 @@ pub fn run_raytracer(scene:fileconfig::SceneData) -> u32
             let u = x as f64 / (width as f64 - 1.0);
             let v = y as f64 / (height as f64 - 1.0);
             world.draw_primitives(u, v);
+            // graphic.
         }
     }
     return 0;

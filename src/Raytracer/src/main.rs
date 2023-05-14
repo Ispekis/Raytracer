@@ -1,6 +1,7 @@
 mod error_handler;
 mod usage;
 mod raytracer;
+mod graphic;
 mod math {
     pub mod point3d;
     pub mod vector3d;
