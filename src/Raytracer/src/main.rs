@@ -48,16 +48,21 @@ fn main() -> std::process::ExitCode {
         usage::display_usage(&args[0]);
         return std::process::ExitCode::SUCCESS;
     }
-    if error_handler::error_handler(&args) == 1 {
-        return std::process::ExitCode::from(84);
-    }
+    let (status, file_index): (u32, usize) = match error_handler::error_handler(&args) {
+        (1, _) => return std::process::ExitCode::from(84),
+        value => value
+    };
 
-    let scene = config::fileconfig::SceneData::new(&args[1]);
+    let scene = config::fileconfig::SceneData::new(&args[file_index]);
 
     match scene {
         Ok(s) => {
             // let mutable_scene = &mut s;
-            raytracer::run_raytracer(s);
+            if status == 0 {
+                raytracer::run_raytracer(s);
+            } else if status == 2 {
+                raytracer::run_raytracer_multithreading(s);
+            }
             return std::process::ExitCode::SUCCESS;
         },
         Err(_) => {
