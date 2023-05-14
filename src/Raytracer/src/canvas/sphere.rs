@@ -9,16 +9,18 @@ use crate::math::{point3d::Point3D, formulas, vector3d::Vector3D};
 use crate::ray_tracer::ray::Ray;
 use crate::interfaces::{Primitives, Mask};
 use crate::canvas::material::Solid;
+use crate::matrix::Transformation;
 
 use super::color::Color;
 
 #[derive(Clone)]
 pub struct Sphere {
-    pub center:Point3D,
-    pub radius:f64,
-    pub color:Color,
-    pub pattern:Box<dyn Mask>,
-    pub reflectiveness: f64
+    center:Point3D,
+    radius:f64,
+    color:Color,
+    pattern:Box<dyn Mask>,
+    reflectiveness: f64,
+    transformation: Transformation
 }
 
 // impl Sphere {
@@ -50,6 +52,9 @@ impl Primitives for Sphere {
     fn rotatex(&mut self, _:f64) {}
     fn rotatey(&mut self, _:f64) {}
     fn rotatez(&mut self, _:f64) {}
+    fn scale(&mut self, value:f64) {
+        self.radius *= value;
+    }
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
         (hit_point - self.center).normalize()
     }
@@ -70,7 +75,8 @@ impl Primitives for Sphere {
             color: self.color,
             radius: self.radius,
             pattern: self.pattern.clone(),
-            reflectiveness: self.reflectiveness
+            reflectiveness: self.reflectiveness,
+            transformation: self.transformation
         })
     }
 
@@ -124,6 +130,33 @@ impl Primitives for Sphere {
         Ok(())
     }
 
+    fn with_scale(&mut self, scale:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if scale.is_none() {
+            self.transformation.scale = 1.0;
+        } else {
+            self.transformation.scale = scale.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_translation(&mut self, translation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if translation.is_none() {
+            self.transformation.translation = Vector3D::default();
+        } else {
+            self.transformation.translation = translation.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_rotation(&mut self, rotation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if rotation.is_none() {
+            self.transformation.rotation = Vector3D::default();
+        } else {
+            self.transformation.rotation = rotation.unwrap();
+        }
+        Ok(())
+    }
+
 }
 
 // impl Clone for Sphere {
@@ -144,7 +177,8 @@ impl Default for Sphere {
             radius: 0.0,
             color: Color::default(),
             pattern: Box::new(Solid::default()),
-            reflectiveness: 0.0
+            reflectiveness: 0.0,
+            transformation: Transformation::default()
         }
     }
 }

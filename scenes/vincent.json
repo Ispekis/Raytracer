@@ -6,7 +6,7 @@
         },
         "position": {
             "x": 0,
-            "y": -50,
+            "y": -100,
             "z": 0
         },
         "rotation": {
@@ -19,30 +19,36 @@
     "primitives": {
         "spheres": [
             {
-                "x": 100,
+                "x": 0,
                 "y": 0,
-                "z": -550,
-                "r": 50,
+                "z": 0,
+                "r": 100,
                 "color": {
                     "r": 64,
                     "g": 255,
                     "b": 64
                 },
                 "material": {
-                    "reflectiveness": 0.5
+                    "reflectiveness": 0.0
+                },
+                "transform": {
+                    "scale": 1.0
                 }
             }
         ],
         "planes": [
             {
                 "axis": "Z",
-                "position": -20,
+                "position": 0,
                 "color": {
                     "r": 64,
                     "g": 64,
                     "b": 255
                 },
-                "pattern": "solid"
+                "material": {
+                    "reflectiveness": 1.0,
+                    "pattern": "chessboard"
+                }
             }
         ],
         "cylinders": [],
@@ -51,23 +57,21 @@
     "lights":
     {
         "ambient": 0.4,
-        "diffuse": 1.0,
+        "diffuse": 0.6,
         "specular": 0.5,
         "point": [
             {
-                "x": 1,
-                "y": -10,
+                "x": 150,
+                "y": -50,
                 "z": 0,
-                "color":{
+                "color": {
                     "x": 255,
                     "y": 255,
                     "z": 255
                 },
                 "intensity": 1.0
             }
-
         ],
-        "directional": [
-        ]
+        "directional": []
     }
 }

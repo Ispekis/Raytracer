@@ -32,7 +32,12 @@ impl World {
     }
 
     pub fn multiple_light_color(&self, color:Vec<Color>) -> Color {
-        let mut final_color = color[0];
+        let mut final_color;
+        if color.len() <= 0 {
+            final_color = Color::black()
+        } else {
+            final_color = color[0];
+        }
         for i in 0..color.len() {
             let total = color[i].r + color[i].g + color[i].b;
             let total_final = final_color.r + final_color.g + final_color.b;
@@ -72,8 +77,8 @@ impl World {
 
     pub fn draw_primitives(&mut self, u:f64, v:f64) {
         let ray = self.scene.camera.ray(u, v);
-        let color = self.color_at(ray);
-        write_flat_color(color);
+        let mut color = self.color_at(ray);
+        write_flat_color(color.max_rgb().min_rgb());
         return;
     }
 

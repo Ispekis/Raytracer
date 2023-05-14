@@ -177,8 +177,8 @@ fn config_prims(data:&Value) -> std::result::Result<Vec<Box<dyn Primitives>>, Bo
 
             // Set the color
             let mut pattern: Box<dyn Mask> = Box::new(material::Solid::new(color));
-            if !data["primitives"][&prims][i]["pattern"].is_null() {
-                let pattern_str = data["primitives"][&prims][i]["pattern"].to_string().parse::<String>()?;
+            if !data["primitives"][&prims][i]["material"]["pattern"].is_null() {
+                let pattern_str = data["primitives"][&prims][i]["material"]["pattern"].to_string().parse::<String>()?;
                 pattern = material::get_material_pattern(pattern_str.as_str());
             }
             pattern.set_color(color);
@@ -202,6 +202,28 @@ fn config_prims(data:&Value) -> std::result::Result<Vec<Box<dyn Primitives>>, Bo
                 height = data["primitives"][&prims][i]["h"].to_string().parse::<f64>()?;
             }
 
+            // Set the scale
+            let mut scale = 1.0;
+            if !data["primitives"][&prims][i]["transform"]["scale"].is_null() {
+                scale = data["primitives"][&prims][i]["transform"]["scale"].to_string().parse::<f64>()?;
+            }
+
+            let mut translation = Vector3D::default();
+            if !data["primitives"][&prims][i]["transform"]["translation"].is_null() {
+                translation = Vector3D::new(
+                    data["primitives"][&prims][i]["transform"]["translation"]["x"].to_string().parse::<f64>()?,
+                    data["primitives"][&prims][i]["transform"]["translation"]["y"].to_string().parse::<f64>()?,
+                    data["primitives"][&prims][i]["transform"]["translation"]["z"].to_string().parse::<f64>()?);
+            }
+
+            let mut rotation = Vector3D::default();
+            if !data["primitives"][&prims][i]["transform"]["rotation"].is_null() {
+                rotation = Vector3D::new(
+                    data["primitives"][&prims][i]["transform"]["rotation"]["x"].to_string().parse::<f64>()?,
+                    data["primitives"][&prims][i]["transform"]["rotation"]["y"].to_string().parse::<f64>()?,
+                    data["primitives"][&prims][i]["transform"]["rotation"]["z"].to_string().parse::<f64>()?);
+            }
+
             //** End Optional Values **//
 
             let mut new = PrimitivesBuilder::new()
@@ -213,25 +235,17 @@ fn config_prims(data:&Value) -> std::result::Result<Vec<Box<dyn Primitives>>, Bo
                 .with_radius(radius)
                 .with_reflectiveness(reflectiveness)
                 .with_height(height)
+                .with_translation(translation)
+                .with_rotation(rotation)
+                .with_scale(scale)
                 .build()?;
 
-            // Move and translate after value set
-            if !data["primitives"][&prims][i]["translation"].is_null() {
-                let translation = Vector3D::new(
-                    data["primitives"][&prims][i]["translation"]["x"].to_string().parse::<f64>()?,
-                    data["primitives"][&prims][i]["translation"]["y"].to_string().parse::<f64>()?,
-                    data["primitives"][&prims][i]["translation"]["z"].to_string().parse::<f64>()?);
-                new.translate(translation);
-            }
-            if !data["primitives"][&prims][i]["rotation"].is_null() {
-                let rotation = Vector3D::new(
-                    data["primitives"][&prims][i]["rotation"]["x"].to_string().parse::<f64>()?,
-                    data["primitives"][&prims][i]["rotation"]["y"].to_string().parse::<f64>()?,
-                    data["primitives"][&prims][i]["rotation"]["z"].to_string().parse::<f64>()?);
-                    new.rotatex(rotation.x);
-                    new.rotatey(rotation.y);
-                    new.rotatez(rotation.z);
-            }
+            new.translate(translation);
+            new.rotatex(rotation.x);
+            new.rotatey(rotation.y);
+            new.rotatez(rotation.z);
+            new.scale(scale);
+
             primitives.push(new);
         }
     }

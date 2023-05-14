@@ -5,8 +5,9 @@
 // Cylinder
 //
 
-use crate::math::{vector3d::Vector3D, point3d::Point3D};
+use crate::math::{vector3d::Vector3D, point3d::Point3D, formulas};
 use crate::interfaces::{Primitives, Mask};
+use crate::matrix::Transformation;
 use crate::ray_tracer::ray::Ray;
 use super::color::Color;
 use super::material::{
@@ -21,7 +22,8 @@ pub struct Cylinder {
     pub color:Color,
     pub axis:char,
     pub pattern:Box<dyn Mask>,
-    pub reflectiveness:f64
+    pub reflectiveness:f64,
+    transformation:Transformation
 }
 
 impl Cylinder {
@@ -41,7 +43,7 @@ impl Cylinder {
         }
     }
 
-    fn get_center(&self, _ray:Ray) -> Option<Vec<f64>> {
+    fn get_center(&self) -> Option<Vec<f64>> {
         if self.axis == 'X' {
             return Some(vec![self.center.y, self.center.z, self.center.x]);
         } else if self.axis == 'Y' {
@@ -64,27 +66,8 @@ impl Cylinder {
             return None;
         }
     }
-}
 
-impl Primitives for Cylinder {
-    fn hits(&self, ray:Ray) -> Option<Point3D> {
-        let origin: Vec<f64>;
-        let center: Vec<f64>;
-        let direction: Vec<f64>;
-
-        match self.get_origin(ray) {
-            Some(result) => origin = result,
-            None => return None
-        }
-        match self.get_center(ray) {
-            Some(result) => center = result,
-            None => return None
-        }
-        match self.get_direction(ray) {
-            Some(result) => direction = result,
-            None => return None
-        }
-
+    fn compute_cylinder_surface(&self, origin: &Vec<f64>, center: &Vec<f64>, direction: &Vec<f64>) -> Option<f64> {
         let a: f64 = direction[0].powi(2) + direction[1].powi(2);
 
         let b: f64 = 2.0 * (direction[0] * (origin[0] - center[0])
@@ -93,7 +76,7 @@ impl Primitives for Cylinder {
         let c: f64 = (origin[0] - center[0]).powi(2) +
         (origin[1] - center[1]).powi(2) - self.radius.powi(2);
 
-        let delta: f64 = b.powi(2) - 4.0 * a * c;
+        let delta = formulas::compute_discriminant(a, b, c);
         if delta.abs() < 0.001 || delta < 0.0 {
             return None;
         }
@@ -102,11 +85,67 @@ impl Primitives for Cylinder {
         let t: f64 = t1.min(t2);
 
         let r = origin[2] + t * direction[2];
-
         if r >= center[2] && r <= center[2] + self.height {
-            return Some(Point3D::default());
+            return Some(r);
         }
-        return None;
+        None
+    }
+
+    fn compute_last_cylinder_surface(&self, origin: &Vec<f64>, center: &Vec<f64>, direction: &Vec<f64>) -> Option<f64> {
+        let t1: f64 = (center[2] - origin[2]) / direction[2];
+        let t2: f64 = (center[2] + self.height - origin[2]) / direction[2];
+        let mut t: f64 = -1.0;
+
+        if t1 > 0.0 {
+            let p1 = origin[0] + t1 * direction[0] - center[0];
+            let p2 = origin[1] + t1 * direction[1] - center[1];
+            if p1.powi(2) + p2.powi(2) <= self.radius.powi(2) {
+                t = t1;
+            }
+        }
+        if t2 > 0.0 {
+            let p1 = origin[0] + t2 * direction[0] - center[0];
+            let p2 = origin[1] + t2 * direction[1] - center[1];
+            if p1.powi(2) + p2.powi(2) <= self.radius.powi(2) &&
+            (t < 0.0 || t2 < t)  {
+                t = t2;
+            }
+        }
+        if t > 0.0 {
+            return Some(t);
+        }
+        None
+    }
+}
+
+impl Primitives for Cylinder {
+    fn hits(&self, ray: Ray) -> Option<Point3D> {
+        let origin = match self.get_origin(ray) {
+            Some(result) => result,
+            None => return None,
+        };
+        let center = match self.get_center() {
+            Some(result) => result,
+            None => return None,
+        };
+        let direction = match self.get_direction(ray) {
+            Some(result) => result,
+            None => return None,
+        };
+
+        if let Some(t) = self.compute_cylinder_surface(&origin, &center, &direction) {
+            return Some(Point3D::new(
+                ray.origin.x + t * ray.direction.x,
+                ray.origin.y + t * ray.direction.y,
+                ray.origin.z + t * ray.direction.z));
+        }
+        if let Some(t) = self.compute_last_cylinder_surface(&origin, &center, &direction) {
+            return Some(Point3D::new(
+                ray.origin.x + t * ray.direction.x,
+                ray.origin.y + t * ray.direction.y,
+                ray.origin.z + t * ray.direction.z));
+        }
+        None
     }
     fn translate(&mut self, vec:Vector3D) {
         self.center.x += &vec.x;
@@ -116,10 +155,19 @@ impl Primitives for Cylinder {
     fn rotatex(&mut self, _angle:f64) {}
     fn rotatey(&mut self, _angle:f64) {}
     fn rotatez(&mut self, _angle:f64) {}
+    fn scale(&mut self, value:f64) {
+        self.radius *= value;
+    }
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
-        let direction = hit_point - self.center;
-        let norme = (direction.x * direction.x + direction.x * direction.x + direction.y * direction.y).sqrt();
-        return Vector3D::new(direction.x / norme, direction.x / norme, direction.y / norme)
+        let axis_vec = match self.axis {
+            'X' => Vector3D::new(1.0, 0.0, 0.0),
+            'Y' => Vector3D::new(0.0, 1.0, 0.0),
+            _ => Vector3D::new(0.0, 0.0, 1.0),
+        };
+        let hit_vec = hit_point - self.center;
+        let proj = axis_vec * hit_vec.scal(&axis_vec);
+        let normal_vec = hit_vec - proj;
+        normal_vec.normalize()
     }
     fn get_color(&self) -> Color {
         self.color
@@ -141,7 +189,8 @@ impl Primitives for Cylinder {
             color: self.color,
             axis: self.axis,
             pattern: self.pattern.clone(),
-            reflectiveness: self.reflectiveness
+            reflectiveness: self.reflectiveness,
+            transformation: self.transformation
         })
     }
 
@@ -205,6 +254,33 @@ impl Primitives for Cylinder {
         Ok(())
     }
 
+    fn with_scale(&mut self, scale:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if scale.is_none() {
+            self.transformation.scale = 1.0;
+        } else {
+            self.transformation.scale = scale.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_translation(&mut self, translation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if translation.is_none() {
+            self.transformation.translation = Vector3D::default();
+        } else {
+            self.transformation.translation = translation.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_rotation(&mut self, rotation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if rotation.is_none() {
+            self.transformation.rotation = Vector3D::default();
+        } else {
+            self.transformation.rotation = rotation.unwrap();
+        }
+        Ok(())
+    }
+
 }
 
 impl Default for Cylinder {
@@ -216,7 +292,8 @@ impl Default for Cylinder {
             color: Color::default(),
             axis: 'Z',
             pattern: Box::new(Solid::default()),
-            reflectiveness: 0.0
+            reflectiveness: 0.0,
+            transformation: Transformation::default()
         }
     }
 }

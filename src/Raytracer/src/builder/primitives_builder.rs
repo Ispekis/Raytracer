@@ -6,7 +6,8 @@
 //
 
 use crate::math::{
-    point3d::Point3D
+    point3d::Point3D,
+    vector3d::Vector3D
 };
 use crate::canvas::{
     color::Color,
@@ -22,6 +23,9 @@ pub struct PrimitivesBuilder {
     reflectiveness:Option<f64>,
     axis: Option<char>,
     height: Option<f64>,
+    scale:Option<f64>,
+    translation:Option<Vector3D>,
+    rotation:Option<Vector3D>
 }
 
 
@@ -36,6 +40,9 @@ impl PrimitivesBuilder {
             reflectiveness: None,
             axis: None,
             height: None,
+            scale:None,
+            translation:None,
+            rotation:None
         }
     }
 
@@ -79,6 +86,21 @@ impl PrimitivesBuilder {
         self
     }
 
+    pub fn with_scale(mut self, scale:f64) -> Self {
+        self.scale = Some(scale);
+        self
+    }
+
+    pub fn with_translation(mut self, translation:Vector3D) -> Self {
+        self.translation = Some(translation);
+        self
+    }
+
+    pub fn with_rotation(mut self, rotation:Vector3D) -> Self {
+        self.rotation = Some(rotation);
+        self
+    }
+
     pub fn build(self) -> std::result::Result<Box<dyn Primitives>, Box<dyn std::error::Error>> {
         let mut primitives = self.primitives.ok_or("primitives not specified")?;
 
@@ -89,6 +111,9 @@ impl PrimitivesBuilder {
         primitives.with_reflectiveness(self.reflectiveness)?;
         primitives.with_axis(self.axis)?;
         primitives.with_height(self.height)?;
+        primitives.with_translation(self.translation)?;
+        primitives.with_rotation(self.rotation)?;
+        primitives.with_scale(self.scale)?;
 
         Ok(primitives)
     }
