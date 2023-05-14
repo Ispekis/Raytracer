@@ -41,6 +41,20 @@ impl Color {
         }
         *self
     }
+
+    pub fn min_rgb(&mut self) -> Self {
+        if self.r < 0.0 {
+            self.r = 0.0;
+        }
+        if self.g < 0.0 {
+            self.g = 0.0;
+        }
+        if self.b < 0.0 {
+            self.b = 0.0;
+        }
+        *self
+    }
+
 }
 
 impl Default for Color {

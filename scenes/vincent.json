@@ -17,27 +17,28 @@
         "fieldOfView": 72.0
     },
     "primitives": {
-        "spheres": [],
-        "planes": [],
-        "cylinders": [],
-        "cones": [
+        "spheres": [
             {
                 "x": 0,
                 "y": 0,
                 "z": 0,
-                "r": 20,
-                "axis":"Y",
-                "h": 100,
+                "r": 100,
                 "color": {
-                    "r": 12,
-                    "g": 145,
-                    "b": 90
+                    "r": 64,
+                    "g": 255,
+                    "b": 64
+                },
+                "material": {
+                    "reflectiveness": 0.0
                 },
                 "transform": {
-                    "scale": 5.0
+                    "scale": 1.0
                 }
             }
-        ]
+        ],
+        "planes": [],
+        "cylinders": [],
+        "cones": []
     },
     "lights":
     {
@@ -45,6 +46,20 @@
         "diffuse": 0.6,
         "specular": 0.5,
         "point": [],
-        "directional": []
+        "directional": [
+            {
+                "color":{
+                    "r": 255,
+                    "g": 255,
+                    "b": 255
+                },
+                "intensity": 0.2,
+                "rotation": {
+                    "x": -1.0,
+                    "y": 1.0,
+                    "z": 0.0
+                }
+            }
+        ]
     }
 }

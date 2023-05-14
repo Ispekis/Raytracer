@@ -30,18 +30,7 @@
                 }
             }
         ],
-        "planes": [
-            {
-                "axis": "Z",
-                "position": -20,
-                "color": {
-                    "r": 64,
-                    "g": 64,
-                    "b": 255
-                },
-                "pattern": "solid"
-            }
-        ],
+        "planes": [],
         "cylinders": [],
         "cones": []
     },
@@ -54,9 +43,9 @@
         "directional": [
             {
                 "color":{
-                    "x": 0,
-                    "y": 0,
-                    "z": 255
+                    "r": 0,
+                    "g": 0,
+                    "b": 255
                 },
                 "intensity": 1.0,
                 "rotation": {
