@@ -7,31 +7,37 @@ mod math {
     pub mod formulas;
 }
 
-pub mod rgb;
-
 mod tools;
 
-mod ray_tracer {
-    pub mod ray;
+mod builder {
+    pub mod primitives_builder;
+}
+
+mod canvas {
+    pub mod color;
     pub mod sphere;
-    pub mod camera;
     pub mod plane;
     pub mod cylinder;
-    pub mod rectangle3d;
-    pub mod light;
     pub mod cone;
     pub mod material;
 }
 
-mod interfaces {
-    pub mod primitives;
+mod ray_tracer {
+    pub mod ray;
+    pub mod camera;
+    pub mod rectangle3d;
+    pub mod light;
 }
 
+mod interfaces;
 
 mod config {
     pub mod fileconfig;
 }
 
+mod factory {
+    pub mod primitives_factory;
+}
 
 fn main() -> std::process::ExitCode {
     let args: Vec<String> = std::env::args().collect();
