@@ -132,7 +132,20 @@ impl Primitives for Plane {
         if center.is_none() {
             return Err("Missing center".into());
         }
-        self.center = center.unwrap();
+        let mut pos:Point3D = Point3D::default();
+        if self.axis == 'X' {
+            pos.x = center.unwrap().x;
+            self.direction.x = 1.0;
+        }
+        if self.axis == 'Y' {
+            pos.y = center.unwrap().x;
+            self.direction.y = 1.0;
+        }
+        if self.axis == 'Z' {
+            pos.z = center.unwrap().x;
+            self.direction.y = 1.0;
+        }
+        self.center = pos;
         Ok(())
     }
 

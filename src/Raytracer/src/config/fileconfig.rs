@@ -14,10 +14,10 @@ use crate::math::{
     vector3d::Vector3D
 };
 use crate::canvas::{
-    sphere::Sphere,
     material
 };
 
+use crate::factory::primitives_factory::Factory;
 use crate::ray_tracer::{
     camera::Camera,
     light::{
@@ -313,10 +313,18 @@ fn config_prims(data:&Value) -> std::result::Result<Vec<Box<dyn Primitives>>, Bo
             //** Must Values **//
 
             // Get the position
-            let position = Point3D::new(
+            let position: Point3D;
+            if !data["primitives"][&prims][i]["position"].is_null() {
+                position = Point3D::new(
+                    data["primitives"][&prims][i]["position"].to_string().parse::<f64>()?,
+                    0.0,
+                    0.0);
+            } else {
+                position = Point3D::new(
                 data["primitives"][&prims][i]["x"].to_string().parse::<f64>()?,
                 data["primitives"][&prims][i]["y"].to_string().parse::<f64>()?,
                 data["primitives"][&prims][i]["z"].to_string().parse::<f64>()?);
+            }
 
             // Get the color
             let color = Color::new(
@@ -364,13 +372,13 @@ fn config_prims(data:&Value) -> std::result::Result<Vec<Box<dyn Primitives>>, Bo
             //** End Optional Values **//
 
             let mut new = PrimitivesBuilder::new()
-                .with_primitives(Box::new(Sphere::default()))
+                .with_primitives(Factory::create_primitives(&prims).unwrap())
+                .with_axis(axis)
                 .with_center(position)
                 .with_color(color)
                 .with_pattern(pattern)
                 .with_radius(radius)
                 .with_reflectiveness(reflectiveness)
-                .with_axis(axis)
                 .with_height(height)
                 .build()?;
 

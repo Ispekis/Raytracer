@@ -33,7 +33,7 @@ impl Factory {
         Cone::default()
     }
 
-    pub fn create_primitives(name:String) -> Option<Box<dyn Primitives>> {
+    pub fn create_primitives(name:&String) -> Option<Box<dyn Primitives>> {
         match name.as_str() {
             "spheres" => return Some(Box::new(Factory::create_sphere())),
             "planes" => return Some(Box::new(Factory::create_plane())),

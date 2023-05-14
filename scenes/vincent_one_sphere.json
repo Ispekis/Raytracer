@@ -6,7 +6,7 @@
         },
         "position": {
             "x": 0,
-            "y": 0,
+            "y": -100,
             "z": 0
         },
         "rotation": {
@@ -30,7 +30,18 @@
                 }
             }
         ],
-        "planes": [],
+        "planes": [
+            {
+                "axis": "Z",
+                "position": -20,
+                "color": {
+                    "r": 64,
+                    "g": 64,
+                    "b": 255
+                },
+                "pattern": "solid"
+            }
+        ],
         "cylinders": [],
         "cones": []
     },

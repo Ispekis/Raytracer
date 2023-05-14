@@ -171,6 +171,15 @@ impl Primitives for Cone {
         if center.is_none() {
             return Err("Missing center".into());
         }
+        if self.axis == 'X' {
+            self.direction.x = 1.0;
+        }
+        if self.axis == 'Y' {
+            self.direction.y = 1.0;
+        }
+        if self.axis == 'Z' {
+            self.direction.y = 1.0;
+        }
         self.center = center.unwrap();
         Ok(())
     }
