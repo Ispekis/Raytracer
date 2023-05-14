@@ -46,13 +46,41 @@
                     "b": 255
                 },
                 "material": {
-                    "reflectiveness": 1.0,
+                    "reflectiveness": 0.0,
                     "pattern": "chessboard"
                 }
             }
         ],
-        "cylinders": [],
-        "cones": []
+        "cylinders": [
+            {
+                "x": 1,
+                "y": 50,
+                "z": 1,
+                "r": 20,
+                "axis":"X",
+                "h": 500,
+                "color": {
+                    "r": 12,
+                    "g": 145,
+                    "b": 90
+                    }
+            }
+        ],
+        "cones": [
+            {
+                "x": 1,
+                "y": 50,
+                "z": 1,
+                "r": 20,
+                "axis":"X",
+                "h": 500,
+                "color": {
+                    "r": 12,
+                    "g": 145,
+                    "b": 90
+                    }
+            }
+        ]
     },
     "lights":
     {
@@ -72,6 +100,20 @@
                 "intensity": 1.0
             }
         ],
-        "directional": []
+        "directional": [
+            {
+                "rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "color": {
+                    "r": 255,
+                    "g": 255,
+                    "b": 255
+                },
+                "intensity": 1.0
+            }
+        ]
     }
 }
