@@ -10,7 +10,7 @@ use crate::math::point3d::Point3D;
 use crate::math::vector3d::Vector3D;
 use crate::ray_tracer::ray::Ray;
 
-pub trait Primitives {
+pub trait Primitives: Send {
     fn translate(&mut self, vec:Vector3D);
     fn rotatex(&mut self, angle:f64);
     fn rotatey(&mut self, angle:f64);
@@ -52,13 +52,13 @@ impl Clone for Box<dyn Primitives> {
     }
 }
 
-pub trait Mask {
+pub trait Mask: Send {
     fn color_at(&self, position:Point3D) -> Color;
     fn box_clone(&self) -> Box<dyn Mask>;
     fn set_color(&mut self, color:Color);
 }
 
-pub trait ILight {
+pub trait ILight: Send {
     fn position(&self) -> Point3D;
     fn color(&self) -> Color;
     fn intensity(&self) -> f64;

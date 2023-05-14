@@ -5,6 +5,11 @@
 // raytracer
 //
 
+use std::collections::HashMap;
+use std::sync::Arc;
+use std::sync::Mutex;
+use rayon::prelude::*;
+
 use crate::canvas::color::Color;
 use crate::config::fileconfig;
 use crate::interfaces::{Primitives};
@@ -75,11 +80,10 @@ impl World {
         self.multiple_light_color(color)
     }
 
-    pub fn draw_primitives(&mut self, u:f64, v:f64) {
+    pub fn draw_primitives(&mut self, u:f64, v:f64) -> String {
         let ray = self.scene.camera.ray(u, v);
         let mut color = self.color_at(ray);
-        write_flat_color(color.max_rgb().min_rgb());
-        return;
+        return write_flat_color(color.max_rgb().min_rgb());
     }
 
     fn intersect(&self, ray:Ray, object_index:usize) -> Option<Point3D> {
@@ -126,8 +130,70 @@ impl World {
     }
 }
 
-fn write_flat_color(color:Color) {
-    println!("{} {} {}", color.r as u32, color.g as u32, color.b as u32);
+fn write_flat_color(color: Color) -> String {
+    format!("{} {} {}", color.r as u32, color.g as u32, color.b as u32)
+}
+
+pub fn run_raytracer_multithreading(scene: fileconfig::SceneData) -> u32 {
+    let width = scene.camera.width;
+    let height = scene.camera.height;
+
+    println!("P3");
+    println!("{} {}", width, height);
+    println!("255");
+
+    let world: Arc<Mutex<World>> = Arc::new(Mutex::new(World::new(scene)));
+    let image: Arc<Mutex<HashMap<(u32, u32), String>>> = Arc::new(Mutex::new(HashMap::new()));
+
+    // let mut handles = Vec::new();
+    // for y in 0..height {
+    //     for x in 0..width {
+    //         let u = x as f64 / (width as f64 - 1.0);
+    //         let v = y as f64 / (height as f64 - 1.0);
+    //         let world_clone = world.clone();
+    //         let image_clone = image.clone();
+
+    //         let handle = thread::spawn(move || {
+    //             let color = {
+    //                 let mut world_lock = world_clone.lock().unwrap();
+    //                 world_lock.draw_primitives(u, v)
+    //             };
+    //             let mut image_lock = image_clone.lock().unwrap();
+    //             image_lock.insert((x, y), color);
+    //         });
+    //         handles.push(handle);
+    //     }
+    // }
+
+    // for handle in handles {
+    //     handle.join().unwrap();
+    // }
+    (0..width * height).into_par_iter().for_each(|idx| {
+        let x = idx % width;
+        let y = idx / width;
+        let u = x as f64 / (width as f64 - 1.0);
+        let v = y as f64 / (height as f64 - 1.0);
+
+        let color = {
+            let mut world_lock = world.lock().unwrap();
+            world_lock.draw_primitives(u, v)
+        };
+        let mut image_lock = image.lock().unwrap();
+        image_lock.insert((x, y), color);
+    });
+
+    for y in 0..height {
+        for x in 0..width {
+            let color = {
+                let image_lock = image.lock().unwrap();
+                image_lock.get(&(x, y)).cloned()
+            };
+            if let Some(color) = color {
+                println!("{}", color);
+            }
+        }
+    }
+    return 0;
 }
 
 pub fn run_raytracer(scene:fileconfig::SceneData) -> u32
@@ -145,7 +211,7 @@ pub fn run_raytracer(scene:fileconfig::SceneData) -> u32
         for x in 0..width {
             let u = x as f64 / (width as f64 - 1.0);
             let v = y as f64 / (height as f64 - 1.0);
-            world.draw_primitives(u, v);
+            println!("{}", world.draw_primitives(u, v));
         }
     }
     return 0;
