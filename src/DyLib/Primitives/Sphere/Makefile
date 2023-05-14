@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-LIB = Sphere_Primitive.so
+LIB = sphere.so
 
 all:
 	cargo build

@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-LIB = Plane_Primitive.so
+LIB = plane.so
 
 all:
 	cargo build
