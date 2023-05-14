@@ -10,11 +10,8 @@ use crate::math::{
 };
 use crate::canvas::{
     color::Color,
-    material::{
-        Mask,
-    }
 };
-use crate::interfaces::primitives::Primitives;
+use crate::interfaces::{Primitives, Mask};
 
 pub struct PrimitivesBuilder {
     primitives:Option<Box<dyn Primitives>>,

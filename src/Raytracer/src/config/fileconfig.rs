@@ -343,7 +343,7 @@ fn config_prims(data:&Value) -> std::result::Result<Vec<Box<dyn Primitives>>, Bo
             }
 
             // Set the color
-            let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
+            let mut pattern: Box<dyn Mask> = Box::new(material::Solid::new(color));
             if !data["primitives"][&prims][i]["pattern"].is_null() {
                 let pattern_str = data["primitives"][&prims][i]["pattern"].to_string().parse::<String>()?;
                 pattern = material::get_material_pattern(pattern_str.as_str());
