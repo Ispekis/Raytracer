@@ -56,22 +56,15 @@ impl PhongModel {
         } else {
             ret_color = ambient + diffuse + specular;
         }
-        if ret_color.r >= 255.0 {
-            ret_color.r = 255.0;
-        }
-        if ret_color.g >= 255.0 {
-            ret_color.g = 255.0;
-        }
-        if ret_color.b >= 255.0 {
-            ret_color.b = 255.0;
-        }
 
-        let mut coeff = 1.0;
+        let coeff;
         if !light.direction().is_none() {
             coeff = light.direction().unwrap().scal(&normal_v) * (-1.0);
+            (ret_color + (light.color() * coeff)).max_rgb()
+        } else {
+            ret_color.max_rgb()
         }
 
-        ret_color * coeff
     }
 }
 

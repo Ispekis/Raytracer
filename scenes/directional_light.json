@@ -54,8 +54,8 @@
         "directional": [
             {
                 "color":{
-                    "x": 255,
-                    "y": 255,
+                    "x": 0,
+                    "y": 0,
                     "z": 255
                 },
                 "intensity": 1.0,

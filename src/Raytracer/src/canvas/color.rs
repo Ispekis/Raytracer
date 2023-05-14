@@ -28,6 +28,19 @@ impl Color {
     pub fn tot_color_value(&self) -> f64 {
         self.r + self.g + self.b
     }
+
+    pub fn max_rgb(&mut self) -> Self {
+        if self.r >= 255.0 {
+            self.r = 255.0;
+        }
+        if self.g >= 255.0 {
+            self.g = 255.0;
+        }
+        if self.b >= 255.0 {
+            self.b = 255.0;
+        }
+        *self
+    }
 }
 
 impl Default for Color {

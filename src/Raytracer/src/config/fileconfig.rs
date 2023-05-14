@@ -96,9 +96,9 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
 
     for i in 0..directionals_len {
         let color = Color::new(
-            data["lights"]["directional"][i]["color"]["x"].to_string().parse::<f64>()?,
-            data["lights"]["directional"][i]["color"]["y"].to_string().parse::<f64>()?,
-            data["lights"]["directional"][i]["color"]["z"].to_string().parse::<f64>()?);
+            data["lights"]["directional"][i]["color"]["r"].to_string().parse::<f64>()?,
+            data["lights"]["directional"][i]["color"]["g"].to_string().parse::<f64>()?,
+            data["lights"]["directional"][i]["color"]["b"].to_string().parse::<f64>()?);
 
         let intensity;
         if data["lights"]["point"][i]["intensity"].is_null() {
