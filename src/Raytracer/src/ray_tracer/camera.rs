@@ -10,6 +10,7 @@ use crate::math::vector3d::Vector3D;
 use crate::ray_tracer::rectangle3d::Rectangle3D;
 use crate::ray_tracer::ray::Ray;
 
+#[derive(Copy, Clone)]
 pub struct Camera {
     origin:Point3D,
     screen:Rectangle3D,

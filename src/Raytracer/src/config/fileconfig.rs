@@ -8,6 +8,7 @@
 use serde_json::{Value};
 use crate::canvas::color::Color;
 use crate::interfaces::primitives::Primitives;
+use crate::builder::primitives_builder::PrimitivesBuilder;
 use crate::math::{
     point3d::Point3D,
     vector3d::Vector3D
@@ -36,9 +37,10 @@ pub struct Primitivest {
     pub cones:Vec<Cone>
 }
 
+#[derive(Clone)]
 pub struct SceneData {
     pub camera:Camera,
-    pub primitives:Primitivest,
+    pub primitives:Vec<Box<dyn Primitives>>,
     pub lights:Light
 }
 
@@ -292,6 +294,68 @@ fn config_lights(data:&Value) -> std::result::Result<Light, Box<dyn std::error::
     Ok(Light::new_config(ambient, diffuse, specular, points, directionals))
 }
 
+fn config_prims(data:&Value) -> std::result::Result<Vec<Box<dyn Primitives>>, Box<dyn std::error::Error>> {
+    let spheres_len = data["primitives"]["spheres"]
+    .as_array()
+    .map_or(0, |arr| arr.len());
+    let mut spheres: Vec<Box<dyn Primitives>> = Vec::new();
+
+    for i in 0..spheres_len {
+        let position = Point3D::new(
+            data["primitives"]["spheres"][i]["x"].to_string().parse::<f64>()?,
+            data["primitives"]["spheres"][i]["y"].to_string().parse::<f64>()?,
+            data["primitives"]["spheres"][i]["z"].to_string().parse::<f64>()?);
+
+        let radius = data["primitives"]["spheres"][i]["r"].to_string().parse::<f64>()?;
+
+        let color = Color::new(
+            data["primitives"]["spheres"][i]["color"]["r"].to_string().parse::<f64>()?,
+            data["primitives"]["spheres"][i]["color"]["g"].to_string().parse::<f64>()?,
+            data["primitives"]["spheres"][i]["color"]["b"].to_string().parse::<f64>()?);
+
+        // Set the color
+        let mut pattern: Box<dyn material::Mask> = Box::new(material::Solid::new(color));
+        if !data["primitives"]["spheres"][i]["pattern"].is_null() {
+            let pattern_str = data["primitives"]["spheres"][i]["pattern"].to_string().parse::<String>()?;
+            pattern = material::get_material_pattern(pattern_str.as_str());
+        }
+        pattern.set_color(color);
+
+        // Set the reflectiveness
+        let mut reflectiveness:f64 = 0.0;
+        if !data["primitives"]["spheres"][i]["material"]["reflectiveness"].is_null() {
+            reflectiveness = data["primitives"]["spheres"][i]["material"]["reflectiveness"].to_string().parse::<f64>()?;
+        }
+        let mut new = PrimitivesBuilder::new()
+            .with_primitives(Box::new(Sphere::default()))
+            .with_center(position)
+            .with_color(color)
+            .with_pattern(pattern)
+            .with_radius(radius)
+            .with_reflectiveness(reflectiveness).build()?;
+
+        if !data["primitives"]["spheres"][i]["translation"].is_null() {
+            let translation = Vector3D::new(
+                data["primitives"]["spheres"][i]["translation"]["x"].to_string().parse::<f64>()?,
+                data["primitives"]["spheres"][i]["translation"]["y"].to_string().parse::<f64>()?,
+                data["primitives"]["spheres"][i]["translation"]["z"].to_string().parse::<f64>()?);
+            new.translate(translation);
+        }
+        if !data["primitives"]["spheres"][i]["rotation"].is_null() {
+            let rotation = Vector3D::new(
+                data["primitives"]["spheres"][i]["rotation"]["x"].to_string().parse::<f64>()?,
+                data["primitives"]["spheres"][i]["rotation"]["y"].to_string().parse::<f64>()?,
+                data["primitives"]["spheres"][i]["rotation"]["z"].to_string().parse::<f64>()?);
+                new.rotatex(rotation.x);
+                new.rotatey(rotation.y);
+                new.rotatez(rotation.z);
+        }
+        spheres.push(new);
+    }
+
+    Ok(spheres)
+}
+
 impl SceneData {
     pub fn new(filepath: &str) -> std::result::Result<SceneData, Box<dyn std::error::Error>> {
         // Convert string to json
@@ -301,11 +365,11 @@ impl SceneData {
         let camera = config_cam(&data)?;
 
         // Get primitives's configs
-        let primitives = config_primitives(&data)?;
+        let primitives = config_prims(&data)?;
 
         // Get lights's configs
         let lights = config_lights(&data)?;
 
-        Ok(SceneData { camera, primitives, lights })
+        Ok(SceneData { camera, primitives, lights})
     }
 }

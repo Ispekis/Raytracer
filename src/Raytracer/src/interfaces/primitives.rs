@@ -8,7 +8,11 @@
 use crate::canvas::color::Color;
 use crate::math::point3d::Point3D;
 use crate::math::vector3d::Vector3D;
-use crate::canvas::material::Mask;
+use crate::canvas::{
+    material::{
+        Mask,
+    }
+};
 use crate::ray_tracer::ray::Ray;
 
 pub trait Primitives {
@@ -21,4 +25,23 @@ pub trait Primitives {
     fn get_color(&self) -> Color;
     fn get_pattern(&self) -> Box<dyn Mask>;
     fn get_reflectiveness(&self) -> f64;
+
+    fn clone_box(&self) -> Box<dyn Primitives>;
+
+    // setters
+    fn with_center(&mut self, center:Option<Point3D>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+
+    fn with_radius(&mut self, radius:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+
+    fn with_color(&mut self, color:Option<Color>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+
+    fn with_pattern(&mut self, pattern:Option<Box<dyn Mask>>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+
+    fn with_reflectiveness(&mut self, reflectiveness:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+}
+
+impl Clone for Box<dyn Primitives> {
+    fn clone(&self) -> Self {
+        self.clone_box()
+    }
 }

@@ -127,3 +127,9 @@ impl std::ops::DivAssign<Color> for Color {
         self.b /= rhs.b;
     }
 }
+
+impl std::fmt::Display for Color {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Color(x={}, y={}, z={})", self.r, self.g, self.b)
+    }
+}

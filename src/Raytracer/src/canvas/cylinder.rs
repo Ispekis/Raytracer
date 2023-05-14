@@ -133,6 +133,60 @@ impl Primitives for Cylinder {
     fn get_reflectiveness(&self) -> f64 {
         self.reflectiveness
     }
+
+    fn clone_box(&self) -> Box<dyn Primitives> {
+        Box::new(Self {
+            center: self.center,
+            radius: self.radius,
+            height: self.height,
+            color: self.color,
+            axis: self.axis,
+            pattern: self.pattern.clone(),
+            reflectiveness: self.reflectiveness
+        })
+    }
+
+    fn with_center(&mut self, center:Option<Point3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if center.is_none() {
+            return Err("Missing center".into());
+        }
+        self.center = center.unwrap();
+        Ok(())
+    }
+
+    fn with_radius(&mut self, radius:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if radius.is_none() {
+            return Err("Missing radius".into());
+        }
+        self.radius = radius.unwrap();
+        Ok(())
+    }
+
+    fn with_color(&mut self, color:Option<Color>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if color.is_none() {
+            return Err("Missing color".into());
+        }
+        self.color = color.unwrap();
+        Ok(())
+    }
+
+    fn with_pattern(&mut self, pattern:Option<Box<dyn Mask>>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if pattern.is_none() {
+            self.pattern = Box::new(Solid::new(self.color));
+        } else {
+            self.pattern = pattern.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_reflectiveness(&mut self, reflectiveness:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if reflectiveness.is_none() {
+            self.reflectiveness = 0.0;
+        } else {
+            self.reflectiveness = reflectiveness.unwrap();
+        }
+        Ok(())
+    }
 }
 
 impl Default for Cylinder {
