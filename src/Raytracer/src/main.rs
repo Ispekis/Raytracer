@@ -37,6 +37,13 @@ mod config {
     pub mod fileconfig;
 }
 
+mod plugins {
+    pub mod plugins;
+    pub mod dlloader;
+}
+
+use crate::plugins::plugins::Plugins;
+
 mod factory {
     pub mod primitives_factory;
 }
@@ -51,6 +58,16 @@ fn main() -> std::process::ExitCode {
     if error_handler::error_handler(&args) == 1 {
         return std::process::ExitCode::from(84);
     }
+
+    let mut plugins = Plugins::new();
+    match plugins.parse("plugins") {
+        Ok(()) => {}
+        Err(err) => {
+            eprintln!("error: {}", err);
+            return std::process::ExitCode::from(84);
+        }
+    }
+    return std::process::ExitCode::SUCCESS;
 
     let scene = config::fileconfig::SceneData::new(&args[1]);
 
