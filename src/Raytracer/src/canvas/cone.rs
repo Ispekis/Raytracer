@@ -130,7 +130,10 @@ impl Primitives for Cone {
         let r = origin[2] + t * direction[2];
 
         if r >= center[2] && r <= center[2] + self.height {
-            return Some(Point3D::default());
+            return Some(Point3D::new(
+                origin[0] + t * direction[0],
+                origin[1] + t * direction[1],
+                origin[2] + t * direction[2]));
         }
         return None;
     }
@@ -145,8 +148,27 @@ impl Primitives for Cone {
     fn scale(&mut self, value:f64) {
         self.radius *= value;
     }
-    fn suface_normal(&self, _:Point3D) -> Vector3D {
-        return Vector3D::default();
+    fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
+        let axis_vec = match self.axis {
+            'X' => Vector3D::new(1.0, 0.0, 0.0),
+            'Y' => Vector3D::new(0.0, 1.0, 0.0),
+            _ => Vector3D::new(0.0, 0.0, 1.0),
+        };
+        let hit_vec = hit_point - self.center;
+        let proj = axis_vec * hit_vec.scal(&axis_vec);
+        let slope = self.radius / self.height;
+        let height_vec = Vector3D::new(0.0, self.height, 0.0);
+        let base_vec = height_vec * slope;
+        let tip_vec = height_vec * -1.0;
+        let base_radius_vec = base_vec * (proj.normalize() / height_vec.normalize());
+        let normal_vec = if proj.normalize() <= height_vec.normalize() {
+            hit_vec - base_radius_vec
+        } else {
+            let tip_proj = tip_vec * tip_vec.scal(&hit_vec);
+            let radial_vec = hit_vec - tip_proj;
+            radial_vec + tip_vec * slope
+        };
+        normal_vec.normalize()
     }
     fn get_color(&self) -> Color {
         self.color

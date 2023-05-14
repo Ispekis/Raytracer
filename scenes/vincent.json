@@ -39,32 +39,19 @@
         "planes": [
             {
                 "axis": "Z",
-                "position": -20,
+                "position": 0,
                 "color": {
                     "r": 64,
                     "g": 64,
                     "b": 255
-                }
-            }
-        ],
-        "cylinders": [
-            {
-                "x": 50,
-                "y": -200,
-                "z": 0,
-                "r": 20,
-                "axis":"Y",
-                "h": 500,
-                "color": {
-                    "r": 12,
-                    "g": 145,
-                    "b": 90
                 },
-                "transform": {
-                    "scale": 5.0
+                "material": {
+                    "reflectiveness": 1.0,
+                    "pattern": "chessboard"
                 }
             }
         ],
+        "cylinders": [],
         "cones": []
     },
     "lights":
@@ -74,19 +61,17 @@
         "specular": 0.5,
         "point": [
             {
-                "x": 200,
-                "y": 0,
-                "z": -200,
-                "color":{
+                "x": 150,
+                "y": -50,
+                "z": 0,
+                "color": {
                     "x": 255,
                     "y": 255,
                     "z": 255
                 },
                 "intensity": 1.0
             }
-
         ],
-        "directional": [
-        ]
+        "directional": []
     }
 }

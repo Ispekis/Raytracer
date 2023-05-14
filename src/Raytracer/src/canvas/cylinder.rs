@@ -5,7 +5,7 @@
 // Cylinder
 //
 
-use crate::math::{vector3d::Vector3D, point3d::Point3D};
+use crate::math::{vector3d::Vector3D, point3d::Point3D, formulas};
 use crate::interfaces::{Primitives, Mask};
 use crate::matrix::Transformation;
 use crate::ray_tracer::ray::Ray;
@@ -76,7 +76,7 @@ impl Cylinder {
         let c: f64 = (origin[0] - center[0]).powi(2) +
         (origin[1] - center[1]).powi(2) - self.radius.powi(2);
 
-        let delta: f64 = b.powi(2) - 4.0 * a * c;
+        let delta = formulas::compute_discriminant(a, b, c);
         if delta.abs() < 0.001 || delta < 0.0 {
             return None;
         }
@@ -86,7 +86,7 @@ impl Cylinder {
 
         let r = origin[2] + t * direction[2];
         if r >= center[2] && r <= center[2] + self.height {
-            return Some(r)
+            return Some(r);
         }
         None
     }
@@ -133,11 +133,17 @@ impl Primitives for Cylinder {
             None => return None,
         };
 
-        if let Some(_) = self.compute_cylinder_surface(&origin, &center, &direction) {
-            return Some(Point3D::default());
+        if let Some(t) = self.compute_cylinder_surface(&origin, &center, &direction) {
+            return Some(Point3D::new(
+                ray.origin.x + t * ray.direction.x,
+                ray.origin.y + t * ray.direction.y,
+                ray.origin.z + t * ray.direction.z));
         }
-        if let Some(_) = self.compute_last_cylinder_surface(&origin, &center, &direction) {
-            return Some(Point3D::default());
+        if let Some(t) = self.compute_last_cylinder_surface(&origin, &center, &direction) {
+            return Some(Point3D::new(
+                ray.origin.x + t * ray.direction.x,
+                ray.origin.y + t * ray.direction.y,
+                ray.origin.z + t * ray.direction.z));
         }
         None
     }
@@ -153,9 +159,15 @@ impl Primitives for Cylinder {
         self.radius *= value;
     }
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D {
-        let direction = hit_point - self.center;
-        let norme = (direction.x * direction.x + direction.x * direction.x + direction.y * direction.y).sqrt();
-        return Vector3D::new(direction.x / norme, direction.x / norme, direction.y / norme)
+        let axis_vec = match self.axis {
+            'X' => Vector3D::new(1.0, 0.0, 0.0),
+            'Y' => Vector3D::new(0.0, 1.0, 0.0),
+            _ => Vector3D::new(0.0, 0.0, 1.0),
+        };
+        let hit_vec = hit_point - self.center;
+        let proj = axis_vec * hit_vec.scal(&axis_vec);
+        let normal_vec = hit_vec - proj;
+        normal_vec.normalize()
     }
     fn get_color(&self) -> Color {
         self.color

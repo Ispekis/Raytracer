@@ -26,7 +26,7 @@ impl Vector3D {
         return res;
     }
 
-    pub fn cross(&self, other:Self) -> Self {
+    pub fn cross(&self, other:&Self) -> Self {
         let new_x = self.y * other.z - other.y - self.z;
         let new_y = -self.x * other.z - other.x * self.z;
         let new_z = self.x * other.y - other.x - self.y;
@@ -40,6 +40,10 @@ impl Vector3D {
     pub fn normalize(&self) -> Vector3D {
         let n = (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0)).sqrt();
         return Vector3D::new(self.x / n, self.y / n, self.z / n);
+    }
+
+    pub fn normalize_squared(&self) -> f64 {
+        self.scal(&self)
     }
 
     pub fn reflect(&self, other:Vector3D) -> Vector3D {

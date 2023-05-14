@@ -25,6 +25,14 @@ impl PhongModel {
         Self {ambient, diffuse, specular}
     }
 
+    fn light_with_direction(&self, color:Color, light_color:Color, coeff:f64) -> Color {
+        let r = (color.r * self.ambient) + (light_color.r * self.diffuse * coeff);
+        let g = (color.g * self.ambient) + (light_color.g * self.diffuse * coeff);
+        let b = (color.b * self.ambient) + (light_color.b * self.diffuse * coeff);
+
+        Color::new(r, g, b).max_rgb().min_rgb()
+    }
+
     pub fn lightning(&self, color:Color, light:Box<dyn ILight>, position:Point3D, normal_v:Vector3D, is_shadow:bool) -> Color {
         let eff_color = color * light.intensity();
         let ambient:Color;
@@ -59,8 +67,10 @@ impl PhongModel {
 
         let coeff;
         if !light.direction().is_none() {
+            // Directional light
             coeff = light.direction().unwrap().scal(&normal_v) * (-1.0);
-            (ret_color + (light.color() * coeff)).max_rgb()
+            // coeff = light.direction().unwrap().scal(&normal_v) * (-1.0);
+            self.light_with_direction(eff_color, light.color(), coeff)
         } else {
             ret_color.max_rgb()
         }
