@@ -5,7 +5,7 @@
 // Factory
 //
 
-use crate::interfaces::primitives::Primitives;
+use crate::interfaces::Primitives;
 use crate::canvas::{
     sphere::Sphere,
     plane::Plane,

@@ -7,8 +7,8 @@
 
 use crate::math::{point3d::Point3D, formulas, vector3d::Vector3D};
 use crate::ray_tracer::ray::Ray;
-use crate::interfaces::primitives::Primitives;
-use crate::canvas::material::{Mask, Solid};
+use crate::interfaces::{Primitives, Mask};
+use crate::canvas::material::Solid;
 
 use super::color::Color;
 

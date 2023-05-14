@@ -8,11 +8,6 @@
 use crate::canvas::color::Color;
 use crate::math::point3d::Point3D;
 use crate::math::vector3d::Vector3D;
-use crate::canvas::{
-    material::{
-        Mask,
-    }
-};
 use crate::ray_tracer::ray::Ray;
 
 pub trait Primitives {
@@ -45,6 +40,26 @@ pub trait Primitives {
 }
 
 impl Clone for Box<dyn Primitives> {
+    fn clone(&self) -> Self {
+        self.clone_box()
+    }
+}
+
+pub trait Mask {
+    fn color_at(&self, position:Point3D) -> Color;
+    fn box_clone(&self) -> Box<dyn Mask>;
+    fn set_color(&mut self, color:Color);
+}
+
+pub trait ILight {
+    fn position(&self) -> Point3D;
+    fn color(&self) -> Color;
+    fn intensity(&self) -> f64;
+    fn direction(&self) -> Option<Vector3D>;
+    fn clone_box(&self) -> Box<dyn ILight>;
+}
+
+impl Clone for Box<dyn ILight> {
     fn clone(&self) -> Self {
         self.clone_box()
     }
