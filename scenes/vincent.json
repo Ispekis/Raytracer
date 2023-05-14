@@ -19,7 +19,8 @@
     "primitives": {
         "spheres": [],
         "planes": [],
-        "cylinders": [
+        "cylinders": [],
+        "cones": [
             {
                 "x": 0,
                 "y": 0,
@@ -36,8 +37,7 @@
                     "scale": 5.0
                 }
             }
-        ],
-        "cones": []
+        ]
     },
     "lights":
     {
@@ -46,9 +46,9 @@
         "specular": 0.5,
         "point": [
             {
-                "x": 0,
-                "y": 0,
-                "z": -200,
+                "x": 200,
+                "y": 100,
+                "z": 0,
                 "color":{
                     "x": 255,
                     "y": 255,
