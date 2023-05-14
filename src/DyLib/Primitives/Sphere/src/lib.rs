@@ -24,6 +24,8 @@ mod ray_tracer {
 
 mod sphere;
 
+#[no_mangle]
+
 pub fn entryPoint() -> sphere::Sphere {
     return sphere::Sphere::default();
 }

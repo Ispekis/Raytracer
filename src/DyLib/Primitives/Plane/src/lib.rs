@@ -24,6 +24,8 @@ mod ray_tracer {
 
 mod plane;
 
+#[no_mangle]
+
 pub fn entryPoint() -> plane::Plane {
     return plane::Plane::default();
 }

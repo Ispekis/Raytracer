@@ -44,4 +44,5 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
+ "libloading"
 ]
