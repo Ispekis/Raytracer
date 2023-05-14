@@ -7,7 +7,7 @@
 
 use crate::canvas::color::Color;
 use crate::config::fileconfig;
-use crate::interfaces::Primitives;
+use crate::interfaces::{Primitives};
 use crate::math::{point3d::Point3D, vector3d::Vector3D};
 use crate::canvas::material::PhongModel;
 use crate::ray_tracer::ray::Ray;
@@ -16,7 +16,7 @@ struct World {
     scene:fileconfig::SceneData,
     objects:Vec<Box<dyn Primitives>>,
     light_model:PhongModel,
-    reflection_limit:usize
+    reflection_limit:usize,
 }
 
 impl World {
@@ -38,7 +38,7 @@ impl World {
         // for i in 0..scene.primitives.cones.len() {
         //     objects.push(Box::new(scene.primitives.cones[i].clone()))
         // }
-        Self { scene, objects: objects, light_model, reflection_limit:5 }
+        Self { scene, objects, light_model, reflection_limit:5 }
     }
 
     pub fn color_at(&self, ray:Ray) -> Color {
@@ -60,24 +60,30 @@ impl World {
     pub fn color_at_with_reflection(&self, ray:Ray, remain_reflection:usize) -> Color {
         // let mut color:Color = Color::black();
         let mut color:Vec<Color> = Vec::new();
-        for Lindex in 0..self.scene.lights.point.len() {
-            color.push(Color::black());
-        }
         let mut distance:f64 = f64::INFINITY;
 
         for i in 0..self.objects.len() {
             let hit_res = self.objects[i].hits(ray);
             if let Some(hit_point) = hit_res {
                 if (hit_point - ray.origin).length() < distance {
-                    for Lindex in 0..self.scene.lights.point.len() {
+                    for light_index in 0..self.scene.lights.lights.len() {
                         let reflectv = ray.direction.reflect(self.objects[i].suface_normal(hit_point));
-                        color[Lindex] = self.light_model.lightning(self.objects[i].get_pattern().color_at(hit_point), self.scene.lights.point[Lindex],
+                        color[light_index] = self.light_model.lightning(self.objects[i].get_pattern().color_at(hit_point), self.scene.lights.lights[light_index].clone(),
                         hit_point, self.objects[i].suface_normal(hit_point),
-                        self.is_shadowed(hit_point, i, Lindex));
+                        self.is_shadowed(hit_point, i, light_index));
                         distance = (hit_point - ray.origin).length();
                         let reflected_color = self.reflected_color_at(hit_point, reflectv, remain_reflection, i);
-                        color[Lindex] = color[Lindex] + reflected_color;
+                        color[light_index] = color[light_index] + reflected_color;
                     }
+                    // let reflectv = ray.direction.reflect(self.objects[i].suface_normal(hit_point));
+                    // color = self.light_model.lightning(self.objects[i].get_pattern().color_at(hit_point), self.scene.lights.lights[0].clone(),
+                    // hit_point, self.objects[i].suface_normal(hit_point),
+                    // self.is_shadowed(hit_point, i));
+                    // distance = (hit_point - ray.origin).length();
+
+                    // let reflected_color = self.reflected_color_at(hit_point, reflectv, remain_reflection, i);
+
+                    // color = color + reflected_color;
                 }
             }
         }
@@ -86,25 +92,6 @@ impl World {
 
     pub fn draw_primitives(&mut self, u:f64, v:f64) {
         let ray = self.scene.camera.ray(u, v);
-        // let mut color:Vector3D = Vector3D::new(0.0, 0.0, 0.0);
-        // let mut distance:f64 = f64::INFINITY;
-
-        // for i in 0..self.objects.len() {
-        //     let hit_res = self.objects[i].hits(ray);
-        //     if let Some(hit_point) = hit_res {
-        //         if (hit_point - ray.origin).length() < distance {
-        //             let reflectv = ray.direction.reflect(self.objects[i].suface_normal(hit_point));
-        //             color = self.light_model.lightning(self.objects[i].get_pattern().color_at(hit_point), self.scene.lights.point[1],
-        //             hit_point, self.objects[i].suface_normal(hit_point),
-        //             self.is_shadowed(hit_point, i));
-        //             distance = (hit_point - ray.origin).length();
-
-        //             let reflected_color = self.reflected_color_at(hit_point, reflectv, i);
-
-        //             color = color + reflected_color;
-        //         }
-        //     }
-        // }
         let color = self.color_at(ray);
         write_flat_color(color);
         return;
@@ -136,7 +123,9 @@ impl World {
     }
 
     fn is_shadowed(&self, hit_point:Point3D, object_index:usize, lightIndex:usize) -> bool {
-        let shadow_v = self.scene.lights.point[lightIndex].origin - hit_point;
+        let shadow_v = self.scene.lights.lights[lightIndex].position() - hit_point;
+    // fn is_shadowed(&self, hit_point:Point3D, object_index:usize) -> bool {
+    //     let shadow_v = self.scene.lights.lights[0].position() - hit_point;
         let distance = shadow_v.length();
         let direction = shadow_v.normalize();
         let shadow_ray = Ray::new(hit_point, direction);

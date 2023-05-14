@@ -50,3 +50,17 @@ pub trait Mask {
     fn box_clone(&self) -> Box<dyn Mask>;
     fn set_color(&mut self, color:Color);
 }
+
+pub trait ILight {
+    fn position(&self) -> Point3D;
+    fn color(&self) -> Color;
+    fn intensity(&self) -> f64;
+    fn direction(&self) -> Option<Vector3D>;
+    fn clone_box(&self) -> Box<dyn ILight>;
+}
+
+impl Clone for Box<dyn ILight> {
+    fn clone(&self) -> Self {
+        self.clone_box()
+    }
+}

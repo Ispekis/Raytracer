@@ -10,8 +10,7 @@ use crate::math::{
     point3d::Point3D
 };
 
-use crate::ray_tracer::light::PointLight;
-use crate::interfaces::Mask;
+use crate::interfaces::{Mask, ILight};
 
 use super::color::Color;
 
@@ -26,13 +25,13 @@ impl PhongModel {
         Self {ambient, diffuse, specular}
     }
 
-    pub fn lightning(&self, color:Color, light:PointLight, position:Point3D, normal_v:Vector3D, is_shadow:bool) -> Color {
-        let eff_color = color * light.intensity;
+    pub fn lightning(&self, color:Color, light:Box<dyn ILight>, position:Point3D, normal_v:Vector3D, is_shadow:bool) -> Color {
+        let eff_color = color * light.intensity();
         let ambient:Color;
         let diffuse:Color;
         let specular:Color;
 
-        let lightv = (light.origin - position).normalize();
+        let lightv = (light.position() - position).normalize();
 
         ambient = eff_color * self.ambient;
         let light_dot_normal = lightv.scal(&normal_v);
@@ -48,7 +47,7 @@ impl PhongModel {
                 specular = Color::black();
             } else {
                 let factor = reflect_dot_eye.powf(200.0);
-                specular = color * self.specular * factor * light.intensity
+                specular = color * self.specular * factor * light.intensity()
             }
         }
         let mut ret_color: Color;
@@ -66,7 +65,13 @@ impl PhongModel {
         if ret_color.b >= 255.0 {
             ret_color.b = 255.0;
         }
-        ret_color
+
+        let mut coeff = 1.0;
+        if !light.direction().is_none() {
+            coeff = light.direction().unwrap().scal(&normal_v) * (-1.0);
+        }
+
+        ret_color * coeff
     }
 }
 
