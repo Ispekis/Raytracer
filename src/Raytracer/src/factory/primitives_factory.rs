@@ -33,12 +33,17 @@ impl Factory {
         Cone::default()
     }
 
+    fn create_triangle() -> Cone {
+        Cone::default()
+    }
+
     pub fn create_primitives(name:&String) -> Option<Box<dyn Primitives>> {
         match name.as_str() {
             "spheres" => return Some(Box::new(Factory::create_sphere())),
             "planes" => return Some(Box::new(Factory::create_plane())),
             "cones" => return Some(Box::new(Factory::create_cone())),
             "cylinders" => return Some(Box::new(Factory::create_cylinder())),
+            "triangles" => return Some(Box::new(Factory::create_triangle())),
             _ => return None,
         }
     }
