@@ -14,6 +14,7 @@ use crate::interfaces::{Mask, ILight};
 
 use super::color::Color;
 
+#[derive(Clone)]
 pub struct PhongModel {
     ambient:f64,
     diffuse:f64,

@@ -5,16 +5,27 @@
 // error
 //
 
-pub fn error_handler(args:&Vec<String>) -> u32
+pub fn error_handler(args:&Vec<String>) -> (u32, usize)
 {
-    if args.len() != 2 {
-        return 1;
+    let mut file_index: usize = 1;
+    let flag_bonus: String = "--multi-threading".to_string();
+
+    if args.len() != 2 && !(args.len() == 3 && (&args[1] == &flag_bonus || &args[2] == &flag_bonus)) {
+        return (1, 0);
+    }
+    if args.len() == 3 && &args[1] == &flag_bonus {
+        file_index = 2;
     }
 
-    let file: Result<std::fs::File, std::io::Error> = std::fs::File::open(&args[1]);
+    let file: Result<std::fs::File, std::io::Error> = std::fs::File::open(&args[file_index]);
 
     match file {
-        Ok(_) => return 0,
-        Err(_) => return 1,
+        Ok(_) => {
+            if args.len() == 3 && (&args[1] == &flag_bonus || &args[2] == &flag_bonus) {
+                return (2, file_index);
+            }
+            return (0, file_index);
+        }
+        Err(_) => return (1, 0),
     }
 }
