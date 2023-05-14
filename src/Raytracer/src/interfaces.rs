@@ -8,11 +8,6 @@
 use crate::canvas::color::Color;
 use crate::math::point3d::Point3D;
 use crate::math::vector3d::Vector3D;
-use crate::canvas::{
-    material::{
-        Mask,
-    }
-};
 use crate::ray_tracer::ray::Ray;
 
 pub trait Primitives {
@@ -48,4 +43,10 @@ impl Clone for Box<dyn Primitives> {
     fn clone(&self) -> Self {
         self.clone_box()
     }
+}
+
+pub trait Mask {
+    fn color_at(&self, position:Point3D) -> Color;
+    fn box_clone(&self) -> Box<dyn Mask>;
+    fn set_color(&mut self, color:Color);
 }

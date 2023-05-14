@@ -7,8 +7,8 @@
 
 use serde_json::{Value};
 use crate::canvas::color::Color;
-use crate::interfaces::primitives::Primitives;
 use crate::builder::primitives_builder::PrimitivesBuilder;
+use crate::interfaces::{Primitives, Mask};
 use crate::math::{
     point3d::Point3D,
     vector3d::Vector3D

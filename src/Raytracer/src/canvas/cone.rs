@@ -6,12 +6,11 @@
 //
 
 use crate::math::{vector3d::Vector3D, point3d::Point3D};
-use crate::interfaces::primitives::Primitives;
+use crate::interfaces::{Primitives, Mask};
 use crate::ray_tracer::ray::Ray;
 use crate::canvas::{
     color::Color,
     material::{
-        Mask,
         Solid
     }
 };
@@ -147,7 +146,7 @@ impl Primitives for Cone {
     fn get_color(&self) -> Color {
         self.color
     }
-    fn get_pattern(&self) -> Box<dyn super::material::Mask> {
+    fn get_pattern(&self) -> Box<dyn Mask> {
         self.pattern.clone()
     }
     fn get_reflectiveness(&self) -> f64 {

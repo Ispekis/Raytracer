@@ -7,7 +7,7 @@
 
 use crate::canvas::color::Color;
 use crate::config::fileconfig;
-use crate::interfaces::primitives::Primitives;
+use crate::interfaces::Primitives;
 use crate::math::{point3d::Point3D, vector3d::Vector3D};
 use crate::canvas::material::PhongModel;
 use crate::ray_tracer::ray::Ray;

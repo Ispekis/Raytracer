@@ -11,6 +11,7 @@ use crate::math::{
 };
 
 use crate::ray_tracer::light::PointLight;
+use crate::interfaces::Mask;
 
 use super::color::Color;
 
@@ -77,12 +78,6 @@ impl Default for PhongModel {
             specular: 1.0
         }
     }
-}
-
-pub trait Mask {
-    fn color_at(&self, position:Point3D) -> Color;
-    fn box_clone(&self) -> Box<dyn Mask>;
-    fn set_color(&mut self, color:Color);
 }
 
 impl Clone for Box<dyn Mask> {

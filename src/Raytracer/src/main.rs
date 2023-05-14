@@ -29,10 +29,7 @@ mod ray_tracer {
     pub mod light;
 }
 
-mod interfaces {
-    pub mod primitives;
-}
-
+mod interfaces;
 
 mod config {
     pub mod fileconfig;
