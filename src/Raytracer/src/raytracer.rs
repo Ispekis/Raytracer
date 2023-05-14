@@ -145,29 +145,6 @@ pub fn run_raytracer_multithreading(scene: fileconfig::SceneData) -> u32 {
     let world: Arc<Mutex<World>> = Arc::new(Mutex::new(World::new(scene)));
     let image: Arc<Mutex<HashMap<(u32, u32), String>>> = Arc::new(Mutex::new(HashMap::new()));
 
-    // let mut handles = Vec::new();
-    // for y in 0..height {
-    //     for x in 0..width {
-    //         let u = x as f64 / (width as f64 - 1.0);
-    //         let v = y as f64 / (height as f64 - 1.0);
-    //         let world_clone = world.clone();
-    //         let image_clone = image.clone();
-
-    //         let handle = thread::spawn(move || {
-    //             let color = {
-    //                 let mut world_lock = world_clone.lock().unwrap();
-    //                 world_lock.draw_primitives(u, v)
-    //             };
-    //             let mut image_lock = image_clone.lock().unwrap();
-    //             image_lock.insert((x, y), color);
-    //         });
-    //         handles.push(handle);
-    //     }
-    // }
-
-    // for handle in handles {
-    //     handle.join().unwrap();
-    // }
     (0..width * height).into_par_iter().for_each(|idx| {
         let x = idx % width;
         let y = idx / width;
