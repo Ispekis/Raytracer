@@ -43,7 +43,7 @@ impl Cylinder {
         }
     }
 
-    fn get_center(&self, _ray:Ray) -> Option<Vec<f64>> {
+    fn get_center(&self) -> Option<Vec<f64>> {
         if self.axis == 'X' {
             return Some(vec![self.center.y, self.center.z, self.center.x]);
         } else if self.axis == 'Y' {
@@ -66,27 +66,8 @@ impl Cylinder {
             return None;
         }
     }
-}
 
-impl Primitives for Cylinder {
-    fn hits(&self, ray:Ray) -> Option<Point3D> {
-        let origin: Vec<f64>;
-        let center: Vec<f64>;
-        let direction: Vec<f64>;
-
-        match self.get_origin(ray) {
-            Some(result) => origin = result,
-            None => return None
-        }
-        match self.get_center(ray) {
-            Some(result) => center = result,
-            None => return None
-        }
-        match self.get_direction(ray) {
-            Some(result) => direction = result,
-            None => return None
-        }
-
+    fn compute_cylinder_surface(&self, origin: &Vec<f64>, center: &Vec<f64>, direction: &Vec<f64>) -> Option<f64> {
         let a: f64 = direction[0].powi(2) + direction[1].powi(2);
 
         let b: f64 = 2.0 * (direction[0] * (origin[0] - center[0])
@@ -104,11 +85,61 @@ impl Primitives for Cylinder {
         let t: f64 = t1.min(t2);
 
         let r = origin[2] + t * direction[2];
-
         if r >= center[2] && r <= center[2] + self.height {
+            return Some(r)
+        }
+        None
+    }
+
+    fn compute_last_cylinder_surface(&self, origin: &Vec<f64>, center: &Vec<f64>, direction: &Vec<f64>) -> Option<f64> {
+        let t1: f64 = (center[2] - origin[2]) / direction[2];
+        let t2: f64 = (center[2] + self.height - origin[2]) / direction[2];
+        let mut t: f64 = -1.0;
+
+        if t1 > 0.0 {
+            let p1 = origin[0] + t1 * direction[0] - center[0];
+            let p2 = origin[1] + t1 * direction[1] - center[1];
+            if p1.powi(2) + p2.powi(2) <= self.radius.powi(2) {
+                t = t1;
+            }
+        }
+        if t2 > 0.0 {
+            let p1 = origin[0] + t2 * direction[0] - center[0];
+            let p2 = origin[1] + t2 * direction[1] - center[1];
+            if p1.powi(2) + p2.powi(2) <= self.radius.powi(2) &&
+            (t < 0.0 || t2 < t)  {
+                t = t2;
+            }
+        }
+        if t > 0.0 {
+            return Some(t);
+        }
+        None
+    }
+}
+
+impl Primitives for Cylinder {
+    fn hits(&self, ray: Ray) -> Option<Point3D> {
+        let origin = match self.get_origin(ray) {
+            Some(result) => result,
+            None => return None,
+        };
+        let center = match self.get_center() {
+            Some(result) => result,
+            None => return None,
+        };
+        let direction = match self.get_direction(ray) {
+            Some(result) => result,
+            None => return None,
+        };
+
+        if let Some(_) = self.compute_cylinder_surface(&origin, &center, &direction) {
             return Some(Point3D::default());
         }
-        return None;
+        if let Some(_) = self.compute_last_cylinder_surface(&origin, &center, &direction) {
+            return Some(Point3D::default());
+        }
+        None
     }
     fn translate(&mut self, vec:Vector3D) {
         self.center.x += &vec.x;
