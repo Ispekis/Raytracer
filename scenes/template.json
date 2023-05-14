@@ -32,6 +32,16 @@
                     "reflectiveness": 0.0
                 },
                 "transform": {
+                    "translation": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "rotation": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    },
                     "scale": 1.0
                 }
             }
