@@ -26,9 +26,9 @@ pub struct Cylinder {
 }
 
 impl Cylinder {
-    pub fn new_config(center:Point3D, radius:f64, height: f64, color:Color, axis:char, pattern:Box<dyn Mask>) -> Self {
-        Cylinder {center, radius, height, color, axis, pattern, reflectiveness: 0.0}
-    }
+    // pub fn new_config(center:Point3D, radius:f64, height: f64, color:Color, axis:char, pattern:Box<dyn Mask>) -> Self {
+    //     Cylinder {center, radius, height, color, axis, pattern, reflectiveness: 0.0}
+    // }
 
     fn get_origin(&self, ray:Ray) -> Option<Vec<f64>> {
         if self.axis == 'X' {
@@ -187,6 +187,25 @@ impl Primitives for Cylinder {
         }
         Ok(())
     }
+
+    fn with_axis(&mut self, axis:Option<char>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if axis.is_none() {
+            self.axis = 'Z';
+        } else {
+            self.axis = axis.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_height(&mut self, height:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if height.is_none() {
+            self.height = 0.0;
+        } else {
+            self.height = height.unwrap();
+        }
+        Ok(())
+    }
+
 }
 
 impl Default for Cylinder {

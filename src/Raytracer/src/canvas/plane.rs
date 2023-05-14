@@ -26,23 +26,23 @@ pub struct Plane {
 }
 
 impl Plane {
-    pub fn new_config(axis:char, position:f64, color:Color, pattern:Box<dyn Mask>) -> Self {
-        let mut pos = Point3D::default();
-        let mut direction = Vector3D::default();
-        if axis == 'X' {
-            pos.x = position;
-            direction.x = 1.0;
-        }
-        if axis == 'Y' {
-            pos.y = position;
-            direction.y = 1.0;
-        }
-        if axis == 'Z' {
-            pos.z = position;
-            direction.y = 1.0;
-        }
-        Plane {axis, center:pos, direction: direction.normalize(), color, pattern, reflectiveness:0.0}
-    }
+    // pub fn new_config(axis:char, position:f64, color:Color, pattern:Box<dyn Mask>) -> Self {
+    //     let mut pos = Point3D::default();
+    //     let mut direction = Vector3D::default();
+    //     if axis == 'X' {
+    //         pos.x = position;
+    //         direction.x = 1.0;
+    //     }
+    //     if axis == 'Y' {
+    //         pos.y = position;
+    //         direction.y = 1.0;
+    //     }
+    //     if axis == 'Z' {
+    //         pos.z = position;
+    //         direction.y = 1.0;
+    //     }
+    //     Plane {axis, center:pos, direction: direction.normalize(), color, pattern, reflectiveness:0.0}
+    // }
 }
 
 impl Primitives for Plane {
@@ -136,7 +136,7 @@ impl Primitives for Plane {
         Ok(())
     }
 
-    fn with_radius(&mut self, radius:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+    fn with_radius(&mut self, _radius:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
         Ok(())
     }
 
@@ -165,12 +165,26 @@ impl Primitives for Plane {
         }
         Ok(())
     }
+
+    fn with_axis(&mut self, axis:Option<char>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if axis.is_none() {
+            self.axis = 'Z';
+        } else {
+            self.axis = axis.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_height(&mut self, _height:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+
 }
 
 impl Default for Plane {
     fn default() -> Self {
         Plane {
-            axis: 'C',
+            axis: 'Z',
             center: Point3D::default(),
             direction: Vector3D::default(),
             color: Color::default() ,

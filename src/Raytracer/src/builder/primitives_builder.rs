@@ -6,15 +6,12 @@
 //
 
 use crate::math::{
-    vector3d::Vector3D,
     point3d::Point3D
 };
 use crate::canvas::{
     color::Color,
-    material,
     material::{
         Mask,
-        Solid
     }
 };
 use crate::interfaces::primitives::Primitives;
@@ -25,7 +22,9 @@ pub struct PrimitivesBuilder {
     radius:Option<f64>,
     color:Option<Color>,
     pattern:Option<Box<dyn Mask>>,
-    reflectiveness:Option<f64>
+    reflectiveness:Option<f64>,
+    axis: Option<char>,
+    height: Option<f64>,
 }
 
 
@@ -37,7 +36,9 @@ impl PrimitivesBuilder {
             radius: None,
             color: None,
             pattern: None,
-            reflectiveness: None
+            reflectiveness: None,
+            axis: None,
+            height: None,
         }
     }
 
@@ -71,26 +72,17 @@ impl PrimitivesBuilder {
         self
     }
 
+    pub fn with_axis(mut self, axis:char) -> Self {
+        self.axis = Some(axis);
+        self
+    }
+
+    pub fn with_height(mut self, height:f64) -> Self {
+        self.height = Some(height);
+        self
+    }
+
     pub fn build(self) -> std::result::Result<Box<dyn Primitives>, Box<dyn std::error::Error>> {
-        // let center = self.center;
-        // let radius = self.radius;
-        // let color = self.color;
-        // // set material
-        // let mut pattern: Box<dyn material::Mask>;
-        // if self.pattern.is_none() {
-        //     pattern = Box::new(Solid::new(color));
-        // } else {
-        //     pattern = self.pattern.unwrap();
-        // }
-
-        // // set reflectiveness
-        // let reflectiveness: f64;
-        // if self.reflectiveness.is_none() {
-        //     reflectiveness = 0.0;
-        // } else {
-        //     reflectiveness = self.reflectiveness.unwrap();
-        // }
-
         let mut primitives = self.primitives.ok_or("primitives not specified")?;
 
         primitives.with_center(self.center)?;
@@ -98,6 +90,8 @@ impl PrimitivesBuilder {
         primitives.with_pattern(self.pattern)?;
         primitives.with_radius(self.radius)?;
         primitives.with_reflectiveness(self.reflectiveness)?;
+        primitives.with_axis(self.axis)?;
+        primitives.with_height(self.height)?;
 
         Ok(primitives)
     }

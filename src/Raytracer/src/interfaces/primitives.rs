@@ -28,7 +28,7 @@ pub trait Primitives {
 
     fn clone_box(&self) -> Box<dyn Primitives>;
 
-    // setters
+    // setters for primitives builder
     fn with_center(&mut self, center:Option<Point3D>) -> std::result::Result<(), Box<dyn std::error::Error>>;
 
     fn with_radius(&mut self, radius:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>>;
@@ -38,6 +38,10 @@ pub trait Primitives {
     fn with_pattern(&mut self, pattern:Option<Box<dyn Mask>>) -> std::result::Result<(), Box<dyn std::error::Error>>;
 
     fn with_reflectiveness(&mut self, reflectiveness:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+
+    fn with_axis(&mut self, reflectiveness:Option<char>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+
+    fn with_height(&mut self, reflectiveness:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>>;
 }
 
 impl Clone for Box<dyn Primitives> {

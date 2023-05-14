@@ -8,7 +8,6 @@
 use crate::math::{point3d::Point3D, formulas, vector3d::Vector3D};
 use crate::ray_tracer::ray::Ray;
 use crate::interfaces::primitives::Primitives;
-use crate::canvas::material;
 use crate::canvas::material::{Mask, Solid};
 
 use super::color::Color;
@@ -22,11 +21,11 @@ pub struct Sphere {
     pub reflectiveness: f64
 }
 
-impl Sphere {
-    pub fn new_config(center:Point3D, radius:f64, color:Color, pattern:Box<dyn Mask>, reflectiveness:f64) -> Self {
-        Sphere {center, radius, color, pattern, reflectiveness}
-    }
-}
+// impl Sphere {
+//     pub fn new_config(center:Point3D, radius:f64, color:Color, pattern:Box<dyn Mask>, reflectiveness:f64) -> Self {
+//         Sphere {center, radius, color, pattern, reflectiveness}
+//     }
+// }
 
 
 impl Primitives for Sphere {
@@ -116,6 +115,15 @@ impl Primitives for Sphere {
         }
         Ok(())
     }
+
+    fn with_axis(&mut self, _axis:Option<char>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+
+    fn with_height(&mut self, _height:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+
 }
 
 // impl Clone for Sphere {

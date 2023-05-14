@@ -29,19 +29,19 @@ pub struct Cone {
 }
 
 impl Cone {
-    pub fn new_config(center:Point3D, radius:f64, height: f64, color:Color, axis:char, pattern:Box<dyn Mask>) -> Self {
-        let mut direction = Vector3D::default();
-        if axis == 'X' {
-            direction.x = 1.0;
-        }
-        if axis == 'Y' {
-            direction.y = 1.0;
-        }
-        if axis == 'Z' {
-            direction.y = 1.0;
-        }
-        Cone {center, radius, height, color, axis, direction, pattern, reflectiveness: 0.0}
-    }
+    // pub fn new_config(center:Point3D, radius:f64, height: f64, color:Color, axis:char, pattern:Box<dyn Mask>) -> Self {
+    //     let mut direction = Vector3D::default();
+    //     if axis == 'X' {
+    //         direction.x = 1.0;
+    //     }
+    //     if axis == 'Y' {
+    //         direction.y = 1.0;
+    //     }
+    //     if axis == 'Z' {
+    //         direction.y = 1.0;
+    //     }
+    //     Cone {center, radius, height, color, axis, direction, pattern, reflectiveness: 0.0}
+    // }
 
     fn getorigin(&self, ray:Ray) -> Option<Vec<f64>> {
         if self.axis == 'X' {
@@ -208,6 +208,25 @@ impl Primitives for Cone {
         }
         Ok(())
     }
+
+    fn with_axis(&mut self, axis:Option<char>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if axis.is_none() {
+            self.axis = 'Z';
+        } else {
+            self.axis = axis.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_height(&mut self, height:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if height.is_none() {
+            self.height = 0.0;
+        } else {
+            self.height = height.unwrap();
+        }
+        Ok(())
+    }
+
 }
 
 impl Default for Cone {
