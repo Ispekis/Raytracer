@@ -6,7 +6,7 @@
         },
         "position": {
             "x": 0,
-            "y": -50,
+            "y": -100,
             "z": 0
         },
         "rotation": {
@@ -19,17 +19,20 @@
     "primitives": {
         "spheres": [
             {
-                "x": 100,
+                "x": 0,
                 "y": 0,
-                "z": -550,
-                "r": 50,
+                "z": 0,
+                "r": 100,
                 "color": {
                     "r": 64,
                     "g": 255,
                     "b": 64
                 },
                 "material": {
-                    "reflectiveness": 0.5
+                    "reflectiveness": 0.0
+                },
+                "transform": {
+                    "scale": 1.0
                 }
             }
         ],
@@ -41,23 +44,39 @@
                     "r": 64,
                     "g": 64,
                     "b": 255
-                },
-                "pattern": "solid"
+                }
             }
         ],
-        "cylinders": [],
+        "cylinders": [
+            {
+                "x": 50,
+                "y": -200,
+                "z": 0,
+                "r": 20,
+                "axis":"Y",
+                "h": 500,
+                "color": {
+                    "r": 12,
+                    "g": 145,
+                    "b": 90
+                },
+                "transform": {
+                    "scale": 5.0
+                }
+            }
+        ],
         "cones": []
     },
     "lights":
     {
         "ambient": 0.4,
-        "diffuse": 1.0,
+        "diffuse": 0.6,
         "specular": 0.5,
         "point": [
             {
-                "x": 1,
-                "y": -10,
-                "z": 0,
+                "x": 200,
+                "y": 0,
+                "z": -200,
                 "color":{
                     "x": 255,
                     "y": 255,

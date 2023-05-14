@@ -7,6 +7,7 @@
 
 use crate::math::{vector3d::Vector3D, point3d::Point3D};
 use crate::interfaces::{Primitives, Mask};
+use crate::matrix::Transformation;
 use crate::ray_tracer::ray::Ray;
 use crate::canvas::{
     color::Color,
@@ -24,7 +25,8 @@ pub struct Cone {
     pub axis:char,
     pub direction:Vector3D,
     pub pattern:Box<dyn Mask>,
-    pub reflectiveness:f64
+    pub reflectiveness:f64,
+    transformation: Transformation
 }
 
 impl Cone {
@@ -140,6 +142,9 @@ impl Primitives for Cone {
     fn rotatex(&mut self, _:f64) {}
     fn rotatey(&mut self, _:f64) {}
     fn rotatez(&mut self, _:f64) {}
+    fn scale(&mut self, value:f64) {
+        self.radius *= value;
+    }
     fn suface_normal(&self, _:Point3D) -> Vector3D {
         return Vector3D::default();
     }
@@ -162,7 +167,8 @@ impl Primitives for Cone {
             axis: self.axis,
             direction: self.direction,
             pattern: self.pattern.clone(),
-            reflectiveness: self.reflectiveness
+            reflectiveness: self.reflectiveness,
+            transformation: self.transformation
         })
     }
 
@@ -235,6 +241,33 @@ impl Primitives for Cone {
         Ok(())
     }
 
+    fn with_scale(&mut self, scale:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if scale.is_none() {
+            self.transformation.scale = 1.0;
+        } else {
+            self.transformation.scale = scale.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_translation(&mut self, translation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if translation.is_none() {
+            self.transformation.translation = Vector3D::default();
+        } else {
+            self.transformation.translation = translation.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_rotation(&mut self, rotation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if rotation.is_none() {
+            self.transformation.rotation = Vector3D::default();
+        } else {
+            self.transformation.rotation = rotation.unwrap();
+        }
+        Ok(())
+    }
+
 }
 
 impl Default for Cone {
@@ -247,7 +280,8 @@ impl Default for Cone {
             axis: 'Z',
             direction: Vector3D::default(),
             pattern: Box::new(Solid::default()),
-            reflectiveness: 0.0
+            reflectiveness: 0.0,
+            transformation: Transformation::default()
         }
     }
 }

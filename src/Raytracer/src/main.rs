@@ -29,6 +29,8 @@ mod ray_tracer {
     pub mod light;
 }
 
+mod matrix;
+
 mod interfaces;
 
 mod config {
