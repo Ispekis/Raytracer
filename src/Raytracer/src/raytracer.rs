@@ -77,8 +77,8 @@ impl World {
 
     pub fn draw_primitives(&mut self, u:f64, v:f64) {
         let ray = self.scene.camera.ray(u, v);
-        let color = self.color_at(ray);
-        write_flat_color(color);
+        let mut color = self.color_at(ray);
+        write_flat_color(color.max_rgb().min_rgb());
         return;
     }
 
