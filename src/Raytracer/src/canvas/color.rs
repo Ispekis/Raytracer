@@ -24,6 +24,10 @@ impl Color {
     pub fn white() -> Self {
         Self { r: 255.0, g: 255.0, b: 255.0 }
     }
+
+    pub fn tot_color_value(&self) -> f64 {
+        self.r + self.g + self.b
+    }
 }
 
 impl Default for Color {
@@ -131,5 +135,23 @@ impl std::ops::DivAssign<Color> for Color {
 impl std::fmt::Display for Color {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "Color(x={}, y={}, z={})", self.r, self.g, self.b)
+    }
+}
+
+impl PartialOrd for Color {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        if self.r > other.r && self.g > other.g && self.b > other.b {
+            Some(std::cmp::Ordering::Greater)
+        } else if self.r >= other.r && self.g >= other.g && self.b >= other.b {
+            Some(std::cmp::Ordering::Greater)
+        } else {
+            None
+        }
+    }
+}
+
+impl PartialEq for Color {
+    fn eq(&self, other: &Self) -> bool {
+        self.r == other.r && self.g == self.g && self.b == other.b
     }
 }
