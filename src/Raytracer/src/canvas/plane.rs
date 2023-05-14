@@ -7,6 +7,7 @@
 
 use crate::math::{vector3d::Vector3D, point3d::Point3D};
 use crate::interfaces::{Primitives, Mask};
+use crate::matrix::Transformation;
 use crate::ray_tracer::ray::Ray;
 
 use super::color::Color;
@@ -21,7 +22,8 @@ pub struct Plane {
     pub direction:Vector3D,
     pub color:Color,
     pub pattern: Box<dyn Mask>,
-    pub reflectiveness: f64
+    pub reflectiveness: f64,
+    transformation: Transformation
 }
 
 impl Plane {
@@ -46,26 +48,6 @@ impl Plane {
 
 impl Primitives for Plane {
     fn hits(&self, ray:Ray) -> Option<Point3D>{
-        // if ray.origin.y.abs() <= std::f64::EPSILON {
-        //     return None;
-        // }
-        // let mut tmp:Vector3D = ray.direction;
-        // let mut tmp1:f64;
-        // if self.axis == 'X' {
-        //     tmp1 = tmp.x;
-        //     tmp.x = tmp.y;
-        //     tmp.y = tmp1;
-        // }
-        // if self.axis == 'Y' {
-        //     tmp1 = tmp.y;
-        //     tmp.y = tmp.z;
-        //     tmp.z = tmp1;
-        // }
-        // if self.axis == 'Z' {
-        //     tmp1 = tmp.z;
-        //     tmp.z = tmp.x;
-        //     tmp.x = tmp1;
-        // }
         let dot = ray.direction.scal(&self.direction);
 
         // print!("dot = {} {} ", dot, ray.direction);
@@ -77,22 +59,6 @@ impl Primitives for Plane {
             }
         }
         None
-        // let dot = ray.direction.scal(&self.direction);
-
-        // if dot > 1e-6 {
-        //     let t = ((self.center - ray.origin).scal(&self.direction)) / dot;
-        //     if t >= 0.0 {
-        //         let inter_point = ray.origin + (ray.direction * t);
-        //         return Some(inter_point);
-        //     }
-        // }
-        // return None;
-        // if (ray.direction.y.abs() <= EPSILON) {
-        //     return None;
-        // }
-        // let t = -ray.origin.y / ray.direction.y;
-        // let inter_point = ray.origin + (ray.direction * t);
-        // Some(inter_point)
     }
     fn translate(&mut self, translate:Vector3D) {
         self.center.x += translate.x;
@@ -102,6 +68,7 @@ impl Primitives for Plane {
     fn rotatex(&mut self, _:f64) {}
     fn rotatey(&mut self, _:f64) {}
     fn rotatez(&mut self, _:f64) {}
+    fn scale(&mut self, _:f64) {}
     fn suface_normal(&self, _:Point3D) -> Vector3D {
         Vector3D::new(0.0, 1.0, 0.1)
     }
@@ -123,7 +90,8 @@ impl Primitives for Plane {
             axis: self.axis,
             direction: self.direction,
             pattern: self.pattern.clone(),
-            reflectiveness: self.reflectiveness
+            reflectiveness: self.reflectiveness,
+            transformation: self.transformation
         })
     }
 
@@ -191,6 +159,32 @@ impl Primitives for Plane {
         Ok(())
     }
 
+    fn with_scale(&mut self, scale:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if scale.is_none() {
+            self.transformation.scale = 1.0;
+        } else {
+            self.transformation.scale = scale.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_translation(&mut self, translation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if translation.is_none() {
+            self.transformation.translation = Vector3D::default();
+        } else {
+            self.transformation.translation = translation.unwrap();
+        }
+        Ok(())
+    }
+
+    fn with_rotation(&mut self, rotation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>> {
+        if rotation.is_none() {
+            self.transformation.rotation = Vector3D::default();
+        } else {
+            self.transformation.rotation = rotation.unwrap();
+        }
+        Ok(())
+    }
 }
 
 impl Default for Plane {
@@ -201,7 +195,8 @@ impl Default for Plane {
             direction: Vector3D::default(),
             color: Color::default() ,
             pattern: Box::new(Solid::default()),
-            reflectiveness: 0.0
+            reflectiveness: 0.0,
+            transformation: Transformation::default()
         }
     }
 }

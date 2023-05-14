@@ -15,6 +15,7 @@ pub trait Primitives {
     fn rotatex(&mut self, angle:f64);
     fn rotatey(&mut self, angle:f64);
     fn rotatez(&mut self, angle:f64);
+    fn scale(&mut self, value:f64);
     fn hits(&self, ray:Ray) -> Option<Point3D>;
     fn suface_normal(&self, hit_point:Point3D) -> Vector3D;
     fn get_color(&self) -> Color;
@@ -34,9 +35,15 @@ pub trait Primitives {
 
     fn with_reflectiveness(&mut self, reflectiveness:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>>;
 
-    fn with_axis(&mut self, reflectiveness:Option<char>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+    fn with_axis(&mut self, axis:Option<char>) -> std::result::Result<(), Box<dyn std::error::Error>>;
 
-    fn with_height(&mut self, reflectiveness:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+    fn with_height(&mut self, height:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+
+    fn with_scale(&mut self, scale:Option<f64>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+
+    fn with_translation(&mut self, translation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>>;
+
+    fn with_rotation(&mut self, rotation:Option<Vector3D>) -> std::result::Result<(), Box<dyn std::error::Error>>;
 }
 
 impl Clone for Box<dyn Primitives> {
